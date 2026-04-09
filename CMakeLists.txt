@@ -1,0 +1,12 @@
+cmake_minimum_required(VERSION 3.20)
+project(PhotonicsCAD)
+
+add_subdirectory(app)
+add_subdirectory(ui)
+add_subdirectory(component_library)
+add_subdirectory(editor)
+add_subdirectory(domain)
+add_subdirectory(simulation)
+add_subdirectory(serialization)
+add_subdirectory(plugins/components)
+add_subdirectory(tests)
