@@ -11,4 +11,5 @@ add_library(
   ${SOURCES_DIR}/ComponentLibraryManager.cpp
   ${SOURCES_DIR}/ComponentLibraryManager.h ${SOURCES_DIR}/ComponentDefinition.h)
 
+target_include_directories(component_library PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(component_library PRIVATE Qt${QT_VERSION_MAJOR}::Core)

@@ -18,7 +18,8 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 set(PROJECT_SOURCES main.cpp mainwindow.cpp mainwindow.h mainwindow.ui)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-  qt_add_executable(CADapp MANUAL_FINALIZATION ${PROJECT_SOURCES})
+  qt_add_executable(CADapp MANUAL_FINALIZATION ${PROJECT_SOURCES}
+                    ../resources/resources.qrc)
 
 else()
   if(ANDROID)
@@ -28,7 +29,8 @@ else()
   endif()
 endif()
 
-target_link_libraries(CADapp PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(CADapp PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
+                                     component_library)
 
 set_target_properties(
   CADapp

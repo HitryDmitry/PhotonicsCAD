@@ -98,7 +98,7 @@
                  <widget class="QLineEdit" name="lineEdit">
                   <property name="maximumSize">
                    <size>
-                    <width>300</width>
+                    <width>250</width>
                     <height>16777215</height>
                    </size>
                   </property>
@@ -108,7 +108,7 @@
                  <widget class="QListWidget" name="listWidget">
                   <property name="maximumSize">
                    <size>
-                    <width>300</width>
+                    <width>250</width>
                     <height>16777215</height>
                    </size>
                   </property>
@@ -117,21 +117,30 @@
                   </property>
                   <property name="iconSize">
                    <size>
-                    <width>64</width>
-                    <height>64</height>
+                    <width>110</width>
+                    <height>80</height>
                    </size>
                   </property>
                   <property name="movement">
                    <enum>QListView::Movement::Static</enum>
                   </property>
+                  <property name="spacing">
+                   <number>10</number>
+                  </property>
                   <property name="gridSize">
                    <size>
-                    <width>80</width>
+                    <width>110</width>
                     <height>90</height>
                    </size>
                   </property>
                   <property name="viewMode">
                    <enum>QListView::ViewMode::IconMode</enum>
+                  </property>
+                  <property name="uniformItemSizes">
+                   <bool>false</bool>
+                  </property>
+                  <property name="itemAlignment">
+                   <set>Qt::AlignmentFlag::AlignLeading</set>
                   </property>
                  </widget>
                 </item>
@@ -145,7 +154,7 @@
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>300</width>
+                    <width>250</width>
                     <height>300</height>
                    </size>
                   </property>
