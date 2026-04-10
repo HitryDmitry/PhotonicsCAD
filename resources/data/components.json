@@ -1,0 +1,724 @@
+[
+  {
+    "type": "laser",
+    "name": "Laser",
+    "category": "optical_sources",
+    "icon": ":/icons/laser.png",
+    "description": "Optical laser source",
+    "pins": [
+      {
+        "id": "out",
+        "name": "Optical Output",
+        "direction": "output",
+        "signal_type": "optical"
+      }
+    ],
+    "parameters": [
+      {
+        "key": "power",
+        "name": "Laser Power",
+        "unit": "mW",
+        "datatype": "double",
+        "default": 1.0,
+        "min": 0.0,
+        "max": 1000.0
+      },
+      {
+        "key": "wavelength",
+        "name": "Wavelength",
+        "unit": "nm",
+        "datatype": "double",
+        "default": 1550.0,
+        "min": 200.0,
+        "max": 3000.0
+      },
+      {
+        "key": "frequency",
+        "name": "Frequency",
+        "unit": "GHz",
+        "datatype": "double",
+        "default": 193.5,
+        "min": 0.0,
+        "max": 10000.0
+      },
+      {
+        "key": "rin_noise",
+        "name": "RIN Noise",
+        "unit": "dB/Hz",
+        "datatype": "double",
+        "default": -150.0,
+        "min": -300.0,
+        "max": 0.0
+      }
+    ],
+    "simulation_model": "LaserModel"
+  },
+
+  {
+    "type": "optical_fiber",
+    "name": "Optical Fiber",
+    "category": "optical_passive",
+    "icon": ":/icons/optical_fiber.png",
+    "description": "Optical transmission fiber",
+    "pins": [
+      {
+        "id": "in",
+        "name": "Input",
+        "direction": "input",
+        "signal_type": "optical"
+      },
+      {
+        "id": "out",
+        "name": "Output",
+        "direction": "output",
+        "signal_type": "optical"
+      }
+    ],
+    "parameters": [
+      {
+        "key": "length",
+        "name": "Length",
+        "unit": "km",
+        "datatype": "double",
+        "default": 1.0,
+        "min": 0.0,
+        "max": 10000.0
+      },
+      {
+        "key": "attenuation",
+        "name": "Attenuation",
+        "unit": "dB/km",
+        "datatype": "double",
+        "default": 0.2,
+        "min": 0.0,
+        "max": 100.0
+      },
+      {
+        "key": "refractive_index",
+        "name": "Refractive Index",
+        "unit": "",
+        "datatype": "double",
+        "default": 1.45,
+        "min": 1.0,
+        "max": 5.0
+      },
+      {
+        "key": "reflection_loss",
+        "name": "Reflection Loss",
+        "unit": "dB",
+        "datatype": "double",
+        "default": 0.1,
+        "min": 0.0,
+        "max": 100.0
+      }
+    ],
+    "simulation_model": "OpticalFiberModel"
+  },
+
+  {
+    "type": "optical_splitter",
+    "name": "Optical Splitter",
+    "category": "optical_passive",
+    "icon": ":/icons/optical_splitter.png",
+    "description": "Optical power splitter",
+    "pins": [
+      {
+        "id": "in",
+        "name": "Input",
+        "direction": "input",
+        "signal_type": "optical"
+      },
+      {
+        "id": "out1",
+        "name": "Output 1",
+        "direction": "output",
+        "signal_type": "optical"
+      },
+      {
+        "id": "out2",
+        "name": "Output 2",
+        "direction": "output",
+        "signal_type": "optical"
+      }
+    ],
+    "parameters": [
+      {
+        "key": "split_ratio",
+        "name": "Split Ratio",
+        "unit": "",
+        "datatype": "double",
+        "default": 0.5,
+        "min": 0.0,
+        "max": 1.0
+      }
+    ],
+    "simulation_model": "OpticalSplitterModel"
+  },
+
+  {
+    "type": "electro_optic_modulator",
+    "name": "Electro-Optic Modulator",
+    "category": "modulators",
+    "icon": ":/icons/eom.png",
+    "description": "Electro-optic signal modulator",
+    "pins": [
+      {
+        "id": "opt_in",
+        "name": "Optical Input",
+        "direction": "input",
+        "signal_type": "optical"
+      },
+      {
+        "id": "rf_in",
+        "name": "RF Input",
+        "direction": "input",
+        "signal_type": "electrical"
+      },
+      {
+        "id": "opt_out",
+        "name": "Optical Output",
+        "direction": "output",
+        "signal_type": "optical"
+      }
+    ],
+    "parameters": [
+      {
+        "key": "input_voltage",
+        "name": "Input Voltage",
+        "unit": "V",
+        "datatype": "double",
+        "default": 1.0,
+        "min": 0.0,
+        "max": 100.0
+      },
+      {
+        "key": "bias_voltage",
+        "name": "Bias Voltage",
+        "unit": "V",
+        "datatype": "double",
+        "default": 2.5,
+        "min": -100.0,
+        "max": 100.0
+      },
+      {
+        "key": "half_wave_voltage",
+        "name": "Half-wave Voltage",
+        "unit": "V",
+        "datatype": "double",
+        "default": 5.0,
+        "min": 0.0,
+        "max": 100.0
+      },
+      {
+        "key": "optical_loss",
+        "name": "Optical Loss",
+        "unit": "dB",
+        "datatype": "double",
+        "default": 3.0,
+        "min": 0.0,
+        "max": 100.0
+      }
+    ],
+    "simulation_model": "EOMModel"
+  },
+
+  {
+    "type": "photodetector",
+    "name": "Photodetector",
+    "category": "detectors",
+    "icon": ":/icons/photodetector.png",
+    "description": "Optical-to-electrical converter",
+    "pins": [
+      {
+        "id": "opt_in",
+        "name": "Optical Input",
+        "direction": "input",
+        "signal_type": "optical"
+      },
+      {
+        "id": "elec_out",
+        "name": "Electrical Output",
+        "direction": "output",
+        "signal_type": "electrical"
+      }
+    ],
+    "parameters": [
+      {
+        "key": "responsivity",
+        "name": "Responsivity",
+        "unit": "A/W",
+        "datatype": "double",
+        "default": 0.8,
+        "min": 0.0,
+        "max": 100.0
+      },
+      {
+        "key": "max_current",
+        "name": "Max Photocurrent",
+        "unit": "mA",
+        "datatype": "double",
+        "default": 10.0,
+        "min": 0.0,
+        "max": 10000.0
+      },
+      {
+        "key": "load_resistance",
+        "name": "Load Resistance",
+        "unit": "Ohm",
+        "datatype": "double",
+        "default": 50.0,
+        "min": 0.0,
+        "max": 1000000.0
+      }
+    ],
+    "simulation_model": "PhotodetectorModel"
+  },
+
+  {
+    "type": "band_pass_filter",
+    "name": "Band-pass Filter",
+    "category": "filters",
+    "icon": ":/icons/bpf.png",
+    "description": "Band-pass electrical filter",
+    "pins": [
+      {
+        "id": "in",
+        "name": "Input",
+        "direction": "input",
+        "signal_type": "electrical"
+      },
+      {
+        "id": "out",
+        "name": "Output",
+        "direction": "output",
+        "signal_type": "electrical"
+      }
+    ],
+    "parameters": [
+      {
+        "key": "center_frequency",
+        "name": "Center Frequency",
+        "unit": "GHz",
+        "datatype": "double",
+        "default": 10.0,
+        "min": 0.0,
+        "max": 100000.0
+      },
+      {
+        "key": "bandwidth",
+        "name": "Bandwidth",
+        "unit": "GHz",
+        "datatype": "double",
+        "default": 1.0,
+        "min": 0.0,
+        "max": 100000.0
+      },
+      {
+        "key": "loss",
+        "name": "Insertion Loss",
+        "unit": "dB",
+        "datatype": "double",
+        "default": 1.0,
+        "min": 0.0,
+        "max": 100.0
+      },
+      {
+        "key": "order",
+        "name": "Filter Order",
+        "unit": "",
+        "datatype": "int",
+        "default": 3,
+        "min": 1,
+        "max": 20
+      }
+    ],
+    "simulation_model": "BandPassFilterModel"
+  },
+
+  {
+    "type": "sine_generator",
+    "name": "Sine Generator",
+    "category": "signal_generators",
+    "icon": ":/icons/sine_generator.png",
+    "description": "Sinusoidal electrical generator",
+    "pins": [
+      {
+        "id": "out",
+        "name": "Output",
+        "direction": "output",
+        "signal_type": "electrical"
+      }
+    ],
+    "parameters": [
+      {
+        "key": "amplitude",
+        "name": "Amplitude",
+        "unit": "V",
+        "datatype": "double",
+        "default": 1.0,
+        "min": 0.0,
+        "max": 1000.0
+      },
+      {
+        "key": "phase",
+        "name": "Phase",
+        "unit": "rad",
+        "datatype": "double",
+        "default": 0.0,
+        "min": -6.283185,
+        "max": 6.283185
+      },
+      {
+        "key": "frequency",
+        "name": "Frequency",
+        "unit": "GHz",
+        "datatype": "double",
+        "default": 1.0,
+        "min": 0.0,
+        "max": 100000.0
+      }
+    ],
+    "simulation_model": "SineGeneratorModel"
+  },
+
+  {
+    "type": "electrical_oscilloscope",
+    "name": "Electrical Oscilloscope",
+    "category": "instruments",
+    "icon": ":/icons/electrical_scope.png",
+    "description": "Electrical waveform viewer",
+    "pins": [
+      {
+        "id": "in",
+        "name": "Signal Input",
+        "direction": "input",
+        "signal_type": "electrical"
+      }
+    ],
+    "parameters": [],
+    "simulation_model": "OscilloscopeModel"
+  },
+
+  {
+    "type": "low_pass_filter",
+    "name": "Low-pass Filter",
+    "category": "filters",
+    "icon": ":/icons/lpf.png",
+    "description": "Low-pass electrical filter",
+    "pins": [
+      {
+        "id": "in",
+        "name": "Input",
+        "direction": "input",
+        "signal_type": "electrical"
+      },
+      {
+        "id": "out",
+        "name": "Output",
+        "direction": "output",
+        "signal_type": "electrical"
+      }
+    ],
+    "parameters": [
+      {
+        "key": "cutoff_frequency",
+        "name": "Cutoff Frequency",
+        "unit": "GHz",
+        "datatype": "double",
+        "default": 5.0,
+        "min": 0.0,
+        "max": 100000.0
+      },
+      {
+        "key": "slope",
+        "name": "Slope",
+        "unit": "dB/dec",
+        "datatype": "double",
+        "default": 20.0,
+        "min": 1.0,
+        "max": 200.0
+      }
+    ],
+    "simulation_model": "LowPassFilterModel"
+  },
+
+  {
+    "type": "high_pass_filter",
+    "name": "High-pass Filter",
+    "category": "filters",
+    "icon": ":/icons/hpf.png",
+    "description": "High-pass electrical filter",
+    "pins": [
+      {
+        "id": "in",
+        "name": "Input",
+        "direction": "input",
+        "signal_type": "electrical"
+      },
+      {
+        "id": "out",
+        "name": "Output",
+        "direction": "output",
+        "signal_type": "electrical"
+      }
+    ],
+    "parameters": [
+      {
+        "key": "cutoff_frequency",
+        "name": "Cutoff Frequency",
+        "unit": "GHz",
+        "datatype": "double",
+        "default": 1.0,
+        "min": 0.0,
+        "max": 100000.0
+      },
+      {
+        "key": "slope",
+        "name": "Slope",
+        "unit": "dB/dec",
+        "datatype": "double",
+        "default": 20.0,
+        "min": 1.0,
+        "max": 200.0
+      }
+    ],
+    "simulation_model": "HighPassFilterModel"
+  },
+
+  {
+    "type": "microwave_amplifier",
+    "name": "Microwave Amplifier",
+    "category": "amplifiers",
+    "icon": ":/icons/amplifier.png",
+    "description": "Microwave RF amplifier",
+    "pins": [
+      {
+        "id": "in",
+        "name": "RF Input",
+        "direction": "input",
+        "signal_type": "electrical"
+      },
+      {
+        "id": "out",
+        "name": "RF Output",
+        "direction": "output",
+        "signal_type": "electrical"
+      }
+    ],
+    "parameters": [
+      {
+        "key": "gain",
+        "name": "Voltage Gain",
+        "unit": "dB",
+        "datatype": "double",
+        "default": 20.0,
+        "min": -100.0,
+        "max": 100.0
+      },
+      {
+        "key": "noise_figure",
+        "name": "Noise Figure",
+        "unit": "dB",
+        "datatype": "double",
+        "default": 3.0,
+        "min": 0.0,
+        "max": 100.0
+      },
+      {
+        "key": "flicker_corner_frequency",
+        "name": "Flicker Noise Corner Frequency",
+        "unit": "GHz",
+        "datatype": "double",
+        "default": 0.001,
+        "min": 0.0,
+        "max": 1000.0
+      },
+      {
+        "key": "flicker_noise_coefficient",
+        "name": "Flicker Noise Coefficient",
+        "unit": "rad²/Hz",
+        "datatype": "double",
+        "default": 1e-12,
+        "min": 0.0,
+        "max": 1.0
+      },
+      {
+        "key": "white_noise_coefficient",
+        "name": "White Noise Coefficient",
+        "unit": "",
+        "datatype": "double",
+        "default": 1e-9,
+        "min": 0.0,
+        "max": 1.0
+      }
+    ],
+    "simulation_model": "MicrowaveAmplifierModel"
+  },
+
+  {
+    "type": "pulse_generator",
+    "name": "Pulse Generator",
+    "category": "signal_generators",
+    "icon": ":/icons/pulse_generator.png",
+    "description": "Rectangular pulse electrical generator",
+    "pins": [
+      {
+        "id": "out",
+        "name": "Output",
+        "direction": "output",
+        "signal_type": "electrical"
+      }
+    ],
+    "parameters": [
+      {
+        "key": "amplitude",
+        "name": "Amplitude",
+        "unit": "V",
+        "datatype": "double",
+        "default": 1.0,
+        "min": 0.0,
+        "max": 1000.0
+      },
+      {
+        "key": "pulse_width",
+        "name": "Pulse Width",
+        "unit": "s",
+        "datatype": "double",
+        "default": 0.001,
+        "min": 0.0,
+        "max": 1000.0
+      },
+      {
+        "key": "period",
+        "name": "Period",
+        "unit": "s",
+        "datatype": "double",
+        "default": 0.01,
+        "min": 0.0,
+        "max": 10000.0
+      },
+      {
+        "key": "angular_frequency",
+        "name": "Angular Frequency",
+        "unit": "rad/s",
+        "datatype": "double",
+        "default": 628.318,
+        "min": 0.0,
+        "max": 1000000000.0
+      }
+    ],
+    "simulation_model": "PulseGeneratorModel"
+  },
+
+  {
+    "type": "optical_spectrum_analyzer",
+    "name": "Optical Spectrum Analyzer",
+    "category": "instruments",
+    "icon": ":/icons/osa.png",
+    "description": "Displays optical Fourier spectrum harmonics",
+    "pins": [
+      {
+        "id": "in",
+        "name": "Optical Input",
+        "direction": "input",
+        "signal_type": "optical"
+      }
+    ],
+    "parameters": [
+      {
+        "key": "frequency_span",
+        "name": "Frequency Span",
+        "unit": "GHz",
+        "datatype": "double",
+        "default": 100.0,
+        "min": 0.1,
+        "max": 100000.0
+      },
+      {
+        "key": "resolution_bandwidth",
+        "name": "Resolution Bandwidth",
+        "unit": "MHz",
+        "datatype": "double",
+        "default": 10.0,
+        "min": 0.001,
+        "max": 10000.0
+      }
+    ],
+    "simulation_model": "OpticalSpectrumAnalyzerModel"
+  },
+
+  {
+    "type": "optical_oscilloscope",
+    "name": "Optical Oscilloscope",
+    "category": "instruments",
+    "icon": ":/icons/optical_scope.png",
+    "description": "Displays optical signal waveform in time domain",
+    "pins": [
+      {
+        "id": "in",
+        "name": "Optical Input",
+        "direction": "input",
+        "signal_type": "optical"
+      }
+    ],
+    "parameters": [
+      {
+        "key": "time_window",
+        "name": "Time Window",
+        "unit": "ns",
+        "datatype": "double",
+        "default": 10.0,
+        "min": 0.001,
+        "max": 1000000.0
+      },
+      {
+        "key": "sample_rate",
+        "name": "Sample Rate",
+        "unit": "GS/s",
+        "datatype": "double",
+        "default": 10.0,
+        "min": 0.001,
+        "max": 100000.0
+      }
+    ],
+    "simulation_model": "OpticalOscilloscopeModel"
+  },
+
+  {
+    "type": "electrical_spectrum_analyzer",
+    "name": "Electrical Spectrum Analyzer",
+    "category": "instruments",
+    "icon": ":/icons/esa.png",
+    "description": "Displays electrical Fourier spectrum harmonics",
+    "pins": [
+      {
+        "id": "in",
+        "name": "Electrical Input",
+        "direction": "input",
+        "signal_type": "electrical"
+      }
+    ],
+    "parameters": [
+      {
+        "key": "frequency_span",
+        "name": "Frequency Span",
+        "unit": "GHz",
+        "datatype": "double",
+        "default": 100.0,
+        "min": 0.1,
+        "max": 100000.0
+      },
+      {
+        "key": "resolution_bandwidth",
+        "name": "Resolution Bandwidth",
+        "unit": "MHz",
+        "datatype": "double",
+        "default": 10.0,
+        "min": 0.001,
+        "max": 10000.0
+      }
+    ],
+    "simulation_model": "ElectricalSpectrumAnalyzerModel"
+  }
+]
+

@@ -1,0 +1,37 @@
+<RCC>
+    <qresource prefix="/">
+        <!-- Component definitions -->
+        <file>data/components.json</file>
+
+        <!-- Optical sources -->
+        <file>icons/laser.png</file>
+
+        <!-- Optical passive components -->
+        <file>icons/optical_fiber.png</file>
+        <file>icons/optical_splitter.png</file>
+
+        <!-- Modulators -->
+        <file>icons/eom.png</file>
+
+        <!-- Detectors -->
+        <file>icons/photodetector.png</file>
+
+        <!-- Filters -->
+        <file>icons/bpf.png</file>
+        <file>icons/lpf.png</file>
+        <file>icons/hpf.png</file>
+
+        <!-- Amplifiers -->
+        <file>icons/amplifier.png</file>
+
+        <!-- Signal generators -->
+        <file>icons/pulse_generator.png</file>
+        <file>icons/sine_generator.png</file>
+
+        <!-- Instruments -->
+        <file>icons/osa.png</file>
+        <file>icons/optical_scope.png</file>
+        <file>icons/esa.png</file>
+        <file>icons/electrical_scope.png</file>
+    </qresource>
+</RCC>
