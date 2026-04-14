@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.20)
 project(PhotonicsCAD)
 
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+
 add_subdirectory(app)
 add_subdirectory(ui)
 add_subdirectory(component_library)

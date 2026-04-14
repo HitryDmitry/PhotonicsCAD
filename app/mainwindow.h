@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QGraphicsScene>
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
@@ -17,7 +18,11 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow() override;
 
+public slots:
+    void onComponentDropped(const QString &type, const QPointF &pos);
+
 private:
     Ui::MainWindow *ui;
+    QGraphicsScene *m_scene;
 };
 #endif // MAINWINDOW_H

@@ -5,9 +5,7 @@ project(
   VERSION 0.1
   LANGUAGES CXX)
 
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
+# set(CMAKE_AUTOUIC ON) set(CMAKE_AUTOMOC ON) set(CMAKE_AUTORCC ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -30,7 +28,7 @@ else()
 endif()
 
 target_link_libraries(CADapp PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
-                                     component_library)
+                                     component_library editor_lib ui_lib)
 
 set_target_properties(
   CADapp
