@@ -2,8 +2,8 @@
 #include "./ui_mainwindow.h"
 
 #include <QMetaMethod>
-#include "ComponentLibraryManager.h"
-#include "GraphicsComponentItem.h"
+#include "ComponentDefinition.h"
+#include "ComponentInstance.h"
 #include "GraphicsView.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -23,10 +23,9 @@ MainWindow::MainWindow(QWidget *parent)
     // Устанавливаем сцену в GraphicsView из ui
     ui->graphicsView->setScene(m_scene);
 
-    ComponentLibraryManager library;
-    library.loadFromJson(":/data/components.json");
+    componentLibrary.loadFromJson(":/data/components.json");
 
-    for (const auto &comp : library.getComponents()) {
+    for (const auto &comp : componentLibrary.getComponents()) {
         QListWidgetItem *item = new QListWidgetItem(QIcon(comp.iconPath), comp.name);
 
         item->setData(Qt::UserRole, comp.type);
@@ -53,13 +52,39 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::onComponentDropped(const QString &type, const QPointF &pos)
 {
-    auto item = new GraphicsComponentItem(type);
+    const ComponentDefinition *def = componentLibrary.getByType(type);
+
+    if (!def) {
+        qDebug() << "Can't get ComponentDefinition from componentLibrary by type.";
+    }
+
+    ComponentInstance *compInstance = new ComponentInstance(*def);
+
+    auto item = new GraphicsComponentItem(compInstance, def);
     item->setPos(pos);
 
     m_scene->addItem(item);
     ui->graphicsView->viewport()->update();
     ui->graphicsView->update();
     ui->graphicsView->show();
+}
+
+// void MainWindow::onComponentMoved(const QString &type, const QPointF &newPos)
+// {
+//     ui->graphicsView->viewport()->update();
+//     ui->graphicsView->update();
+//     ui->graphicsView->show();
+// }
+
+void MainWindow::onItemSelected(GraphicsComponentItem *item)
+{
+    ComponentInstance *instance = item->getInstance();
+
+    if (!instance) {
+        qDebug() << "Can't retrieve ComponentInstance from selected GraphicsComponentItem.";
+    }
+
+    qDebug() << "Position: " << instance->position;
 }
 
 MainWindow::~MainWindow()

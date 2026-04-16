@@ -10,6 +10,7 @@ public:
 
 signals:
     void componentDropped(const QString &type, const QPointF &pos);
+    // void componentMoved(const QString &type, const QPointF &newPos);
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event) override;

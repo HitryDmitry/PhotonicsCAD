@@ -27,8 +27,9 @@ else()
   endif()
 endif()
 
-target_link_libraries(CADapp PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
-                                     component_library editor_lib ui_lib)
+target_link_libraries(
+  CADapp PRIVATE Qt${QT_VERSION_MAJOR}::Widgets component_library editor_lib
+                 ui_lib domain_lib)
 
 set_target_properties(
   CADapp

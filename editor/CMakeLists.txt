@@ -15,4 +15,4 @@ add_library(
 target_include_directories(editor_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(
   editor_lib PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Widgets
-                     component_library)
+                     component_library domain_lib)

@@ -37,3 +37,14 @@ QVector<ComponentDefinition> ComponentLibraryManager::getComponents() const
 {
     return components;
 }
+
+const ComponentDefinition *ComponentLibraryManager::getByType(const QString &type) const
+{
+    for (const auto &comp : components) {
+        if (comp.type == type) {
+            return &comp;
+        }
+    }
+
+    return nullptr;
+}
