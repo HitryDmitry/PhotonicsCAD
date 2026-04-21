@@ -1,6 +1,7 @@
 #pragma once
 #include <QMap>
 #include <QString>
+#include <QVariant>
 
 struct ComponentDefinition
 {
@@ -8,5 +9,5 @@ struct ComponentDefinition
     QString name;
     QString iconPath;
     int pins;
-    QMap<QString, QString> parameters;
+    QVector<QMap<QString, QVariant>> parameters;
 };

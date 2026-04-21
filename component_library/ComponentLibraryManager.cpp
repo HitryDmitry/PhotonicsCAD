@@ -1,4 +1,5 @@
 #include "ComponentLibraryManager.h"
+#include <QDebug>
 #include <QFile>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -23,9 +24,20 @@ bool ComponentLibraryManager::loadFromJson(const QString &path)
         comp.iconPath = obj["icon"].toString();
         comp.pins = obj["pins"].toInt();
 
-        QJsonObject params = obj["parameters"].toObject();
-        for (auto key : params.keys())
-            comp.parameters[key] = params[key].toString();
+        QJsonArray params = obj["parameters"].toArray();
+
+        for (auto param : params) {
+            QMap<QString, QVariant> parameter;
+            parameter["key"] = param.toObject()["key"].toString();
+            parameter["name"] = param.toObject()["name"].toString();
+            parameter["unit"] = param.toObject()["unit"].toString();
+            parameter["datatype"] = param.toObject()["datatype"].toString();
+            parameter["default"] = param.toObject()["default"].toDouble();
+            parameter["min"] = param.toObject()["min"].toDouble();
+            parameter["max"] = param.toObject()["max"].toDouble();
+
+            comp.parameters.append(parameter);
+        }
 
         components.push_back(comp);
     }

@@ -5,6 +5,7 @@
 class ComponentLibraryManager
 {
 public:
+    void extracted(QJsonArray &arr);
     bool loadFromJson(const QString &path);
     QVector<ComponentDefinition> getComponents() const;
     const ComponentDefinition *getByType(const QString &type) const;
