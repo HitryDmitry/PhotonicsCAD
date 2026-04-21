@@ -24,15 +24,6 @@
         "max": 1000.0
       },
       {
-        "key": "wavelength",
-        "name": "Wavelength",
-        "unit": "nm",
-        "datatype": "double",
-        "default": 1550.0,
-        "min": 200.0,
-        "max": 3000.0
-      },
-      {
         "key": "frequency",
         "name": "Frequency",
         "unit": "GHz",
