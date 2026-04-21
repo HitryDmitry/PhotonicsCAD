@@ -16,7 +16,7 @@ GraphicsComponentItem::GraphicsComponentItem(ComponentInstance *instance,
 QVariant GraphicsComponentItem::itemChange(GraphicsItemChange change, const QVariant &value)
 {
     if (instance == nullptr) {
-        qDebug() << "Instance is nullptr!!";
+        qDebug() << "Instance is nullptr!";
     }
     if (change == ItemPositionChange && instance) {
         instance->position = value.toPointF();
@@ -33,4 +33,10 @@ QVariant GraphicsComponentItem::itemChange(GraphicsItemChange change, const QVar
 ComponentInstance *GraphicsComponentItem::getInstance()
 {
     return instance;
+}
+
+void GraphicsComponentItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
+{
+    emit doubleClicked(instance);
+    QGraphicsPixmapItem::mouseDoubleClickEvent(event);
 }

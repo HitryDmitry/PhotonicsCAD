@@ -2,6 +2,7 @@
 #include <QGraphicsPixmapItem>
 #include <QString>
 #include <QVariant>
+#include <QVector>
 
 #include "ComponentDefinition.h"
 
@@ -11,5 +12,5 @@ public:
     ComponentInstance(const ComponentDefinition &def);
     QString type;
     QPointF position;
-    QMap<QString, QVariant> parameters;
+    QVector<QMap<QString, QVariant>> parameters;
 };

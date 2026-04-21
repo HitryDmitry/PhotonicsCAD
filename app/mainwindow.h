@@ -24,6 +24,7 @@ public:
 
 public slots:
     void onComponentDropped(const QString &type, const QPointF &pos);
+    void onComponentDoubleClicked(ComponentInstance *instance);
     // void onComponentMoved(const QString &type, const QPointF &newPos);
 
 private:
