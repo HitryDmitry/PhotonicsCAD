@@ -5,6 +5,7 @@
 #include <QVector>
 
 #include "ComponentDefinition.h"
+#include "PinInstance.h"
 
 class ComponentInstance
 {
@@ -13,4 +14,5 @@ public:
     QString type;
     QPointF position;
     QVector<QMap<QString, QVariant>> parameters;
+    QVector<PinInstance *> pins;
 };
