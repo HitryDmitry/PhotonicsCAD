@@ -9,8 +9,15 @@ set(SOURCES_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 add_library(
   editor_lib SHARED
   ${SOURCES_DIR}/GraphicsComponentItem.cpp
-  ${SOURCES_DIR}/GraphicsComponentItem.h ${SOURCES_DIR}/GraphicsView.cpp
-  ${SOURCES_DIR}/GraphicsView.h)
+  ${SOURCES_DIR}/GraphicsComponentItem.h
+  ${SOURCES_DIR}/GraphicsView.cpp
+  ${SOURCES_DIR}/GraphicsView.h
+  ${SOURCES_DIR}/PinItem.cpp
+  ${SOURCES_DIR}/PinItem.h
+  ${SOURCES_DIR}/WireItem.cpp
+  ${SOURCES_DIR}/WireItem.h
+  ${SOURCES_DIR}/CircuitScene.cpp
+  ${SOURCES_DIR}/CircuitScene.h)
 
 target_include_directories(editor_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(

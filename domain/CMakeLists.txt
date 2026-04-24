@@ -8,8 +8,13 @@ set(SOURCES_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_library(
   domain_lib SHARED
-  ${SOURCES_DIR}/ComponentInstance.cpp ${SOURCES_DIR}/ComponentInstance.h
-  ${SOURCES_DIR}/Circuit.h ${SOURCES_DIR}/Circuit.cpp)
+  ${SOURCES_DIR}/ComponentInstance.cpp
+  ${SOURCES_DIR}/ComponentInstance.h
+  ${SOURCES_DIR}/Circuit.h
+  ${SOURCES_DIR}/Circuit.cpp
+  ${SOURCES_DIR}/PinInstance.cpp
+  ${SOURCES_DIR}/PinInstance.h
+  ${SOURCES_DIR}/Wire.h)
 
 target_include_directories(domain_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(
