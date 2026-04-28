@@ -22,10 +22,19 @@ bool ComponentLibraryManager::loadFromJson(const QString &path)
         comp.type = obj["type"].toString();
         comp.name = obj["name"].toString();
         comp.iconPath = obj["icon"].toString();
-        comp.pins = obj["pins"].toInt();
+
+        QJsonArray pins = obj["pins"].toArray();
+        for (auto pinIter : pins) {
+            QMap<QString, QVariant> pin;
+            pin["id"] = pinIter.toObject()["id"].toString();
+            pin["name"] = pinIter.toObject()["name"].toString();
+            pin["direction"] = pinIter.toObject()["direction"].toString();
+            pin["signal_type"] = pinIter.toObject()["signal_type"].toString();
+
+            comp.pins.append(pin);
+        }
 
         QJsonArray params = obj["parameters"].toArray();
-
         for (auto param : params) {
             QMap<QString, QVariant> parameter;
             parameter["key"] = param.toObject()["key"].toString();

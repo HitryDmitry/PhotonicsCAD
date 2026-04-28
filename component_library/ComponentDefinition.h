@@ -8,6 +8,6 @@ struct ComponentDefinition
     QString type;
     QString name;
     QString iconPath;
-    int pins;
+    QVector<QMap<QString, QVariant>> pins;
     QVector<QMap<QString, QVariant>> parameters;
 };
