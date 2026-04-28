@@ -6,7 +6,7 @@
 WireItem::WireItem(PinItem *startPin)
     : startPin(startPin)
 {
-    setPen(QPen(Qt::black, 2));
+    setPen(QPen(Qt::black, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
 }
 
 void WireItem::setEndPoint(const QPointF &pos)
@@ -28,11 +28,20 @@ void WireItem::updatePath()
 
     QPainterPath path(p1);
 
-    // простая кривая (как в node editors)
-    QPointF ctrl1 = p1 + QPointF(50, 0);
-    QPointF ctrl2 = p2 + QPointF(-50, 0);
+    qreal dx = p2.x() - p1.x();
+    qreal dy = p2.y() - p1.y();
 
-    path.cubicTo(ctrl1, ctrl2, p2);
+    if (std::abs(dx) > std::abs(dy)) {
+        // сначала по X
+        QPointF mid(p2.x(), p1.y());
+        path.lineTo(mid);
+    } else {
+        // сначала по Y
+        QPointF mid(p1.x(), p2.y());
+        path.lineTo(mid);
+    }
+
+    path.lineTo(p2);
 
     setPath(path);
 }

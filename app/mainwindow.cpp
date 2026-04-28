@@ -2,6 +2,7 @@
 #include "./ui_mainwindow.h"
 
 #include <QMetaMethod>
+#include "CircuitScene.h"
 #include "ComponentDefinition.h"
 #include "ComponentInstance.h"
 #include "GraphicsView.h"
@@ -20,7 +21,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->graphicsView->setDragMode(QGraphicsView::RubberBandDrag);
 
     // Создаем сцену
-    m_scene = new QGraphicsScene(this);
+    m_scene = new CircuitScene(this);
     // Устанавливаем сцену в GraphicsView из ui
     ui->graphicsView->setScene(m_scene);
 
@@ -57,6 +58,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::onComponentDropped(const QString &type, const QPointF &pos)
 {
+    // CircuitScene *circuit = new CircuitScene(m_scene);
     const ComponentDefinition *def = componentLibrary.getByType(type);
 
     if (!def) {
@@ -70,6 +72,7 @@ void MainWindow::onComponentDropped(const QString &type, const QPointF &pos)
     }
 
     auto item = new GraphicsComponentItem(compInstance, def);
+
     // connect(item,
     //         &GraphicsComponentItem::doubleClicked,
     //         this,
