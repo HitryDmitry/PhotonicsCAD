@@ -12,6 +12,7 @@ public:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
     ComponentInstance *getInstance();
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
+    void createPins(const ComponentDefinition *def);
 
     QString componentType;
     ComponentInstance *instance;

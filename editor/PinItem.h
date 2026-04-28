@@ -1,5 +1,6 @@
 #pragma once
 #include <QGraphicsEllipseItem>
+#include <QGraphicsItem>
 
 class PinInstance;
 
@@ -12,6 +13,8 @@ public:
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
 
 private:
     PinInstance *pin;

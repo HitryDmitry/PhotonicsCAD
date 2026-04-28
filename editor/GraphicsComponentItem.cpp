@@ -1,6 +1,7 @@
 #include "GraphicsComponentItem.h"
 #include <QDebug>
 #include <QPixmap>
+#include "PinItem.h"
 
 GraphicsComponentItem::GraphicsComponentItem(ComponentInstance *instance,
                                              const ComponentDefinition *def)
@@ -11,6 +12,10 @@ GraphicsComponentItem::GraphicsComponentItem(ComponentInstance *instance,
 
     componentType = def->type;
     setFlags(ItemIsMovable | ItemIsSelectable);
+    setFlag(ItemSendsGeometryChanges);
+    setCacheMode(DeviceCoordinateCache);
+
+    createPins(def);
 }
 
 QVariant GraphicsComponentItem::itemChange(GraphicsItemChange change, const QVariant &value)
@@ -39,4 +44,24 @@ void GraphicsComponentItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *even
 {
     emit doubleClicked(instance);
     QGraphicsPixmapItem::mouseDoubleClickEvent(event);
+}
+
+void GraphicsComponentItem::createPins(const ComponentDefinition *def)
+{
+    int count = def->pins.size();
+
+    for (int i = 0; i < count; i++) {
+        auto pinInst = new PinInstance();
+        pinInst->component = instance;
+
+        instance->pins.push_back(pinInst);
+
+        auto pinItem = new PinItem(pinInst, this);
+
+        // размещаем слева/справа
+        if (i % 2 == 0)
+            pinItem->setPos(80, i * 100);
+        else
+            pinItem->setPos(700, i * 100);
+    }
 }
