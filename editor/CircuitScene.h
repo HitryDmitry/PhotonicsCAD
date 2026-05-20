@@ -1,4 +1,5 @@
 #include <QGraphicsScene>
+#include <QVector>
 
 class WireItem;
 class PinItem;
@@ -11,13 +12,20 @@ class CircuitScene : public QGraphicsScene
 public:
     explicit CircuitScene(QObject *parent = nullptr);
 
+    bool canConnect(PinInstance *a, PinInstance *b);
+    void addItem(QGraphicsItem *item);
+    void connectPinToSlots(PinItem *pinToConnect);
+
+public slots:
+    void onConnectionStarted(PinItem *pin);
+    void onConnectionCompleted(PinItem *from, PinItem *to);
+    void onCoonnectionCancelled();
+
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
-    bool canConnect(PinInstance *a, PinInstance *b);
 
 private:
-    WireItem *currentWire = nullptr;
+    WireItem *tempWire = nullptr;
     PinItem *startPin = nullptr;
 };

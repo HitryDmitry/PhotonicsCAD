@@ -8,10 +8,11 @@ GraphicsComponentItem::GraphicsComponentItem(ComponentInstance *instance,
     : instance(instance)
 {
     setPixmap(QPixmap(def->iconPath));
-    setScale(0.5);
+    setScale(0.25);
 
     componentType = def->type;
-    setFlags(ItemIsMovable | ItemIsSelectable);
+    setFlag(ItemIsMovable);
+    setFlag(ItemIsSelectable);
     setFlag(ItemSendsGeometryChanges);
     setCacheMode(DeviceCoordinateCache);
 
@@ -20,24 +21,17 @@ GraphicsComponentItem::GraphicsComponentItem(ComponentInstance *instance,
 
 QVariant GraphicsComponentItem::itemChange(GraphicsItemChange change, const QVariant &value)
 {
-    if (instance == nullptr) {
-        qDebug() << "Instance is nullptr!";
-    }
-    if (change == ItemPositionChange && instance) {
-        instance->position = value.toPointF();
-    }
-
-    else if (change == ItemScenePositionHasChanged && instance) {
-        qDebug() << "New position: " << instance->position;
-        qDebug() << "Current position: " << pos();
-    }
-
     return QGraphicsPixmapItem::itemChange(change, value);
 }
 
 ComponentInstance *GraphicsComponentItem::getInstance()
 {
     return instance;
+}
+
+QVector<PinItem *> GraphicsComponentItem::getPins()
+{
+    return pins;
 }
 
 void GraphicsComponentItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
@@ -51,17 +45,18 @@ void GraphicsComponentItem::createPins(const ComponentDefinition *def)
     int count = def->pins.size();
 
     for (int i = 0; i < count; i++) {
-        auto pinInst = new PinInstance();
+        auto pinInst = new PinInstance(def->pins.at(i));
         pinInst->component = instance;
 
         instance->pins.push_back(pinInst);
 
         auto pinItem = new PinItem(pinInst, this);
 
-        // размещаем слева/справа
+        pins.push_back(pinItem);
+
         if (i % 2 == 0)
-            pinItem->setPos(80, i * 100);
+            pinItem->setPos(-100, i * 100);
         else
-            pinItem->setPos(700, i * 100);
+            pinItem->setPos(900, i * 100);
     }
 }

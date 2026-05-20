@@ -1,6 +1,6 @@
 #include "CircuitScene.h"
 #include <QGraphicsSceneMouseEvent>
-#include "PinInstance.h"
+#include "GraphicsComponentItem.h"
 #include "PinItem.h"
 #include "WireItem.h"
 
@@ -8,53 +8,55 @@ CircuitScene::CircuitScene(QObject *parent)
     : QGraphicsScene(parent)
 {}
 
+void CircuitScene::onConnectionStarted(PinItem *pin)
+{
+    if (tempWire) {
+        onConnectionCompleted(startPin, pin);
+    } else {
+        startPin = pin;
+        tempWire = new WireItem(startPin);
+        tempWire->setZValue(-1); // Помещаем провод позади всех
+        addItem(tempWire);
+    }
+}
+
+void CircuitScene::onConnectionCompleted(PinItem *from, PinItem *to)
+{
+    if (from == to) {
+        onCoonnectionCancelled();
+    } else {
+        if (canConnect(from->getPin(), to->getPin())) {
+            tempWire->setEndPin(to);
+
+            tempWire = nullptr;
+            startPin = nullptr;
+        } else {
+            qDebug() << "Can't connect!!";
+        }
+    }
+}
+
+void CircuitScene::onCoonnectionCancelled()
+{
+    if (tempWire) {
+        qDebug() << "Connection cancelled, deleting tempWire!";
+        removeItem(tempWire);
+        delete tempWire;
+        tempWire = nullptr;
+    }
+}
+
 void CircuitScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    auto item = itemAt(event->scenePos(), QTransform());
-
-    auto pin = dynamic_cast<PinItem *>(item);
-
-    if (pin) {
-        startPin = pin;
-
-        currentWire = new WireItem(pin);
-        addItem(currentWire);
-        return;
-    }
-
     QGraphicsScene::mousePressEvent(event);
 }
 
 void CircuitScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (currentWire) {
-        currentWire->setEndPoint(event->scenePos());
-        return;
+    if (tempWire && startPin) {
+        tempWire->setEndPoint(event->scenePos());
     }
-
     QGraphicsScene::mouseMoveEvent(event);
-}
-
-void CircuitScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-{
-    if (!currentWire)
-        return;
-
-    auto item = itemAt(event->scenePos(), QTransform());
-    auto endPin = dynamic_cast<PinItem *>(item);
-
-    if (endPin && endPin != startPin) {
-        // TODO: проверка совместимости
-        currentWire->setEndPin(endPin);
-
-        // здесь создать Wire (domain)
-    } else {
-        removeItem(currentWire);
-        delete currentWire;
-    }
-
-    currentWire = nullptr;
-    startPin = nullptr;
 }
 
 bool CircuitScene::canConnect(PinInstance *a, PinInstance *b)
@@ -65,5 +67,33 @@ bool CircuitScene::canConnect(PinInstance *a, PinInstance *b)
     if (a->direction == b->direction)
         return false;
 
+    if (a->component == b->component)
+        return false;
+
     return true;
+}
+
+void CircuitScene::addItem(QGraphicsItem *item)
+{
+    QGraphicsScene::addItem(item);
+
+    if (auto *comp = qgraphicsitem_cast<GraphicsComponentItem *>(item)) {
+        for (auto *pin : comp->getPins()) {
+            connectPinToSlots(pin);
+        }
+    }
+}
+
+void CircuitScene::connectPinToSlots(PinItem *pinToConnect)
+{
+    connect(pinToConnect,
+            SIGNAL(connectionStarted(PinItem *)),
+            this,
+            SLOT(onConnectionStarted(PinItem *)));
+    connect(pinToConnect,
+            SIGNAL(connectionCompleted(PinItem *, PinItem *)),
+            this,
+            SLOT(onConnectionCompleted(PinItem *, PinItem *)));
+    connect(pinToConnect, SIGNAL(connectionCancelled()), this, SLOT(onCoonnectionCancelled()));
+    // connect(pinToConnect, , this, updateTempWire());
 }
