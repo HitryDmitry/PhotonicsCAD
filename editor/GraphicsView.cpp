@@ -9,6 +9,8 @@ GraphicsView::GraphicsView(QWidget *parent)
     : QGraphicsView(parent)
 {
     setAcceptDrops(true);
+    setMouseTracking(true);
+    setDragMode(QGraphicsView::RubberBandDrag);
 }
 
 void GraphicsView::dragEnterEvent(QDragEnterEvent *event)
