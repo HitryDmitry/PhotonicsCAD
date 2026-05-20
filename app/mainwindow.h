@@ -1,10 +1,11 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QGraphicsScene>
 #include <QMainWindow>
 #include "ComponentLibraryManager.h"
 #include "GraphicsComponentItem.h"
+
+class CircuitScene;
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -29,7 +30,7 @@ public slots:
 
 private:
     Ui::MainWindow *ui;
-    QGraphicsScene *m_scene;
+    CircuitScene *m_scene;
     ComponentLibraryManager componentLibrary;
 };
 #endif // MAINWINDOW_H

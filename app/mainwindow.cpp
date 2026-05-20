@@ -17,11 +17,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->listWidget->setDragEnabled(true);
     ui->listWidget->setDragDropMode(ComponentListWidget::DragOnly);
 
-    ui->graphicsView->setAcceptDrops(true);
-    ui->graphicsView->setDragMode(QGraphicsView::RubberBandDrag);
-
     // Создаем сцену
     m_scene = new CircuitScene(this);
+
     // Устанавливаем сцену в GraphicsView из ui
     ui->graphicsView->setScene(m_scene);
 
@@ -85,17 +83,7 @@ void MainWindow::onComponentDropped(const QString &type, const QPointF &pos)
     item->setPos(pos);
 
     m_scene->addItem(item);
-    ui->graphicsView->viewport()->update();
-    ui->graphicsView->update();
-    ui->graphicsView->show();
 }
-
-// void MainWindow::onComponentMoved(const QString &type, const QPointF &newPos)
-// {
-//     ui->graphicsView->viewport()->update();
-//     ui->graphicsView->update();
-//     ui->graphicsView->show();
-// }
 
 void MainWindow::onItemSelected(GraphicsComponentItem *item)
 {
