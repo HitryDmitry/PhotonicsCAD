@@ -4,6 +4,6 @@
 class Circuit
 {
 public:
-    QVector<ComponentInstance *> components;
-    QVector<Wire *> wires;
+    std::vector<std::unique_ptr<ComponentInstance>> components;
+    std::vector<std::unique_ptr<Wire>> wires;
 };
