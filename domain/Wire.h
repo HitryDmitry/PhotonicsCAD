@@ -22,6 +22,13 @@ public:
         return qHash(first, seed) ^ (qHash(second, seed) << 1);
     }
 
+    friend size_t qHash(Wire *wire, size_t seed = 0)
+    {
+        // Приводим к каноническому виду: меньший указатель первым
+        auto [first, second] = std::minmax(wire->from, wire->to);
+        return qHash(first, seed) ^ (qHash(second, seed) << 1);
+    }
+
     PinInstance *from;
     PinInstance *to;
 };
