@@ -25,8 +25,11 @@ void CircuitScene::onConnectionCompleted(PinItem *from, PinItem *to)
     if (from == to) {
         onCoonnectionCancelled();
     } else {
-        if (canConnect(from->getPin(), to->getPin())) {
+        auto wire = getWireFromPinItemPtrs(from, to);
+        if (canConnect(from->getPin(), to->getPin()) && !wireExists(wire)) {
             tempWire->setEndPin(to);
+
+            circuitWires.insert(wire);
 
             tempWire = nullptr;
             startPin = nullptr;
@@ -96,4 +99,18 @@ void CircuitScene::connectPinToSlots(PinItem *pinToConnect)
             SLOT(onConnectionCompleted(PinItem *, PinItem *)));
     connect(pinToConnect, SIGNAL(connectionCancelled()), this, SLOT(onCoonnectionCancelled()));
     // connect(pinToConnect, , this, updateTempWire());
+}
+
+Wire CircuitScene::getWireFromPinItemPtrs(PinItem *startPin, PinItem *endPin)
+{
+    if (!endPin) {
+        qDebug() << "Can't make wire from wire item, end pin is not defined; return nullptr.";
+        return nullptr;
+    }
+    return Wire(startPin->getPin(), endPin->getPin());
+}
+
+bool CircuitScene::wireExists(Wire wire)
+{
+    return circuitWires.contains(wire);
 }

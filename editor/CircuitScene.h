@@ -1,5 +1,6 @@
 #include <QGraphicsScene>
 #include <QVector>
+#include "Wire.h"
 
 class WireItem;
 class PinItem;
@@ -15,6 +16,8 @@ public:
     bool canConnect(PinInstance *a, PinInstance *b);
     void addItem(QGraphicsItem *item);
     void connectPinToSlots(PinItem *pinToConnect);
+    Wire getWireFromPinItemPtrs(PinItem *startPin, PinItem *endPin);
+    bool wireExists(Wire wire);
 
 public slots:
     void onConnectionStarted(PinItem *pin);
@@ -28,4 +31,6 @@ protected:
 private:
     WireItem *tempWire = nullptr;
     PinItem *startPin = nullptr;
+
+    QSet<Wire> circuitWires;
 };
