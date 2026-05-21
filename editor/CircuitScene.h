@@ -5,6 +5,7 @@
 class WireItem;
 class PinItem;
 class PinInstance;
+class Circuit;
 
 class CircuitScene : public QGraphicsScene
 {
@@ -18,6 +19,7 @@ public:
     void connectPinToSlots(PinItem *pinToConnect);
     Wire getWireFromPinItemPtrs(PinItem *startPin, PinItem *endPin);
     bool wireExists(Wire wire);
+    void setCircuit(Circuit *circuit);
 
 public slots:
     void onConnectionStarted(PinItem *pin);
@@ -32,5 +34,5 @@ private:
     WireItem *tempWire = nullptr;
     PinItem *startPin = nullptr;
 
-    QSet<Wire> circuitWires;
+    Circuit *curcuit = nullptr;
 };

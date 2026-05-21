@@ -118,3 +118,8 @@ bool CircuitScene::wireExists(Wire wire)
 {
     return circuitWires.contains(wire);
 }
+
+void CircuitScene::setCircuit(Circuit *circuit)
+{
+    circuit = circuit;
+}
