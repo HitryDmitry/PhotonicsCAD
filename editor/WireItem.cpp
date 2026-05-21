@@ -45,3 +45,18 @@ void WireItem::updatePath()
 
     setPath(path);
 }
+
+PinItem *WireItem::getStartPin()
+{
+    return startPin;
+}
+
+PinItem *WireItem::getEndPin()
+{
+    if (!endPin) {
+        qDebug() << "End pin is not defined!";
+        return nullptr;
+    }
+
+    return endPin;
+}

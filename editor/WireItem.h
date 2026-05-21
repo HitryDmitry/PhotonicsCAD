@@ -1,5 +1,6 @@
 #pragma once
 #include <QGraphicsPathItem>
+#include <QPair>
 
 class PinItem;
 
@@ -10,8 +11,10 @@ public:
 
     void setEndPoint(const QPointF &pos);
     void setEndPin(PinItem *pin);
-
     void updatePath();
+
+    PinItem *getStartPin();
+    PinItem *getEndPin();
 
 private:
     PinItem *startPin;
