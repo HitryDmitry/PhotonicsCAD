@@ -1,6 +1,5 @@
 #pragma once
 #include <QGraphicsPathItem>
-#include <QPair>
 
 class PinItem;
 
