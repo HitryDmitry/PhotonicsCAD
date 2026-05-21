@@ -1,6 +1,7 @@
 #include "PinItem.h"
 #include <QBrush>
 #include "PinInstance.h"
+#include "WireItem.h"
 #include <qgraphicsscene.h>
 #include <qgraphicssceneevent.h>
 #include <qpen.h>

@@ -1,8 +1,10 @@
 #pragma once
 #include <QGraphicsEllipseItem>
 #include <QGraphicsItem>
+#include <QSet>
 
 class PinInstance;
+class WireItem;
 
 class PinItem : public QObject, public QGraphicsEllipseItem
 {
@@ -21,4 +23,5 @@ protected:
 
 private:
     PinInstance *pin;
+    QSet<WireItem *> wireItems;
 };
