@@ -6,6 +6,7 @@
 #include "GraphicsComponentItem.h"
 
 class CircuitScene;
+class Circuit;
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -32,5 +33,6 @@ private:
     Ui::MainWindow *ui;
     CircuitScene *m_scene;
     ComponentLibraryManager componentLibrary;
+    std::unique_ptr<Circuit> currentCircuit;
 };
 #endif // MAINWINDOW_H

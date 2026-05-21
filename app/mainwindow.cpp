@@ -2,6 +2,7 @@
 #include "./ui_mainwindow.h"
 
 #include <QMetaMethod>
+#include "Circuit.h"
 #include "CircuitScene.h"
 #include "ComponentDefinition.h"
 #include "ComponentInstance.h"
@@ -17,12 +18,19 @@ MainWindow::MainWindow(QWidget *parent)
     ui->listWidget->setDragEnabled(true);
     ui->listWidget->setDragDropMode(ComponentListWidget::DragOnly);
 
+    // Создаем схему
+    currentCircuit = std::make_unique<Circuit>();
+
     // Создаем сцену
     m_scene = new CircuitScene(this);
+
+    // Передаем указатель на схему в сцену-редактор
+    m_scene->setCircuit(currentCircuit.get());
 
     // Устанавливаем сцену в GraphicsView из ui
     ui->graphicsView->setScene(m_scene);
 
+    // Загрузка стандартных компонентов
     if (componentLibrary.loadFromJson(":/data/components.json")) {
         qDebug() << "Components successfully loaded.";
     } else {
@@ -63,13 +71,19 @@ void MainWindow::onComponentDropped(const QString &type, const QPointF &pos)
         qDebug() << "Can't get ComponentDefinition from componentLibrary by type.";
     }
 
-    ComponentInstance *compInstance = new ComponentInstance(*def);
+    auto component = std::make_unique<ComponentInstance>(*def);
 
-    if (compInstance == nullptr) {
+    component->type = type;
+    component->position = pos;
+    currentCircuit->components.push_back(std::move(component));
+
+    ComponentInstance *componentPtr = component.get();
+
+    if (componentPtr == nullptr) {
         qDebug() << "ComponentInstance is nullptr!";
     }
 
-    auto item = new GraphicsComponentItem(compInstance, def);
+    auto item = new GraphicsComponentItem(componentPtr, def);
 
     // connect(item,
     //         &GraphicsComponentItem::doubleClicked,
