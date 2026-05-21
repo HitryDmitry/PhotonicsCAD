@@ -17,10 +17,9 @@ public:
 
     friend size_t qHash(const Wire &wire, size_t seed = 0)
     {
-        // Комбинирование хэшей с перемешиванием для лучшего распределения
-        size_t h1 = qHash(wire.from, seed);
-        size_t h2 = qHash(wire.to, seed);
-        return h1 ^ h2;
+        // Приводим к каноническому виду: меньший указатель первым
+        auto [first, second] = std::minmax(wire.from, wire.to);
+        return qHash(first, seed) ^ (qHash(second, seed) << 1);
     }
 
     PinInstance *from;
