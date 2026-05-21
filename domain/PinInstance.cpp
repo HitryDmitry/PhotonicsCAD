@@ -12,3 +12,8 @@ QSet<Wire *> PinInstance::getWires()
 {
     return wires;
 }
+
+void PinInstance::addWirePtr(Wire *wirePtr)
+{
+    wires.insert(wirePtr);
+}

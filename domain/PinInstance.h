@@ -13,6 +13,7 @@ public:
     PinInstance(const QMap<QString, QVariant> &pinDef);
 
     QSet<Wire *> getWires();
+    void addWirePtr(Wire *);
 
     QString id;
     QString signalType; // "optical" / "electrical"
@@ -20,5 +21,6 @@ public:
 
     ComponentInstance *component = nullptr;
 
+private:
     QSet<Wire *> wires;
 };

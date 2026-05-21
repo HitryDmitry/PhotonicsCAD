@@ -29,7 +29,11 @@ void CircuitScene::onConnectionCompleted(PinItem *from, PinItem *to)
         if (canConnect(from->getPin(), to->getPin()) && !wireExists(wire)) {
             tempWire->setEndPin(to);
 
-            circuitWires.insert(wire);
+            from->addWire(tempWire);
+            from->getPin()->addWirePtr(&wire);
+
+            to->addWire(tempWire);
+            to->getPin()->addWirePtr(&wire);
 
             tempWire = nullptr;
             startPin = nullptr;

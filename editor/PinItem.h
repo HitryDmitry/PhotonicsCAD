@@ -12,6 +12,7 @@ class PinItem : public QObject, public QGraphicsEllipseItem
 public:
     PinItem(PinInstance *pin, QGraphicsItem *parent = nullptr);
     PinInstance *getPin() const;
+    void addWire(WireItem *);
 
 signals:
     void connectionStarted(PinItem *pin);
