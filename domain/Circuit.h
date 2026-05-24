@@ -1,39 +1,6 @@
 #include "ComponentInstance.h"
 #include "Wire.h"
 
-// struct UniquePtrWireHash
-// {
-//     size_t operator()(const std::unique_ptr<Wire> &w) const
-//     {
-//         auto [first, second] = std::minmax(w->from, w->to);
-//         return std::hash<PinInstance *>{}(first) ^ (std::hash<PinInstance *>{}(second) << 1);
-//     }
-// };
-
-// struct UniquePtrWireEqual
-// {
-//     bool operator()(const std::unique_ptr<Wire> &a, const std::unique_ptr<Wire> &b) const
-//     {
-//         return (a->from == b->from && a->to == b->to) || (a->from == b->to && a->to == b->from);
-//     }
-// };
-
-struct WireHash
-{
-    size_t operator()(const Wire &w) const
-    {
-        auto [first, second] = std::minmax(w.from, w.to);
-        return std::hash<PinInstance *>{}(first) ^ (std::hash<PinInstance *>{}(second) << 1);
-    }
-};
-
-struct WireEqual
-{
-    bool operator()(const Wire &a, const Wire &b) const
-    {
-        return (a.from == b.from && a.to == b.to) || (a.from == b.to && a.to == b.from);
-    }
-};
 
 class Circuit
 {
@@ -70,5 +37,5 @@ public:
     size_t wireCount() const { return wires.size(); }
 
     std::vector<std::unique_ptr<ComponentInstance>> components;
-    std::unordered_set<Wire, WireHash, WireEqual> wires;
+    std::vector<std::unique_ptr<Wire>> wires;
 };

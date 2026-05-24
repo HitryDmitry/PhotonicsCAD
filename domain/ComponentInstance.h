@@ -14,5 +14,5 @@ public:
     QString type;
     QPointF position;
     QVector<QMap<QString, QVariant>> parameters;
-    QVector<PinInstance *> pins;
+    std::vector<std::unique_ptr<PinInstance>> pins;
 };
