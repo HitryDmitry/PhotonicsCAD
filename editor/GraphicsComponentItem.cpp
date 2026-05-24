@@ -45,12 +45,14 @@ void GraphicsComponentItem::createPins(const ComponentDefinition *def)
     int count = def->pins.size();
 
     for (int i = 0; i < count; i++) {
-        auto pinInst = new PinInstance(def->pins.at(i));
+        auto pinInst = std::make_unique<PinInstance>(def->pins.at(i));
         pinInst->component = instance;
 
-        instance->pins.push_back(pinInst);
+        PinInstance *pinPtr = pinInst.get();
 
-        auto pinItem = new PinItem(pinInst, this);
+        instance->pins.push_back(std::move(pinInst));
+
+        auto pinItem = new PinItem(pinPtr, this);
 
         pins.push_back(pinItem);
 
