@@ -13,6 +13,7 @@ public:
     PinItem(PinInstance *pin, QGraphicsItem *parent = nullptr);
     PinInstance *getPin() const;
     void addWire(WireItem *);
+    QSet<WireItem *> getWireItems();
 
 signals:
     void connectionStarted(PinItem *pin);

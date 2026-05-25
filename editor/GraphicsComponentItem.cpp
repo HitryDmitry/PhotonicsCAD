@@ -2,6 +2,7 @@
 #include <QDebug>
 #include <QPixmap>
 #include "PinItem.h"
+#include "WireItem.h"
 
 GraphicsComponentItem::GraphicsComponentItem(ComponentInstance *instance,
                                              const ComponentDefinition *def)
@@ -21,6 +22,11 @@ GraphicsComponentItem::GraphicsComponentItem(ComponentInstance *instance,
 
 QVariant GraphicsComponentItem::itemChange(GraphicsItemChange change, const QVariant &value)
 {
+    for (auto pinItemIter : pins) {
+        for (auto wireItemIter : pinItemIter->getWireItems()) {
+            wireItemIter->updatePath();
+        }
+    }
     return QGraphicsPixmapItem::itemChange(change, value);
 }
 

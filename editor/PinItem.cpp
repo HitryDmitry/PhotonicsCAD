@@ -31,6 +31,11 @@ void PinItem::addWire(WireItem *wire)
     wireItems.insert(wire);
 }
 
+QSet<WireItem *> PinItem::getWireItems()
+{
+    return wireItems;
+}
+
 void PinItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     emit connectionStarted(this);
