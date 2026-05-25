@@ -31,7 +31,14 @@ void WireItem::updatePath()
     qreal dx = p2.x() - p1.x();
     qreal dy = p2.y() - p1.y();
 
-    if (std::abs(dx) > std::abs(dy)) {
+    if (!dx) {
+        plotNormalToX = false;
+    }
+    if (!dy) {
+        plotNormalToX = true;
+    }
+
+    if (plotNormalToX) {
         // сначала по X
         QPointF mid(p2.x(), p1.y());
         path.lineTo(mid);

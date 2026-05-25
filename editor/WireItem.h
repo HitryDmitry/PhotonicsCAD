@@ -19,4 +19,6 @@ private:
     PinItem *startPin;
     PinItem *endPin = nullptr;
     QPointF tempEnd;
+
+    bool plotNormalToX = false;
 };
