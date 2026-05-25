@@ -17,8 +17,6 @@ public:
     bool canConnect(PinInstance *a, PinInstance *b);
     void addItem(QGraphicsItem *item);
     void connectPinToSlots(PinItem *pinToConnect);
-    Wire getWireFromPinItemPtrs(PinItem *startPin, PinItem *endPin);
-    bool wireExists(Wire wire);
     void setCircuit(Circuit *circuit);
 
 public slots:
@@ -34,5 +32,5 @@ private:
     WireItem *tempWire = nullptr;
     PinItem *startPin = nullptr;
 
-    Circuit *curcuit = nullptr;
+    Circuit *circuit = nullptr;
 };

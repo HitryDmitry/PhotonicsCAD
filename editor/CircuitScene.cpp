@@ -1,5 +1,6 @@
 #include "CircuitScene.h"
 #include <QGraphicsSceneMouseEvent>
+#include "Circuit.h"
 #include "GraphicsComponentItem.h"
 #include "PinItem.h"
 #include "WireItem.h"
@@ -25,15 +26,24 @@ void CircuitScene::onConnectionCompleted(PinItem *from, PinItem *to)
     if (from == to) {
         onCoonnectionCancelled();
     } else {
-        auto wire = getWireFromPinItemPtrs(from, to);
-        if (canConnect(from->getPin(), to->getPin()) && !wireExists(wire)) {
+        auto fromPin = from->getPin();
+        auto toPin = to->getPin();
+
+        WireKey key(fromPin, toPin);
+
+        if (canConnect(fromPin, toPin) && !circuit->wireIndex.contains(key)) {
             tempWire->setEndPin(to);
 
+            auto wire = std::make_unique<Wire>(fromPin, toPin);
+            auto wirePtr = wire.get();
+
             from->addWire(tempWire);
-            from->getPin()->addWirePtr(&wire);
+            fromPin->addWirePtr(wirePtr);
 
             to->addWire(tempWire);
-            to->getPin()->addWirePtr(&wire);
+            toPin->addWirePtr(wirePtr);
+
+            circuit->wireIndex.insert(key);
 
             tempWire = nullptr;
             startPin = nullptr;
@@ -105,21 +115,7 @@ void CircuitScene::connectPinToSlots(PinItem *pinToConnect)
     // connect(pinToConnect, , this, updateTempWire());
 }
 
-Wire CircuitScene::getWireFromPinItemPtrs(PinItem *startPin, PinItem *endPin)
+void CircuitScene::setCircuit(Circuit *newCircuit)
 {
-    if (!endPin) {
-        qDebug() << "Can't make wire from wire item, end pin is not defined; return nullptr.";
-        return nullptr;
-    }
-    return Wire(startPin->getPin(), endPin->getPin());
-}
-
-bool CircuitScene::wireExists(Wire wire)
-{
-    return circuitWires.contains(wire);
-}
-
-void CircuitScene::setCircuit(Circuit *circuit)
-{
-    circuit = circuit;
+    circuit = newCircuit;
 }
