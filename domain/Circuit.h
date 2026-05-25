@@ -1,6 +1,5 @@
 #include "ComponentInstance.h"
 #include "Wire.h"
-#include <algorithm>
 #include <memory>
 
 struct WireKey
