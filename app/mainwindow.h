@@ -24,6 +24,12 @@ public:
 
     void onItemSelected(GraphicsComponentItem *item);
 
+protected:
+    void keyPressEvent(QKeyEvent *event) override;
+
+signals:
+    void escButtonPressed();
+
 public slots:
     void onComponentDropped(const QString &type, const QPointF &pos);
     void onComponentDoubleClicked(ComponentInstance *instance);

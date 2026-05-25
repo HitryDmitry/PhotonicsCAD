@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 
+#include <QKeyEvent>
 #include <QMetaMethod>
 #include "Circuit.h"
 #include "CircuitScene.h"
@@ -23,6 +24,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Создаем сцену
     m_scene = new CircuitScene(this);
+
+    // Обработка нажатия Escape - удаление провода
+    connect(this, SIGNAL(escButtonPressed()), m_scene, SLOT(onEscapeButton()));
 
     // Передаем указатель на схему в сцену-редактор
     m_scene->setCircuit(currentCircuit.get());
@@ -107,6 +111,15 @@ void MainWindow::onItemSelected(GraphicsComponentItem *item)
     }
 
     qDebug() << "Position: " << instance->position;
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Escape) {
+        emit escButtonPressed();
+    } else {
+        QWidget::keyPressEvent(event);
+    }
 }
 
 void MainWindow::onComponentDoubleClicked(ComponentInstance *instance)

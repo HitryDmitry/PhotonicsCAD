@@ -24,7 +24,7 @@ void CircuitScene::onConnectionStarted(PinItem *pin)
 void CircuitScene::onConnectionCompleted(PinItem *from, PinItem *to)
 {
     if (from == to) {
-        onCoonnectionCancelled();
+        onConnectionCancelled();
     } else {
         auto fromPin = from->getPin();
         auto toPin = to->getPin();
@@ -53,7 +53,7 @@ void CircuitScene::onConnectionCompleted(PinItem *from, PinItem *to)
     }
 }
 
-void CircuitScene::onCoonnectionCancelled()
+void CircuitScene::onConnectionCancelled()
 {
     if (tempWire) {
         qDebug() << "Connection cancelled, deleting tempWire!";
@@ -61,6 +61,11 @@ void CircuitScene::onCoonnectionCancelled()
         delete tempWire;
         tempWire = nullptr;
     }
+}
+
+void CircuitScene::onEscapeButton()
+{
+    onConnectionCancelled();
 }
 
 void CircuitScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
@@ -111,7 +116,7 @@ void CircuitScene::connectPinToSlots(PinItem *pinToConnect)
             SIGNAL(connectionCompleted(PinItem *, PinItem *)),
             this,
             SLOT(onConnectionCompleted(PinItem *, PinItem *)));
-    connect(pinToConnect, SIGNAL(connectionCancelled()), this, SLOT(onCoonnectionCancelled()));
+    connect(pinToConnect, SIGNAL(connectionCancelled()), this, SLOT(onConnectionCancelled()));
     // connect(pinToConnect, , this, updateTempWire());
 }
 
