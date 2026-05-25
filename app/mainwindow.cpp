@@ -73,15 +73,14 @@ void MainWindow::onComponentDropped(const QString &type, const QPointF &pos)
 
     auto component = std::make_unique<ComponentInstance>(*def);
 
-    component->type = type;
-    component->position = pos;
-    currentCircuit->components.push_back(std::move(component));
-
     ComponentInstance *componentPtr = component.get();
-
     if (componentPtr == nullptr) {
         qDebug() << "ComponentInstance is nullptr!";
     }
+
+    component->type = type;
+    component->position = pos;
+    currentCircuit->components.push_back(std::move(component));
 
     auto item = new GraphicsComponentItem(componentPtr, def);
 
