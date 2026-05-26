@@ -22,8 +22,8 @@ GraphicsComponentItem::GraphicsComponentItem(ComponentInstance *instance,
 
 QVariant GraphicsComponentItem::itemChange(GraphicsItemChange change, const QVariant &value)
 {
-    for (auto pinItemIter : pins) {
-        for (auto wireItemIter : pinItemIter->getWireItems()) {
+    for (const auto &pinItemIter : std::as_const(pins)) {
+        for (const auto &wireItemIter : pinItemIter->getWireItems()) {
             wireItemIter->updatePath();
         }
     }

@@ -31,7 +31,7 @@ void PinItem::addWire(WireItem *wire)
     wireItems.insert(wire);
 }
 
-QSet<WireItem *> PinItem::getWireItems()
+const QSet<WireItem *> &PinItem::getWireItems()
 {
     return wireItems;
 }
