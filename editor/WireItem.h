@@ -15,6 +15,9 @@ public:
     PinItem *getStartPin();
     PinItem *getEndPin();
 
+    QRectF boundingRect() const override;
+    QPainterPath shape() const override;
+
 private:
     PinItem *startPin;
     PinItem *endPin = nullptr;

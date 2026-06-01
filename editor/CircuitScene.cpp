@@ -44,6 +44,7 @@ void CircuitScene::onConnectionCompleted(PinItem *from, PinItem *to)
             toPin->addWirePtr(wirePtr);
 
             circuit->wireIndex.insert(key);
+            circuit->wires.push_back(std::move(wire));
 
             tempWire = nullptr;
             startPin = nullptr;
@@ -66,6 +67,29 @@ void CircuitScene::onConnectionCancelled()
 void CircuitScene::onEscapeButton()
 {
     onConnectionCancelled();
+}
+
+void CircuitScene::onDeleteButton(QGraphicsItem *item)
+{
+    if (auto *wireItem = qgraphicsitem_cast<WireItem *>(item)) {
+        qDebug() << "Deleting selected wire!";
+        removeItem(wireItem);
+        // TODO: Удалить этот провод из всех контейнеров
+
+        WireKey key(wireItem->getStartPin()->getPin(), wireItem->getEndPin()->getPin());
+        if (circuit->wireIndex.contains(key)) {
+            circuit->wireIndex.erase(key);
+            for (auto &wireUniquePtr : circuit->wires) {
+                bool found = (wireUniquePtr->from == wireItem->getStartPin()->getPin()
+                              && wireUniquePtr->to == wireItem->getEndPin()->getPin())
+                             || (wireUniquePtr->to == wireItem->getStartPin()->getPin()
+                                 && wireUniquePtr->from == wireItem->getEndPin()->getPin());
+                if (wireUniquePtr && found) { // Check for null
+                    std::erase(circuit->wires, wireUniquePtr);
+                }
+            }
+        }
+    }
 }
 
 void CircuitScene::mousePressEvent(QGraphicsSceneMouseEvent *event)

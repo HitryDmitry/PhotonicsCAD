@@ -7,6 +7,7 @@ WireItem::WireItem(PinItem *startPin)
     : startPin(startPin)
 {
     setPen(QPen(Qt::black, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    setFlag(ItemIsSelectable);
 }
 
 void WireItem::setEndPoint(const QPointF &pos)
@@ -23,6 +24,8 @@ void WireItem::setEndPin(PinItem *pin)
 
 void WireItem::updatePath()
 {
+    prepareGeometryChange();
+
     QPointF p1 = startPin->scenePos();
     QPointF p2 = endPin ? endPin->scenePos() : tempEnd;
 
@@ -66,4 +69,45 @@ PinItem *WireItem::getEndPin()
     }
 
     return endPin;
+}
+
+// QRectF WireItem::boundingRect() const
+// {
+//     return shape().boundingRect();
+// }
+
+// QPainterPath WireItem::shape() const
+// {
+//     // Get the original path (the actual wire)
+//     QPainterPath originalPath = path();
+
+//     // Create a stroker that adds a margin around the wire
+//     QPainterPathStroker stroker;
+//     stroker.setWidth(pen().widthF() + 4.0); // pen width + 2px on each side
+//     stroker.setCapStyle(Qt::RoundCap);
+//     stroker.setJoinStyle(Qt::RoundJoin);
+
+//     // Return the thickened path used for hit testing
+//     return stroker.createStroke(originalPath);
+// }
+
+QPainterPath WireItem::shape() const
+{
+    QPainterPath original = path();
+    // qDebug() << "shape() called, original path element count:" << original.elementCount();
+    if (original.isEmpty()) {
+        qDebug() << "WARNING: path is empty!";
+    }
+    QPainterPathStroker stroker;
+    stroker.setWidth(pen().widthF() + 4.0);
+    QPainterPath stroked = stroker.createStroke(original);
+    // qDebug() << "stroked bounding rect:" << stroked.boundingRect();
+    return stroked;
+}
+
+QRectF WireItem::boundingRect() const
+{
+    QRectF rect = shape().boundingRect();
+    // qDebug() << "boundingRect() returns:" << rect;
+    return rect;
 }

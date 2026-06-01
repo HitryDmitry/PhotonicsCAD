@@ -25,8 +25,13 @@ MainWindow::MainWindow(QWidget *parent)
     // Создаем сцену
     m_scene = new CircuitScene(this);
 
-    // Обработка нажатия Escape - удаление провода
+    // Обработка нажатия Escape - удаление временного провода
     connect(this, SIGNAL(escButtonPressed()), m_scene, SLOT(onEscapeButton()));
+    // Обработка нажатия Delete - удаление существующего провода
+    connect(this,
+            SIGNAL(deleteButtonPressed(QGraphicsItem *)),
+            m_scene,
+            SLOT(onDeleteButton(QGraphicsItem *)));
 
     // Передаем указатель на схему в сцену-редактор
     m_scene->setCircuit(currentCircuit.get());
@@ -117,6 +122,17 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Escape) {
         emit escButtonPressed();
+    } else if (event->key() == Qt::Key_Delete) {
+        // Returns a list of all currently selected items
+        QList<QGraphicsItem *> selectedItems = m_scene->selectedItems();
+
+        // To get a single item (if only one is expected)
+        if (!selectedItems.isEmpty()) {
+            QGraphicsItem *item = selectedItems.first();
+            emit deleteButtonPressed(item);
+        } else {
+            qDebug() << "No items selected, can't delete!";
+        }
     } else {
         QWidget::keyPressEvent(event);
     }

@@ -29,6 +29,7 @@ protected:
 
 signals:
     void escButtonPressed();
+    void deleteButtonPressed(QGraphicsItem *item);
 
 public slots:
     void onComponentDropped(const QString &type, const QPointF &pos);

@@ -24,6 +24,7 @@ public slots:
     void onConnectionCompleted(PinItem *from, PinItem *to);
     void onConnectionCancelled();
     void onEscapeButton();
+    void onDeleteButton(QGraphicsItem *item);
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
