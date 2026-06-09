@@ -51,7 +51,11 @@ void GraphicsComponentItem::createPins(const ComponentDefinition *def)
     int count = def->pins.size();
 
     for (int i = 0; i < count; i++) {
-        auto pinInst = std::make_unique<PinInstance>(def->pins.at(i));
+        // Делаем ссылку на словарь, описывающий пин: def->pins.at(i)
+        // Возможно это понадобится при определении положения пинов в зависимости от
+        // параметров пина
+        const auto &currentPin = def->pins.at(i);
+        auto pinInst = std::make_unique<PinInstance>(currentPin);
         pinInst->component = instance;
 
         PinInstance *pinPtr = pinInst.get();
@@ -62,9 +66,22 @@ void GraphicsComponentItem::createPins(const ComponentDefinition *def)
 
         pins.push_back(pinItem);
 
-        if (i % 2 == 0)
-            pinItem->setPos(-100, i * 100);
-        else
-            pinItem->setPos(900, i * 100);
+        QPixmap componentPixmap = this->pixmap();
+        int pixWidth = componentPixmap.width();
+        int pixHeight = componentPixmap.height();
+
+        if (count == 1) {
+            pinItem->setPos(pixWidth, pixHeight / 2);
+        } else if (count == 2) {
+            pinItem->setPos(i * pixWidth, pixHeight / 2);
+        } else if (count == 3) {
+            if (i == 1) {
+                pinItem->setPos(pixWidth / 2, pixHeight);
+            } else if (i == 2) {
+                pinItem->setPos(pixWidth, pixHeight / 2);
+            } else {
+                pinItem->setPos(0, pixHeight / 2);
+            }
+        }
     }
 }
