@@ -10,11 +10,22 @@
 #include "GraphicsView.h"
 #include "PropertyEditorDialog.h"
 
+// библиотеки для панели
+#include <QAction>
+#include <QToolBar>
+#include <QActionGroup>
+#include <QStyle>
+#include <QDebug>
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+
+    createActions();
+    createToolbars();
 
     ui->listWidget->setDragEnabled(true);
     ui->listWidget->setDragDropMode(ComponentListWidget::DragOnly);
@@ -27,7 +38,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Обработка нажатия Escape - удаление временного провода
     connect(this, SIGNAL(escButtonPressed()), m_scene, SLOT(onEscapeButton()));
-    // Обработка нажатия Delete - удаление существующего провода
+
+    // Сигнал на удаление провода
     connect(this,
             SIGNAL(deleteButtonPressed(QGraphicsItem *)),
             m_scene,
@@ -48,23 +60,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     for (const auto &comp : componentLibrary.getComponents()) {
         QListWidgetItem *item = new QListWidgetItem(QIcon(comp.iconPath), comp.name);
-
         item->setData(Qt::UserRole, comp.type);
         ui->listWidget->addItem(item);
     }
 
-    // Не понятно, почему не работает обновленный синтаксис связи сигналов-слотов
-    // qDebug() << ui->graphicsView->metaObject()->className();
-    // qDebug() << ui->listWidget->metaObject()->className();
-    // for (int i = 0; i < ui->graphicsView->metaObject()->methodCount(); ++i) {
-    //     qDebug() << ui->graphicsView->metaObject()->method(i).methodSignature();
-    // }
-    // connect(ui->graphicsView,
-    //         &GraphicsView::componentDropped,
-    //         this,
-    //         &MainWindow::onComponentDropped);
-
-    // устаревший синтаксис работает
+    // Связь Drag & Drop
     connect(ui->graphicsView,
             SIGNAL(componentDropped(QString, QPointF)),
             this,
@@ -73,7 +73,6 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::onComponentDropped(const QString &type, const QPointF &pos)
 {
-    // CircuitScene *circuit = new CircuitScene(m_scene);
     const ComponentDefinition *def = componentLibrary.getByType(type);
 
     if (!def) {
@@ -93,10 +92,6 @@ void MainWindow::onComponentDropped(const QString &type, const QPointF &pos)
 
     auto item = new GraphicsComponentItem(componentPtr, def);
 
-    // connect(item,
-    //         &GraphicsComponentItem::doubleClicked,
-    //         this,
-    //         &MainWindow::onComponentDoubleClicked);
     connect(item,
             SIGNAL(doubleClicked(ComponentInstance *)),
             this,
@@ -123,16 +118,8 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     if (event->key() == Qt::Key_Escape) {
         emit escButtonPressed();
     } else if (event->key() == Qt::Key_Delete) {
-        // Returns a list of all currently selected items
-        QList<QGraphicsItem *> selectedItems = m_scene->selectedItems();
-
-        // To get a single item (if only one is expected)
-        if (!selectedItems.isEmpty()) {
-            QGraphicsItem *item = selectedItems.first();
-            emit deleteButtonPressed(item);
-        } else {
-            qDebug() << "No items selected, can't delete!";
-        }
+        // При нажатии Delete на клавиатуре вызываем умное удаление (то же, что и кнопка на панели)
+        onDeleteActionTriggered();
     } else {
         QWidget::keyPressEvent(event);
     }
@@ -147,10 +134,134 @@ void MainWindow::onComponentDoubleClicked(ComponentInstance *instance)
 
     PropertyEditorDialog dialog(instance, def, this);
     dialog.exec();
-    // item->update();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+
+// интерфейс создания панели инструментов
+
+
+void MainWindow::createActions()
+{
+    actionSave = new QAction(style()->standardIcon(QStyle::SP_DriveFDIcon), tr("Save"), this);
+    actionSave->setShortcut(QKeySequence::Save);
+
+    actionUndo = new QAction(style()->standardIcon(QStyle::SP_ArrowBack), tr("Undo"), this);
+    actionUndo->setShortcut(QKeySequence::Undo);
+
+    actionRedo = new QAction(style()->standardIcon(QStyle::SP_ArrowForward), tr("Redo"), this);
+    actionRedo->setShortcut(QKeySequence::Redo);
+
+    // Удаление связываем с нашим умным слотом
+    actionDelete = new QAction(style()->standardIcon(QStyle::SP_TrashIcon), tr("Delete"), this);
+    connect(actionDelete, &QAction::triggered, this, &MainWindow::onDeleteActionTriggered);
+
+    actionCalculate = new QAction(style()->standardIcon(QStyle::SP_MediaPlay), tr("Calculate (Run)"), this);
+    actionCalculate->setShortcut(Qt::Key_F5);
+    connect(actionCalculate, &QAction::triggered, this, &MainWindow::runSimulation);
+
+    actionZoomIn = new QAction(tr("Zoom In (+)"), this);
+    connect(actionZoomIn, &QAction::triggered, this, &MainWindow::zoomIn);
+
+    actionZoomOut = new QAction(tr("Zoom Out (-)"), this);
+    connect(actionZoomOut, &QAction::triggered, this, &MainWindow::zoomOut);
+
+    actionFit = new QAction(style()->standardIcon(QStyle::SP_DesktopIcon), tr("Fit to Window"), this);
+    connect(actionFit, &QAction::triggered, this, &MainWindow::fitToScreen);
+
+    modeActionGroup = new QActionGroup(this);
+
+    actionSelect = new QAction(style()->standardIcon(QStyle::SP_ArrowUp), tr("Select"), this);
+    actionSelect->setCheckable(true);
+    actionSelect->setChecked(true);
+    connect(actionSelect, &QAction::triggered, this, &MainWindow::setModeSelect);
+    modeActionGroup->addAction(actionSelect);
+
+    actionConnect = new QAction(style()->standardIcon(QStyle::SP_CommandLink), tr("Draw Connection"), this);
+    actionConnect->setCheckable(true);
+    connect(actionConnect, &QAction::triggered, this, &MainWindow::setModeConnect);
+    modeActionGroup->addAction(actionConnect);
+}
+
+void MainWindow::createToolbars()
+{
+    standardToolBar = addToolBar(tr("Standard"));
+    standardToolBar->addAction(actionSave);
+    standardToolBar->addAction(actionUndo);
+    standardToolBar->addAction(actionRedo);
+    standardToolBar->addSeparator();
+    standardToolBar->addAction(actionDelete);
+
+    simulationToolBar = addToolBar(tr("Simulation"));
+    simulationToolBar->addAction(actionCalculate);
+
+    viewToolBar = addToolBar(tr("View"));
+    viewToolBar->addAction(actionZoomIn);
+    viewToolBar->addAction(actionZoomOut);
+    viewToolBar->addAction(actionFit);
+
+    layoutToolBar = addToolBar(tr("Layout"));
+    layoutToolBar->addAction(actionSelect);
+    layoutToolBar->addAction(actionConnect);
+}
+
+// ==========================================
+// ЛОГИКА РАБОТЫ КНОПОК ПАНЕЛИ
+// ==========================================
+
+void MainWindow::onDeleteActionTriggered()
+{
+    QList<QGraphicsItem *> selectedItems = m_scene->selectedItems();
+
+    if (selectedItems.isEmpty()) {
+        qDebug() << "Нет выделенных элементов для удаления.";
+        return;
+    }
+
+    // Проходимся по всем выделенным элементам
+    for (QGraphicsItem *item : selectedItems) {
+
+        // Пытаемся преобразовать элемент в класс Компонента
+        GraphicsComponentItem *compItem = dynamic_cast<GraphicsComponentItem*>(item);
+
+        if (compItem) {
+            // 1. если компонент
+            m_scene->removeItem(compItem); // Убираем с экрана
+            delete compItem;               // Удаляем из памяти
+            qDebug() << "Компонент успешно удален.";
+        } else {
+            // 2. если не компонент используем старую логику удаления проводов
+            emit deleteButtonPressed(item);
+            qDebug() << "Отправлен сигнал на удаление провода.";
+        }
+    }
+}
+
+void MainWindow::runSimulation() { qDebug() << "Запуск расчета схемы..."; }
+
+void MainWindow::zoomIn() { ui->graphicsView->scale(1.25, 1.25); }
+
+void MainWindow::zoomOut() { ui->graphicsView->scale(0.8, 0.8); }
+
+void MainWindow::fitToScreen()
+{
+    if(m_scene) {
+        ui->graphicsView->fitInView(m_scene->sceneRect(), Qt::KeepAspectRatio);
+    }
+}
+
+void MainWindow::setModeSelect()
+{
+    ui->graphicsView->setDragMode(QGraphicsView::RubberBandDrag);
+    qDebug() << "Режим: Указатель (Выделение)";
+}
+
+void MainWindow::setModeConnect()
+{
+    ui->graphicsView->setDragMode(QGraphicsView::NoDrag);
+    qDebug() << "Режим: Проводник (Соединение портов)";
 }
