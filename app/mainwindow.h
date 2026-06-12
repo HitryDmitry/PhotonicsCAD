@@ -12,7 +12,6 @@ class Circuit;
 QT_BEGIN_NAMESPACE
 class QAction;
 class QToolBar;
-class QActionGroup;
 namespace Ui {
 class MainWindow;
 }
@@ -39,14 +38,11 @@ public slots:
     void onComponentDropped(const QString &type, const QPointF &pos);
     void onComponentDoubleClicked(ComponentInstance *instance);
 
-    // верхняя панель
+    // --- СЛОТЫ ВЕРХНЕЙ ПАНЕЛИ ---
     void runSimulation();
     void zoomIn();
     void zoomOut();
     void fitToScreen();
-    void setModeSelect();
-    void setModeConnect();
-    void onDeleteActionTriggered(); // Умное удаление элементов
 
 private:
     Ui::MainWindow *ui;
@@ -54,26 +50,20 @@ private:
     ComponentLibraryManager componentLibrary;
     std::unique_ptr<Circuit> currentCircuit;
 
-    // функции и переменные панели
+    // --- ФУНКЦИИ И ПЕРЕМЕННЫЕ ВЕРХНЕЙ ПАНЕЛИ ---
     void createActions();
     void createToolbars();
 
     QAction *actionSave;
     QAction *actionUndo;
     QAction *actionRedo;
-    QAction *actionDelete;
     QAction *actionCalculate;
     QAction *actionZoomIn;
     QAction *actionZoomOut;
     QAction *actionFit;
-    QAction *actionSelect;
-    QAction *actionConnect;
-
-    QActionGroup *modeActionGroup;
 
     QToolBar *standardToolBar;
     QToolBar *simulationToolBar;
     QToolBar *viewToolBar;
-    QToolBar *layoutToolBar;
 };
 #endif
