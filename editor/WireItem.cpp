@@ -1,7 +1,10 @@
 #include "WireItem.h"
+#include <QPainter>
 #include <QPainterPath>
+#include <QPen>
+#include <QStyle>
+#include <QStyleOptionGraphicsItem>
 #include "PinItem.h"
-#include <qpen.h>
 
 WireItem::WireItem(PinItem *startPin)
     : startPin(startPin)
@@ -71,43 +74,85 @@ PinItem *WireItem::getEndPin()
     return endPin;
 }
 
-// QRectF WireItem::boundingRect() const
-// {
-//     return shape().boundingRect();
-// }
-
-// QPainterPath WireItem::shape() const
-// {
-//     // Get the original path (the actual wire)
-//     QPainterPath originalPath = path();
-
-//     // Create a stroker that adds a margin around the wire
-//     QPainterPathStroker stroker;
-//     stroker.setWidth(pen().widthF() + 4.0); // pen width + 2px on each side
-//     stroker.setCapStyle(Qt::RoundCap);
-//     stroker.setJoinStyle(Qt::RoundJoin);
-
-//     // Return the thickened path used for hit testing
-//     return stroker.createStroke(originalPath);
-// }
+QRectF WireItem::boundingRect() const
+{
+    qreal margin = 5.0;
+    return path().boundingRect().adjusted(-margin, -margin, margin, margin);
+}
 
 QPainterPath WireItem::shape() const
 {
-    QPainterPath original = path();
-    // qDebug() << "shape() called, original path element count:" << original.elementCount();
-    if (original.isEmpty()) {
-        qDebug() << "WARNING: path is empty!";
-    }
+    // Get the original path (the actual wire)
+    QPainterPath originalPath = path();
+
+    // Create a stroker that adds a margin around the wire
     QPainterPathStroker stroker;
-    stroker.setWidth(pen().widthF() + 4.0);
-    QPainterPath stroked = stroker.createStroke(original);
-    // qDebug() << "stroked bounding rect:" << stroked.boundingRect();
-    return stroked;
+    stroker.setWidth(pen().widthF() + 4.0); // pen width + 2px on each side
+    stroker.setCapStyle(Qt::RoundCap);
+    stroker.setJoinStyle(Qt::RoundJoin);
+
+    // Return the thickened path used for hit testing
+    return stroker.createStroke(originalPath);
 }
 
-QRectF WireItem::boundingRect() const
+void WireItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    QRectF rect = shape().boundingRect();
-    // qDebug() << "boundingRect() returns:" << rect;
-    return rect;
+    // Create a copy of the option without the selection state
+    QStyleOptionGraphicsItem myOption(*option);
+    myOption.state &= ~QStyle::State_Selected; // Remove selection flag
+
+    // Draw the wire without selection rectangle
+    QGraphicsPathItem::paint(painter, &myOption, widget);
+
+    if (option->state & QStyle::State_Selected) {
+        QPainterPath originalPath = path();
+        if (!originalPath.isEmpty()) {
+            painter->save();
+            painter->setRenderHint(QPainter::Antialiasing);
+
+            // Create a glow effect with multiple layers for smooth perpendicular fade
+            // Outer glow (wide, very transparent)
+            QPainterPathStroker outerStroker;
+            outerStroker.setWidth(24.0);
+            outerStroker.setCapStyle(Qt::RoundCap);
+            outerStroker.setJoinStyle(Qt::RoundJoin);
+            QPainterPath outerGlow = outerStroker.createStroke(originalPath);
+
+            painter->setBrush(QColor(135, 206, 235, 30));
+            painter->setPen(Qt::NoPen);
+            painter->drawPath(outerGlow);
+
+            // Middle glow (medium width, medium transparency)
+            QPainterPathStroker midStroker;
+            midStroker.setWidth(14.0);
+            midStroker.setCapStyle(Qt::RoundCap);
+            midStroker.setJoinStyle(Qt::RoundJoin);
+            QPainterPath midGlow = midStroker.createStroke(originalPath);
+
+            painter->setBrush(QColor(135, 206, 235, 80));
+            painter->drawPath(midGlow);
+
+            // Inner glow (narrow, more opaque)
+            QPainterPathStroker innerStroker;
+            innerStroker.setWidth(6.0);
+            innerStroker.setCapStyle(Qt::RoundCap);
+            innerStroker.setJoinStyle(Qt::RoundJoin);
+            QPainterPath innerGlow = innerStroker.createStroke(originalPath);
+
+            painter->setBrush(QColor(135, 206, 235, 150));
+            painter->drawPath(innerGlow);
+
+            // Core (the wire itself, slightly blue)
+            QPainterPathStroker coreStroker;
+            coreStroker.setWidth(2.0);
+            coreStroker.setCapStyle(Qt::RoundCap);
+            coreStroker.setJoinStyle(Qt::RoundJoin);
+            QPainterPath coreGlow = coreStroker.createStroke(originalPath);
+
+            painter->setBrush(QColor(70, 130, 180, 200)); // Steel blue
+            painter->drawPath(coreGlow);
+
+            painter->restore();
+        }
+    }
 }

@@ -17,6 +17,7 @@ public:
 
     QRectF boundingRect() const override;
     QPainterPath shape() const override;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
 private:
     PinItem *startPin;
