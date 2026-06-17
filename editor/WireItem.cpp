@@ -35,6 +35,12 @@ void WireItem::updatePath()
 {
     prepareGeometryChange();
 
+    if (!startPin) {
+        // Don't build path if start pin is invalid
+        qDebug() << "Can't build path since startPin is invalid";
+        return;
+    }
+
     QPointF p1 = startPin->scenePos();
     QPointF p2 = endPin ? endPin->scenePos() : tempEnd;
 
@@ -91,6 +97,11 @@ QPainterPath WireItem::shape() const
 {
     // Get the original path (the actual wire)
     QPainterPath originalPath = path();
+
+    if (originalPath.isEmpty()) {
+        qDebug() << "Original path is empty!";
+        return originalPath;
+    }
 
     // Create a stroker that adds a margin around the wire
     QPainterPathStroker stroker;
