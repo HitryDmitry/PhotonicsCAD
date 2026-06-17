@@ -25,4 +25,6 @@ private:
     QPointF tempEnd;
 
     bool plotNormalToX = false;
+
+    static constexpr qreal GLOW_WIDTH = 24.0;
 };

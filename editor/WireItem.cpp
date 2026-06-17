@@ -11,6 +11,12 @@ WireItem::WireItem(PinItem *startPin)
 {
     setPen(QPen(Qt::black, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     setFlag(ItemIsSelectable);
+
+    // Initialize with a minimal valid path
+    QPainterPath initPath;
+    initPath.moveTo(startPin->scenePos());
+    initPath.lineTo(startPin->scenePos());
+    setPath(initPath);
 }
 
 void WireItem::setEndPoint(const QPointF &pos)
@@ -76,7 +82,8 @@ PinItem *WireItem::getEndPin()
 
 QRectF WireItem::boundingRect() const
 {
-    qreal margin = 5.0;
+    // Include the path + glow area + some margin for safety
+    qreal margin = GLOW_WIDTH / 2.0 + 5.0; // +5 for safety margin
     return path().boundingRect().adjusted(-margin, -margin, margin, margin);
 }
 
@@ -87,7 +94,7 @@ QPainterPath WireItem::shape() const
 
     // Create a stroker that adds a margin around the wire
     QPainterPathStroker stroker;
-    stroker.setWidth(pen().widthF() + 4.0); // pen width + 2px on each side
+    stroker.setWidth(pen().widthF() + 8.0); // pen width + 4px on each side
     stroker.setCapStyle(Qt::RoundCap);
     stroker.setJoinStyle(Qt::RoundJoin);
 
@@ -113,7 +120,7 @@ void WireItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
             // Create a glow effect with multiple layers for smooth perpendicular fade
             // Outer glow (wide, very transparent)
             QPainterPathStroker outerStroker;
-            outerStroker.setWidth(24.0);
+            outerStroker.setWidth(GLOW_WIDTH);
             outerStroker.setCapStyle(Qt::RoundCap);
             outerStroker.setJoinStyle(Qt::RoundJoin);
             QPainterPath outerGlow = outerStroker.createStroke(originalPath);
