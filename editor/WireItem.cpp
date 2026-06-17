@@ -49,25 +49,37 @@ void WireItem::updatePath()
     qreal dx = p2.x() - p1.x();
     qreal dy = p2.y() - p1.y();
 
-    if (!dx) {
-        plotNormalToX = false;
-    }
-    if (!dy) {
-        plotNormalToX = true;
+    // Determine bend direction based on which axis to go perpendicular to
+    bool goHorizontalFirst;
+
+    if (qFuzzyIsNull(dx) && qFuzzyIsNull(dy)) {
+        // Same point - no bend needed
+        setPath(path);
+        return;
     }
 
-    if (plotNormalToX) {
-        // сначала по X
+    if (qFuzzyIsNull(dx)) {
+        // Vertical line - go perpendicular (horizontal first)
+        goHorizontalFirst = true;
+    } else if (qFuzzyIsNull(dy)) {
+        // Horizontal line - go perpendicular (vertical first)
+        goHorizontalFirst = false;
+    } else {
+        // Normal case: choose based on which axis has larger distance
+        goHorizontalFirst = qAbs(dx) > qAbs(dy);
+    }
+
+    if (goHorizontalFirst) {
+        // First horizontally, then vertically
         QPointF mid(p2.x(), p1.y());
         path.lineTo(mid);
     } else {
-        // сначала по Y
+        // First vertically, then horizontally
         QPointF mid(p1.x(), p2.y());
         path.lineTo(mid);
     }
 
     path.lineTo(p2);
-
     setPath(path);
 }
 
