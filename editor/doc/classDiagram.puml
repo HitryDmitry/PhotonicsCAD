@@ -1,0 +1,96 @@
+@startuml
+' === Настройки отображения ===
+skinparam classAttributeIconSize 0
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    ArrowColor DarkBlue
+}
+
+' === Группировка по слоям ===
+package "Qt Layer (GUI)" {
+    class MainWindow
+    class CircuitScene
+    class GraphicsComponentItem
+    class PinItem
+    class WireItem
+}
+
+package "Domain Layer (Business Logic)" {
+    class Circuit
+    class ComponentInstance
+    class PinInstance
+    class Wire
+}
+
+' === Связи (в соответствии с вашими пунктами) ===
+
+' 1) MainWindow владеет Circuit (композиция через unique_ptr)
+MainWindow *-- Circuit : "1\nunique_ptr"
+
+' 2) MainWindow передаёт владение ComponentInstance объекту Circuit
+'   (MainWindow создаёт, Circuit хранит)
+MainWindow ..> ComponentInstance : "creates, transfers\nownership to Circuit"
+Circuit *-- ComponentInstance : "owns (after transfer)"
+
+' 3) MainWindow владеет CircuitScene через Qt parent-систему (композиция)
+MainWindow *-- CircuitScene : "1\nQt parent ownership"
+
+' 4) ComponentInstance владеет PinInstance (композиция через unique_ptr)
+ComponentInstance *-- PinInstance : "owns\nvector<unique_ptr>"
+
+' 5) PinInstance обозревает ComponentInstance (агрегация)
+PinInstance o-- ComponentInstance : "observes\n(back pointer)"
+
+' 6) MainWindow создаёт GraphicsComponentItem, Qt-владение у CircuitScene
+MainWindow ..> GraphicsComponentItem : "creates, passes to scene"
+CircuitScene o-- GraphicsComponentItem : "Qt ownership\n(addItem)"
+
+' 7) GraphicsComponentItem создаёт PinItem и владеет через Qt parent
+GraphicsComponentItem *-- PinItem : "Qt parent ownership\n(this)"
+
+' 8) GraphicsComponentItem обозревает PinItem и ComponentInstance
+GraphicsComponentItem o-- PinItem : "observes\nQVector<PinItem*>"
+GraphicsComponentItem o-- ComponentInstance : "observes\nComponentInstance*"
+
+' 9) CircuitScene создаёт Wire и передаёт владение Circuit
+CircuitScene ..> Wire : "creates, passes ownership"
+Circuit *-- Wire : "owns (after transfer)"
+
+' 10) CircuitScene создаёт WireItem и владеет через Qt
+CircuitScene *-- WireItem : "Qt ownership\n(addItem)"
+
+' 11) WireItem обозревает PinItem
+WireItem o-- PinItem : "observes\n(startPin, endPin)"
+
+' 12) PinItem обозревает PinInstance и WireItem
+PinItem o-- PinInstance : "observes\nPinInstance*"
+PinItem o-- WireItem : "observes (reverse)\nQSet<WireItem*>"
+
+' 13) Wire обозревает PinInstance
+Wire o-- PinInstance : "observes\n(from, to)"
+
+' === Дополнительные пояснения к видимости ===
+note top of MainWindow
+  **Управление объектами:**
+  - unique_ptr<Circuit>
+  - unique_ptr<ComponentInstance>
+    (передаётся в Circuit)
+  - CircuitScene (Qt parent)
+end note
+
+note bottom of CircuitScene
+  **Управление объектами:**
+  - unique_ptr<Wire> → передаётся Circuit
+  - WireItem (Qt parent)
+  - GraphicsComponentItem (Qt parent)
+end note
+
+note right of GraphicsComponentItem
+  **Связи:**
+  - Constructor: создаёт PinItem(this)
+  - Хранит QVector<PinItem*>
+  - Хранит ComponentInstance*
+end note
+
+@enduml
