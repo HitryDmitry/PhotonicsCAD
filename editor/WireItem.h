@@ -17,6 +17,7 @@ public:
 
     QRectF boundingRect() const override;
     QPainterPath shape() const override;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
 private:
     PinItem *startPin;
@@ -24,4 +25,6 @@ private:
     QPointF tempEnd;
 
     bool plotNormalToX = false;
+
+    static constexpr qreal GLOW_WIDTH = 24.0;
 };

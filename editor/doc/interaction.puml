@@ -1,0 +1,17 @@
+@startuml
+
+actor Пользователь as user order 1
+participant QListWidget order 2
+participant QGraphicsView order 3
+participant QGraphicsScene order 4
+participant QGraphicsItem order 5
+
+user -> QListWidget: DragAction
+QListWidget -> QGraphicsView: DropAction
+QGraphicsView -> QGraphicsScene: Add GraphicsComponentItem
+QGraphicsScene -> QGraphicsItem: Create QGraphicsComponentItem
+QGraphicsItem -> QGraphicsItem: Create PinItems
+
+user -> QGraphicsItem: Move action
+
+@enduml

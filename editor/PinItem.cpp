@@ -19,6 +19,7 @@ PinItem::PinItem(PinInstance *pin, QGraphicsItem *parent)
     setPen(QPen(Qt::black, 5));
     // Set the fill to empty/transparent
     setBrush(Qt::NoBrush);
+    setZValue(10.0);
 }
 
 PinInstance *PinItem::getPin() const
