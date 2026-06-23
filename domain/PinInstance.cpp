@@ -1,5 +1,7 @@
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "PinInstance.h"
 #include "Wire.h"
+#include "doctest.h"
 
 PinInstance::PinInstance(const QMap<QString, QVariant> &pinDef)
 {
