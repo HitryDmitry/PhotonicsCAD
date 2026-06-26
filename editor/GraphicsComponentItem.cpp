@@ -1,6 +1,7 @@
 #include "GraphicsComponentItem.h"
 #include <QDebug>
 #include <QPixmap>
+#include <qmath.h> // добавленно для округления
 #include "PinItem.h"
 #include "WireItem.h"
 
@@ -22,12 +23,32 @@ GraphicsComponentItem::GraphicsComponentItem(ComponentInstance *instance,
 
 QVariant GraphicsComponentItem::itemChange(GraphicsItemChange change, const QVariant &value)
 {
+    QVariant newValue = value;
+
+    // SNAP TO GRID
+    // Срабатывает только когда пользователь двигает объект по сцене
+    if (change == ItemPositionChange && scene()) {
+        QPointF newPos = value.toPointF();
+
+        // Шаг сетки. Сейчас стоит 20 пикселей.
+        int gridSize = 20;
+
+        qreal xV = qRound(newPos.x() / gridSize) * gridSize;
+        qreal yV = qRound(newPos.y() / gridSize) * gridSize;
+
+        // Записываем новые координаты
+        newValue = QPointF(xV, yV);
+    }
+
+    // ОБНОВЛЕНИЕ ПРОВОДОВ
     for (const auto &pinItemIter : std::as_const(pins)) {
         for (const auto &wireItemIter : pinItemIter->getWireItems()) {
             wireItemIter->updatePath();
         }
     }
-    return QGraphicsPixmapItem::itemChange(change, value);
+
+    // Возвращаем newValue (которое мы примагнитили к сетке)
+    return QGraphicsPixmapItem::itemChange(change, newValue);
 }
 
 ComponentInstance *GraphicsComponentItem::getInstance()
