@@ -1,5 +1,6 @@
 #include "CircuitScene.h"
 #include <QGraphicsSceneMouseEvent>
+#include <QPainter>
 #include "Circuit.h"
 #include "GraphicsComponentItem.h"
 #include "PinItem.h"
@@ -8,6 +9,46 @@
 CircuitScene::CircuitScene(QObject *parent)
     : QGraphicsScene(parent)
 {}
+
+void CircuitScene::drawBackground(QPainter *painter, const QRectF &rect)
+{
+    // Шаг сетки
+    const int gridSize = 20;
+
+    // Настраиваем кисти для рисования линий
+    QPen lightPen(QColor(235, 235, 235), 1, Qt::SolidLine); // Светлая линия
+    QPen darkPen(QColor(210, 210, 210), 1, Qt::SolidLine);  // Темная линия (каждая пятая)
+
+    // Вычисляем начало координат для текущего видимого куска экрана
+    qreal left = int(rect.left()) - (int(rect.left()) % gridSize);
+    qreal top = int(rect.top()) - (int(rect.top()) % gridSize);
+
+    QList<QLineF> lines;
+    QList<QLineF> darkLines;
+
+    //  Рисуем вертикальные линии
+    for (qreal x = left; x < rect.right(); x += gridSize) {
+        if (int(x) % (gridSize * 5) == 0)
+            darkLines.append(QLineF(x, rect.top(), x, rect.bottom()));
+        else
+            lines.append(QLineF(x, rect.top(), x, rect.bottom()));
+    }
+
+    //  Рисуем горизонтальные линии
+    for (qreal y = top; y < rect.bottom(); y += gridSize) {
+        if (int(y) % (gridSize * 5) == 0)
+            darkLines.append(QLineF(rect.left(), y, rect.right(), y));
+        else
+            lines.append(QLineF(rect.left(), y, rect.right(), y));
+    }
+
+    //  Выводим линии на экран
+    painter->setPen(lightPen);
+    painter->drawLines(lines);
+
+    painter->setPen(darkPen);
+    painter->drawLines(darkLines);
+}
 
 void CircuitScene::onConnectionStarted(PinItem *pin)
 {

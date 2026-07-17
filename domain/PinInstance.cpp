@@ -1,6 +1,7 @@
 #include "PinInstance.h"
 #include "Wire.h"
 
+
 PinInstance::PinInstance(const QMap<QString, QVariant> &pinDef)
 {
     id = pinDef.value(QString("id")).toString();

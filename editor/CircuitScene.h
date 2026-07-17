@@ -1,3 +1,6 @@
+#ifndef CIRCUITSCENE_H  // Защита от двойного включения (на всякий случай)
+#define CIRCUITSCENE_H
+
 #include <QGraphicsScene>
 #include <QVector>
 #include "Wire.h"
@@ -30,9 +33,14 @@ protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
 
+    // -отрисовка сетки
+    void drawBackground(QPainter *painter, const QRectF &rect) override;
+
 private:
     WireItem *tempWire = nullptr;
     PinItem *startPin = nullptr;
 
     Circuit *circuit = nullptr;
 };
+
+#endif
