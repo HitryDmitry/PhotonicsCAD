@@ -1,6 +1,6 @@
 #include "CircuitScene.h"
 #include <QGraphicsSceneMouseEvent>
-#include <QPainter> // ДОБАВЛЕНО ДЛЯ РИСОВАНИЯ СЕТКИ
+#include <QPainter>
 #include "Circuit.h"
 #include "GraphicsComponentItem.h"
 #include "PinItem.h"
@@ -9,9 +9,6 @@
 CircuitScene::CircuitScene(QObject *parent)
     : QGraphicsScene(parent)
 {}
-
-
-// --- ОТРИСОВКА ВИДИМОЙ СЕТКИ
 
 void CircuitScene::drawBackground(QPainter *painter, const QRectF &rect)
 {

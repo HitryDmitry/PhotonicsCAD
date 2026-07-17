@@ -1,7 +1,7 @@
 #include "GraphicsComponentItem.h"
 #include <QDebug>
 #include <QPixmap>
-#include <qmath.h> // добавленно для округления
+#include <qmath.h>
 #include "PinItem.h"
 #include "WireItem.h"
 
