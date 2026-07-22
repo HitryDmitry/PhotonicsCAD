@@ -12,7 +12,10 @@ add_library(
   ${SOURCES_DIR}/WireViewModel.cpp
   ${SOURCES_DIR}/WireViewModel.h
   ${SOURCES_DIR}/CircuitViewModel.cpp
-  ${SOURCES_DIR}/CircuitViewModel.h)
+  ${SOURCES_DIR}/CircuitViewModel.h
+  ${SOURCES_DIR}/IViewModelListener.h
+  ${SOURCES_DIR}/IViewModelListener.cpp)
+
 
 target_include_directories(viewmodel_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(viewmodel_lib PRIVATE domain_lib)
