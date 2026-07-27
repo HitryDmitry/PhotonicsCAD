@@ -13,8 +13,7 @@ add_library(
   ${SOURCES_DIR}/WireViewModel.h
   ${SOURCES_DIR}/CircuitViewModel.cpp
   ${SOURCES_DIR}/CircuitViewModel.h
-  ${SOURCES_DIR}/IViewModelListener.h
-  ${SOURCES_DIR}/IViewModelListener.cpp)
+  ${SOURCES_DIR}/IViewModelListener.h)
 
 
 target_include_directories(viewmodel_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
