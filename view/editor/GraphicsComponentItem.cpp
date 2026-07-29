@@ -2,6 +2,8 @@
 #include <QDebug>
 #include <QPixmap>
 #include <qmath.h>
+#include <map>
+#include <string>
 #include "PinItem.h"
 #include "WireItem.h"
 
@@ -76,7 +78,15 @@ void GraphicsComponentItem::createPins(const ComponentDefinition *def)
         // Возможно это понадобится при определении положения пинов в зависимости от
         // параметров пина
         const auto &currentPin = def->pins.at(i);
-        auto pinInst = std::make_unique<PinInstance>(currentPin);
+
+        // Конвертируем QMap<QString, QVariant> в std::map<std::string, std::string>
+        std::map<std::string, std::string> stdPinDef;
+        for (const auto &[key, value] : currentPin.asKeyValueRange()) {
+            stdPinDef[key.toStdString()] = value.toString().toStdString();
+        }
+
+        // Передаем сконвертированную стандартную карту в обновленный конструктор PinInstance
+        auto pinInst = std::make_unique<PinInstance>(stdPinDef);
         pinInst->component = instance;
 
         PinInstance *pinPtr = pinInst.get();

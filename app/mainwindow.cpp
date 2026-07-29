@@ -85,8 +85,9 @@ void MainWindow::onComponentDropped(const QString &type, const QPointF &pos)
         qDebug() << "ComponentInstance is nullptr!";
     }
 
-    component->type = type;
-    component->position = pos;
+    // Безопасное преобразование типов на стыке UI и доменного слоя
+    component->type = type.toStdString();
+    component->position = Point2D{ pos.x(), pos.y() };
     currentCircuit->components.push_back(std::move(component));
 
     auto item = new GraphicsComponentItem(componentPtr, def);
@@ -109,7 +110,8 @@ void MainWindow::onItemSelected(GraphicsComponentItem *item)
         qDebug() << "Can't retrieve ComponentInstance from selected GraphicsComponentItem.";
     }
 
-    qDebug() << "Position: " << instance->position;
+    // Выводим отдельные составляющие x и y нашей кастомной структуры Point2D
+    qDebug() << "Position: " << instance->position.x << ", " << instance->position.y;
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
@@ -132,7 +134,8 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 
 void MainWindow::onComponentDoubleClicked(ComponentInstance *instance)
 {
-    const ComponentDefinition *def = componentLibrary.getByType(instance->type);
+    // Преобразуем стандартный std::string обратно в QString
+    const ComponentDefinition *def = componentLibrary.getByType(QString::fromStdString(instance->type));
 
     if (!def)
         return;

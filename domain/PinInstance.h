@@ -1,8 +1,7 @@
 #pragma once
-#include <QSet>
-#include <QString>
-#include <QVariant>
-#include <QVector>
+#include <unordered_set>
+#include <string>
+#include <map>
 
 class ComponentInstance;
 class Wire;
@@ -10,17 +9,19 @@ class Wire;
 class PinInstance
 {
 public:
-    PinInstance(const QMap<QString, QVariant> &pinDef);
+    // Заменили QMap<QString, QVariant> на стандартную карту строк
+    PinInstance(const std::map<std::string, std::string> &pinDef);
 
-    QSet<Wire *> getWires();
+    // Возвращаем стандартное неупорядоченное множество
+    std::unordered_set<Wire *> getWires();
     void addWirePtr(Wire *);
 
-    QString id;
-    QString signalType; // "optical" / "electrical"
-    QString direction;  // "input" / "output"
+    std::string id;
+    std::string signalType; // "optical" / "electrical"
+    std::string direction;  // "input" / "output"
 
     ComponentInstance *component = nullptr;
 
 private:
-    QSet<Wire *> wires;
+    std::unordered_set<Wire *> wires;
 };
