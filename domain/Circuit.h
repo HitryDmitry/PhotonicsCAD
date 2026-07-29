@@ -1,3 +1,5 @@
+#pragma once
+
 #include "ComponentInstance.h"
 #include "Wire.h"
 #include <memory>

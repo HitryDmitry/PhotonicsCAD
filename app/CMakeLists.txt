@@ -24,9 +24,14 @@ else()
   endif()
 endif()
 
+# путь к VIEWMODEL_LIB
+# Переменная ${CMAKE_SOURCE_DIR} указывает на корень всего проекта,
+target_include_directories(CADapp PRIVATE ${CMAKE_SOURCE_DIR}/view)
+
+# ликовка с библиотекой VIEWMODEL_LIB
 target_link_libraries(
   CADapp PRIVATE Qt${QT_VERSION_MAJOR}::Widgets component_library editor_lib
-                 ui_lib domain_lib)
+                 ui_lib domain_lib viewmodel_lib) # <-- Добавили viewmodel_lib в самый конец
 
 set_target_properties(
   CADapp

@@ -4,10 +4,9 @@
 #include <QMainWindow>
 #include "ComponentLibraryManager.h"
 #include "GraphicsComponentItem.h"
+#include "CircuitViewModel.h" // Подключаем ViewModel и интерфейс наблюдателя
 
 class CircuitScene;
-class Circuit;
-
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -17,7 +16,8 @@ class MainWindow;
 }
 QT_END_NAMESPACE
 
-class MainWindow : public QMainWindow
+// MainWindow теперь реализует интерфейс наблюдателя ICircuitObserver
+class MainWindow : public QMainWindow, public ICircuitObserver
 {
     Q_OBJECT
 
@@ -26,6 +26,9 @@ public:
     ~MainWindow() override;
 
     void onItemSelected(GraphicsComponentItem *item);
+
+    // Реализация чисто виртуального метода интерфейса наблюдателя
+    void onComponentAdded(ComponentInstance *instance, const ComponentDefinition *def) override;
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
@@ -48,7 +51,9 @@ private:
     Ui::MainWindow *ui;
     CircuitScene *m_scene;
     ComponentLibraryManager componentLibrary;
-    std::unique_ptr<Circuit> currentCircuit;
+
+    // MainWindow теперь владеет ViewModel, а не схемой напрямую
+    std::unique_ptr<CircuitViewModel> viewModel;
 
     // --- ФУНКЦИИ И ПЕРЕМЕННЫЕ ВЕРХНЕЙ ПАНЕЛИ ---
     void createActions();

@@ -16,7 +16,8 @@ add_library(
   ${SOURCES_DIR}/Circuit.cpp
   ${SOURCES_DIR}/PinInstance.cpp
   ${SOURCES_DIR}/PinInstance.h
-  ${SOURCES_DIR}/Wire.h)
+  ${SOURCES_DIR}/Wire.h
+  ComponentFactory.h)
 
 target_include_directories(domain_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(

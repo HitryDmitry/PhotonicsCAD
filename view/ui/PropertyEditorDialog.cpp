@@ -4,6 +4,8 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QVBoxLayout>
+#include <string>
+#include <map>
 #include "ComponentDefinition.h"
 #include "ComponentInstance.h"
 
@@ -29,11 +31,27 @@ void PropertyEditorDialog::buildUI()
         QString unit = paramDef["unit"].toString();
         QString datatype = paramDef["datatype"].toString();
 
-        // для поиска соответствующего параметра в instance пока используется такое решение
         QVariant value = paramDef["default"];
+
+        // Преобразуем ключ в std::string для поиска в стандартной карте
+        std::string stdKey = key.toStdString();
+
         for (const auto &paramInst : instance->parameters) {
-            if (paramInst.values().contains(key)) {
-                value = paramInst["default"];
+            // Эквивалент оригинального "paramInst.values().contains(key)"
+            bool containsValue = false;
+            for (const auto &[k, v] : paramInst) {
+                if (v == stdKey) {
+                    containsValue = true;
+                    break;
+                }
+            }
+
+            if (containsValue) {
+                // Безопасный поиск значения "default" в константной std::map
+                auto it = paramInst.find("default");
+                if (it != paramInst.end()) {
+                    value = QString::fromStdString(it->second);
+                }
             }
         }
 
@@ -89,17 +107,31 @@ void PropertyEditorDialog::applyChanges()
         QString datatype = paramDef["datatype"].toString();
 
         QWidget *editor = editors[key];
+        std::string stdKey = key.toStdString();
 
         for (auto &paramInst : instance->parameters) {
-            if (paramInst.values().contains(key)) {
+            // Эквивалент "paramInst.values().contains(key)"
+            bool containsValue = false;
+            for (const auto &[k, v] : paramInst) {
+                if (v == stdKey) {
+                    containsValue = true;
+                    break;
+                }
+            }
+
+            if (containsValue) {
+                // Конвертация числовых и строковых типов обратно в std::string
                 if (datatype == "double") {
-                    paramInst["default"] = static_cast<QDoubleSpinBox *>(editor)->value();
+                    double val = static_cast<QDoubleSpinBox *>(editor)->value();
+                    paramInst["default"] = QString::number(val).toStdString();
 
                 } else if (datatype == "int") {
-                    paramInst["default"] = static_cast<QSpinBox *>(editor)->value();
+                    int val = static_cast<QSpinBox *>(editor)->value();
+                    paramInst["default"] = std::to_string(val);
 
                 } else {
-                    paramInst["default"] = static_cast<QLineEdit *>(editor)->text();
+                    QString val = static_cast<QLineEdit *>(editor)->text();
+                    paramInst["default"] = val.toStdString();
                 }
             }
         }
