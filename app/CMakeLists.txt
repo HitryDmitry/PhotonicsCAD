@@ -5,8 +5,6 @@ project(
   VERSION 0.1
   LANGUAGES CXX)
 
-# set(CMAKE_AUTOUIC ON) set(CMAKE_AUTOMOC ON) set(CMAKE_AUTORCC ON)
-
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
@@ -24,14 +22,10 @@ else()
   endif()
 endif()
 
-# путь к VIEWMODEL_LIB
-# Переменная ${CMAKE_SOURCE_DIR} указывает на корень всего проекта,
-target_include_directories(CADapp PRIVATE ${CMAKE_SOURCE_DIR}/view)
-
 # ликовка с библиотекой VIEWMODEL_LIB
 target_link_libraries(
   CADapp PRIVATE Qt${QT_VERSION_MAJOR}::Widgets component_library editor_lib
-                 ui_lib domain_lib viewmodel_lib) # <-- Добавили viewmodel_lib в самый конец
+                 ui_lib domain_lib viewmodel_lib)
 
 set_target_properties(
   CADapp
