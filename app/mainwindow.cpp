@@ -3,7 +3,6 @@
 
 #include <QKeyEvent>
 #include <QMetaMethod>
-#include "Circuit.h"
 #include "CircuitScene.h"
 #include "ComponentDefinition.h"
 #include "ComponentInstance.h"

@@ -5,7 +5,7 @@
 #include "ComponentInstance.h"
 #include "ComponentDefinition.h"
 
-// Интерфейс наблюдателя для связи ViewModel -> View (как в Части 2 видеоуроков)
+// Интерфейс наблюдателя для связи ViewModel -> View
 class ICircuitObserver
 {
 public:
@@ -19,13 +19,10 @@ public:
     CircuitViewModel();
     ~CircuitViewModel();
 
-    // Метод добавления компонента с использованием фабрики
     void addComponent(const ComponentDefinition &def, double x, double y);
 
-    // Доступ к модели схемы (для совместимости со старым кодом сцены)
     Circuit* getCircuit() const;
 
-    // Методы паттерна "Наблюдатель" (как в Части 2 и 3 видеоуроков)
     void addObserver(ICircuitObserver *observer);
     void removeObserver(ICircuitObserver *observer);
 

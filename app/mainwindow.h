@@ -2,9 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "CircuitViewModel.h"
 #include "ComponentLibraryManager.h"
 #include "GraphicsComponentItem.h"
-#include "CircuitViewModel.h" // Подключаем ViewModel и интерфейс наблюдателя
 
 class CircuitScene;
 
@@ -16,7 +16,6 @@ class MainWindow;
 }
 QT_END_NAMESPACE
 
-// MainWindow теперь реализует интерфейс наблюдателя ICircuitObserver
 class MainWindow : public QMainWindow, public ICircuitObserver
 {
     Q_OBJECT
@@ -52,7 +51,6 @@ private:
     CircuitScene *m_scene;
     ComponentLibraryManager componentLibrary;
 
-    // MainWindow теперь владеет ViewModel, а не схемой напрямую
     std::unique_ptr<CircuitViewModel> viewModel;
 
     // --- ФУНКЦИИ И ПЕРЕМЕННЫЕ ВЕРХНЕЙ ПАНЕЛИ ---
