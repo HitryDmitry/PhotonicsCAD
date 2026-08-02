@@ -85,7 +85,6 @@ void GraphicsComponentItem::createPins(const ComponentDefinition *def)
             stdPinDef[key.toStdString()] = value.toString().toStdString();
         }
 
-        // Передаем сконвертированную стандартную карту в обновленный конструктор PinInstance
         auto pinInst = std::make_unique<PinInstance>(stdPinDef);
         pinInst->component = instance;
 

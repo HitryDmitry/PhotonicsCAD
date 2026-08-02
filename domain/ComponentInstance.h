@@ -20,10 +20,8 @@ public:
     ComponentInstance(const ComponentDefinition &def);
 
     std::string type;
-    Point2D position; // Заменили QPointF на Point2D
+    Point2D position;
 
-    // Заменили QVector<QMap<...>> на std::vector<std::map<...>>
     std::vector<std::map<std::string, std::string>> parameters;
-
     std::vector<std::unique_ptr<PinInstance>> pins;
 };

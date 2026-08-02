@@ -9,10 +9,8 @@ class Wire;
 class PinInstance
 {
 public:
-    // Заменили QMap<QString, QVariant> на стандартную карту строк
     PinInstance(const std::map<std::string, std::string> &pinDef);
 
-    // Возвращаем стандартное неупорядоченное множество
     std::unordered_set<Wire *> getWires();
     void addWirePtr(Wire *);
 

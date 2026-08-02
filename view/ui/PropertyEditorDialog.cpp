@@ -37,7 +37,6 @@ void PropertyEditorDialog::buildUI()
         std::string stdKey = key.toStdString();
 
         for (const auto &paramInst : instance->parameters) {
-            // Эквивалент оригинального "paramInst.values().contains(key)"
             bool containsValue = false;
             for (const auto &[k, v] : paramInst) {
                 if (v == stdKey) {
@@ -110,7 +109,6 @@ void PropertyEditorDialog::applyChanges()
         std::string stdKey = key.toStdString();
 
         for (auto &paramInst : instance->parameters) {
-            // Эквивалент "paramInst.values().contains(key)"
             bool containsValue = false;
             for (const auto &[k, v] : paramInst) {
                 if (v == stdKey) {
