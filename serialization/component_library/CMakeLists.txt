@@ -1,8 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 project(component_library)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core)
+find_package(Qt6 REQUIRED COMPONENTS Core)
 
 set(SOURCES_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -12,4 +11,4 @@ add_library(
   ${SOURCES_DIR}/ComponentLibraryManager.h ${SOURCES_DIR}/ComponentDefinition.h)
 
 target_include_directories(component_library PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(component_library PRIVATE Qt${QT_VERSION_MAJOR}::Core)
+target_link_libraries(component_library PUBLIC Qt${QT_VERSION_MAJOR}::Core)

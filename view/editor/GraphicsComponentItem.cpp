@@ -74,7 +74,7 @@ void GraphicsComponentItem::createPins(const ComponentDefinition *def)
     int count = def->pins.size();
 
     for (int i = 0; i < count; i++) {
-        // Делаем ссылку на словарь, описывающий пин: def->pins.at(i)
+        // Ссылка на словарь, описывающий пин: def->pins.at(i)
         // Возможно это понадобится при определении положения пинов в зависимости от
         // параметров пина
         const auto &currentPin = def->pins.at(i);

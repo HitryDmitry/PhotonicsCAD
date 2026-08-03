@@ -3,8 +3,7 @@ project(domain_lib)
 
 add_subdirectory(simulation)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets)
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
 
 set(SOURCES_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -16,7 +15,8 @@ add_library(
   ${SOURCES_DIR}/Circuit.cpp
   ${SOURCES_DIR}/PinInstance.cpp
   ${SOURCES_DIR}/PinInstance.h
-  ${SOURCES_DIR}/Wire.h)
+  ${SOURCES_DIR}/Wire.h
+  ${SOURCES_DIR}/ComponentFactory.h)
 
 target_include_directories(domain_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(

@@ -15,6 +15,7 @@ add_library(
   ${SOURCES_DIR}/CircuitViewModel.h
   ${SOURCES_DIR}/IViewModelListener.h)
 
-
 target_include_directories(viewmodel_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(viewmodel_lib PRIVATE domain_lib)
+
+# Добавляем компонентную библиотеку в зависимости, чтобы пробросить пути к ComponentDefinition.h
+target_link_libraries(viewmodel_lib PRIVATE domain_lib component_library)

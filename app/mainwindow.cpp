@@ -3,7 +3,6 @@
 
 #include <QKeyEvent>
 #include <QMetaMethod>
-#include "Circuit.h"
 #include "CircuitScene.h"
 #include "ComponentDefinition.h"
 #include "ComponentInstance.h"
@@ -29,10 +28,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->listWidget->setDragEnabled(true);
     ui->listWidget->setDragDropMode(ComponentListWidget::DragOnly);
 
-    // Создаем схему
-    currentCircuit = std::make_unique<Circuit>();
+    //Создание ViewModel, которая внутри себя создаст и будет владеть Circuit
+    viewModel = std::make_unique<CircuitViewModel>();
 
-    // Создаем сцену
+    // Регистрация MainWindow как наблюдателя во ViewModel
+    viewModel->addObserver(this);
+
+    // Создание сцены
     m_scene = new CircuitScene(this);
 
     // Обработка нажатия Escape - удаление временного провода
@@ -44,8 +46,8 @@ MainWindow::MainWindow(QWidget *parent)
             m_scene,
             SLOT(onDeleteButton(QGraphicsItem *)));
 
-    // Передаем указатель на схему в сцену-редактор
-    m_scene->setCircuit(currentCircuit.get());
+    // Передаем указатель на схему, которой теперь владеет ViewModel, в сцену-редактор
+    m_scene->setCircuit(viewModel->getCircuit());
 
     // Устанавливаем сцену в GraphicsView из ui
     ui->graphicsView->setScene(m_scene);
@@ -70,34 +72,34 @@ MainWindow::MainWindow(QWidget *parent)
             SLOT(onComponentDropped(QString, QPointF)));
 }
 
+// Вызывается при падении иконки на сцену
 void MainWindow::onComponentDropped(const QString &type, const QPointF &pos)
 {
     const ComponentDefinition *def = componentLibrary.getByType(type);
 
     if (!def) {
         qDebug() << "Can't get ComponentDefinition from componentLibrary by type.";
+        return;
     }
 
-    auto component = std::make_unique<ComponentInstance>(*def);
+    // Вся логика делегируется ViewModel. ViewModel создаст модель компонента
+    // через фабрику и автоматически уведомит нас
+    viewModel->addComponent(*def, pos.x(), pos.y());
+}
 
-    ComponentInstance *componentPtr = component.get();
-    if (componentPtr == nullptr) {
-        qDebug() << "ComponentInstance is nullptr!";
-    }
-
-    // Безопасное преобразование типов на стыке UI и доменного слоя
-    component->type = type.toStdString();
-    component->position = Point2D{ pos.x(), pos.y() };
-    currentCircuit->components.push_back(std::move(component));
-
-    auto item = new GraphicsComponentItem(componentPtr, def);
+// Реализация паттерна "Наблюдатель"
+void MainWindow::onComponentAdded(ComponentInstance *instance, const ComponentDefinition *def)
+{
+    // Отрисовываем графическое представление для добавленного компонента
+    auto item = new GraphicsComponentItem(instance, def);
 
     connect(item,
             SIGNAL(doubleClicked(ComponentInstance *)),
             this,
             SLOT(onComponentDoubleClicked(ComponentInstance *)));
 
-    item->setPos(pos);
+    // Позиционируем элемент на сцене в соответствии со значениями из доменной модели
+    item->setPos(instance->position.x, instance->position.y);
 
     m_scene->addItem(item);
 }
@@ -110,7 +112,6 @@ void MainWindow::onItemSelected(GraphicsComponentItem *item)
         qDebug() << "Can't retrieve ComponentInstance from selected GraphicsComponentItem.";
     }
 
-    // Выводим отдельные составляющие x и y нашей кастомной структуры Point2D
     qDebug() << "Position: " << instance->position.x << ", " << instance->position.y;
 }
 
@@ -134,7 +135,6 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 
 void MainWindow::onComponentDoubleClicked(ComponentInstance *instance)
 {
-    // Преобразуем стандартный std::string обратно в QString
     const ComponentDefinition *def = componentLibrary.getByType(QString::fromStdString(instance->type));
 
     if (!def)
@@ -146,6 +146,10 @@ void MainWindow::onComponentDoubleClicked(ComponentInstance *instance)
 
 MainWindow::~MainWindow()
 {
+    // Корректная отписка от наблюдателя в деструкторе (как в Части 3 видеоуроков!)
+    if (viewModel) {
+        viewModel->removeObserver(this);
+    }
     delete ui;
 }
 
