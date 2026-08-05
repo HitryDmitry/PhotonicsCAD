@@ -85,14 +85,7 @@ void GraphicsComponentItem::createPins(const ComponentDefinition *def)
             stdPinDef[key.toStdString()] = value.toString().toStdString();
         }
 
-        auto pinInst = std::make_unique<PinInstance>(stdPinDef);
-        pinInst->component = instance;
-
-        PinInstance *pinPtr = pinInst.get();
-
-        instance->pins.push_back(std::move(pinInst));
-
-        auto pinItem = new PinItem(pinPtr, this);
+        auto pinItem = new PinItem(instance->mPins.at(i).get(), this);
 
         pins.push_back(pinItem);
 

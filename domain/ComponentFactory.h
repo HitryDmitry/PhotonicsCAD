@@ -10,8 +10,8 @@ public:
     static std::unique_ptr<ComponentInstance> createComponent(const ComponentDefinition &def, double x, double y)
     {
         auto instance = std::make_unique<ComponentInstance>(def);
-        instance->position = Point2D{ x, y };
-        instance->type = def.type.toStdString();
+        instance->mPosition = Point2D{x, y};
+        instance->mType = def.type.toStdString();
         return instance;
     }
 };

@@ -19,9 +19,9 @@ class ComponentInstance
 public:
     ComponentInstance(const ComponentDefinition &def);
 
-    std::string type;
-    Point2D position;
+    std::string mType;
+    Point2D mPosition;
 
-    std::vector<std::map<std::string, std::string>> parameters;
-    std::vector<std::unique_ptr<PinInstance>> pins;
+    std::vector<std::map<std::string, std::string>> mParameters;
+    std::vector<std::unique_ptr<PinInstance>> mPins;
 };

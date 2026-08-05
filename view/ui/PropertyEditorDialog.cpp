@@ -36,7 +36,7 @@ void PropertyEditorDialog::buildUI()
         // Преобразуем ключ в std::string для поиска в стандартной карте
         std::string stdKey = key.toStdString();
 
-        for (const auto &paramInst : instance->parameters) {
+        for (const auto &paramInst : instance->mParameters) {
             bool containsValue = false;
             for (const auto &[k, v] : paramInst) {
                 if (v == stdKey) {
@@ -108,7 +108,7 @@ void PropertyEditorDialog::applyChanges()
         QWidget *editor = editors[key];
         std::string stdKey = key.toStdString();
 
-        for (auto &paramInst : instance->parameters) {
+        for (auto &paramInst : instance->mParameters) {
             bool containsValue = false;
             for (const auto &[k, v] : paramInst) {
                 if (v == stdKey) {

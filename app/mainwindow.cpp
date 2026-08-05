@@ -99,7 +99,7 @@ void MainWindow::onComponentAdded(ComponentInstance *instance, const ComponentDe
             SLOT(onComponentDoubleClicked(ComponentInstance *)));
 
     // Позиционируем элемент на сцене в соответствии со значениями из доменной модели
-    item->setPos(instance->position.x, instance->position.y);
+    item->setPos(instance->mPosition.x, instance->mPosition.y);
 
     m_scene->addItem(item);
 }
@@ -112,7 +112,7 @@ void MainWindow::onItemSelected(GraphicsComponentItem *item)
         qDebug() << "Can't retrieve ComponentInstance from selected GraphicsComponentItem.";
     }
 
-    qDebug() << "Position: " << instance->position.x << ", " << instance->position.y;
+    qDebug() << "Position: " << instance->mPosition.x << ", " << instance->mPosition.y;
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
@@ -135,7 +135,8 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 
 void MainWindow::onComponentDoubleClicked(ComponentInstance *instance)
 {
-    const ComponentDefinition *def = componentLibrary.getByType(QString::fromStdString(instance->type));
+    const ComponentDefinition *def = componentLibrary.getByType(
+        QString::fromStdString(instance->mType));
 
     if (!def)
         return;
