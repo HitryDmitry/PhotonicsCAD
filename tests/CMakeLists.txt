@@ -2,4 +2,6 @@ cmake_minimum_required(VERSION 3.20)
 project(tests)
 
 add_subdirectory(doctest)
-add_subdirectory(viewmodeltest)
+add_subdirectory(viewmodel)
+add_subdirectory(domain)
+add_subdirectory(integration)
