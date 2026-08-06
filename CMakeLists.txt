@@ -14,4 +14,10 @@ add_subdirectory(plugins/components)
 add_subdirectory(view)
 add_subdirectory(viewmodel)
 add_subdirectory(serialization)
-add_subdirectory(tests)
+
+# Тесты включаются только при сборке с -DBUILD_TESTS=ON
+option(BUILD_TESTS "Build tests" ON)
+
+if(BUILD_TESTS)
+  add_subdirectory(tests)
+endif()
