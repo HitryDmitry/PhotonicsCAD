@@ -1,5 +1,6 @@
 #include "CircuitViewModel.h"
-#include "ComponentLibraryManager.h"
+#include <QString>
+#include "TestHelpers.h"
 #include <doctest/doctest.h>
 
 // Мок-слушатель для тестирования уведомлений
@@ -21,14 +22,12 @@ TEST_SUITE("ViewModel Layer - ComponentViewModel")
     {
         CircuitViewModel vm;
         MockObserver observer;
-        ComponentLibraryManager compLibManager;
 
-        compLibManager.loadFromJson(":/data/components.json");
         vm.addObserver(&observer);
 
-        const ComponentDefinition *def = compLibManager.getByType("laser");
+        ComponentDefinition def = TestHelpers::createLaserDefinition();
 
-        vm.addComponent(*def, 100.0f, 200.0f);
+        vm.addComponent(def, 100.0f, 200.0f);
 
         CHECK(observer.inst->mPosition.x == 100.0f);
         CHECK(observer.inst->mPosition.y == 200.0f);
