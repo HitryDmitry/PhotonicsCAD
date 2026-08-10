@@ -16,9 +16,9 @@ public:
     std::vector<std::string> componentTypes;
 };
 
-TEST_SUITE("ViewModel Layer - ComponentViewModel")
+TEST_SUITE("ViewModel Layer - CircuitViewModel")
 {
-    TEST_CASE("ComponentViewModel should notify observers on adding a component")
+    TEST_CASE("CircuitViewModel should notify observers on adding a component")
     {
         CircuitViewModel vm;
         MockObserver observer;
