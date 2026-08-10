@@ -6,6 +6,7 @@
 #include "CircuitScene.h"
 #include "ComponentDefinition.h"
 #include "ComponentInstance.h"
+#include "ComponentViewModel.h"
 #include "GraphicsView.h"
 #include "PropertyEditorDialog.h"
 
@@ -141,7 +142,9 @@ void MainWindow::onComponentDoubleClicked(ComponentInstance *instance)
     if (!def)
         return;
 
-    PropertyEditorDialog dialog(instance, def, this);
+    ComponentViewModel cvm(instance);
+
+    PropertyEditorDialog dialog(&cvm, def, this);
     dialog.exec();
 }
 

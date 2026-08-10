@@ -2,7 +2,7 @@
 #include <QDialog>
 #include <QMap>
 
-class ComponentInstance;
+class ComponentViewModel;
 class ComponentDefinition;
 class QFormLayout;
 
@@ -11,12 +11,12 @@ class PropertyEditorDialog : public QDialog
     Q_OBJECT
 
 public:
-    PropertyEditorDialog(ComponentInstance *instance,
+    PropertyEditorDialog(ComponentViewModel *compVM,
                          const ComponentDefinition *def,
                          QWidget *parent = nullptr);
 
 private:
-    ComponentInstance *instance;
+    ComponentViewModel *mCompVM;
     const ComponentDefinition *definition;
 
     QMap<QString, QWidget *> editors;
