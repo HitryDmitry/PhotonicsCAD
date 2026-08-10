@@ -1,10 +1,10 @@
 #include "CircuitViewModel.h"
-#include <QString>
+#include "ComponentViewModel.h"
 #include "TestHelpers.h"
 #include <doctest/doctest.h>
 
 // Мок-слушатель для тестирования уведомлений
-class MockObserver : public ICircuitObserver
+class MockCircuitObserver : public ICircuitObserver
 {
 public:
     void onComponentAdded(ComponentInstance *instance, const ComponentDefinition *def) override
@@ -21,7 +21,7 @@ TEST_SUITE("ViewModel Layer - CircuitViewModel")
     TEST_CASE("CircuitViewModel should notify observers on adding a component")
     {
         CircuitViewModel vm;
-        MockObserver observer;
+        MockCircuitObserver observer;
 
         vm.addObserver(&observer);
 
