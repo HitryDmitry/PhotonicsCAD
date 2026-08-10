@@ -20,7 +20,7 @@ GraphicsComponentItem::GraphicsComponentItem(ComponentInstance *instance,
     setFlag(ItemSendsGeometryChanges);
     setCacheMode(DeviceCoordinateCache);
 
-    createPins(def);
+    createPinItems(def);
 }
 
 QVariant GraphicsComponentItem::itemChange(GraphicsItemChange change, const QVariant &value)
@@ -69,7 +69,7 @@ void GraphicsComponentItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *even
     QGraphicsPixmapItem::mouseDoubleClickEvent(event);
 }
 
-void GraphicsComponentItem::createPins(const ComponentDefinition *def)
+void GraphicsComponentItem::createPinItems(const ComponentDefinition *def)
 {
     int count = def->pins.size();
 
