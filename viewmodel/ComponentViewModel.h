@@ -1,17 +1,23 @@
 #pragma once
-#include "ComponentDefinition.h"
 #include "ComponentInstance.h"
-#include <memory>
-#include <vector>
 
 class IComponentObserver
 {
 public:
     virtual ~IComponentObserver() = default;
-    virtual void onPinClick(ComponentInstance *instance, const ComponentDefinition *def) = 0;
+    virtual void onPropertyModyfied() = 0;
 };
 
 class ComponentViewModel
 {
 public:
+    explicit ComponentViewModel(ComponentInstance *instance);
+    void addObserver(IComponentObserver *);
+    void modifyProperty(std::string propertyName, std::string newValue);
+    const std::vector<std::map<std::string, std::string>> &getInstanceParamsVector();
+
+private:
+    void notifyObservers();
+    std::vector<IComponentObserver *> mObservers;
+    ComponentInstance *mInstance;
 };
