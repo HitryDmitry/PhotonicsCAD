@@ -24,11 +24,14 @@ public:
     {
         mSubject.addObserver(this);
     }
-    void onPropertyModyfied() override {}
-    void getDefaultParamsForBuildingUI() {}
-    void applyChanges() {}
+    void onPropertyModyfied() override { propertyModified = true; }
+    ~MockComponentObserver() override { mSubject.removeObserver(this); }
+
+    // void getDefaultParamsForBuildingUI() {}
+    // void applyChanges() {}
 
     ComponentViewModel &mSubject;
+    bool propertyModified = false;
 };
 
 TEST_SUITE("ViewModel Layer - CircuitViewModel")
@@ -53,6 +56,29 @@ TEST_SUITE("ViewModel Layer - CircuitViewModel")
 
 TEST_SUITE("ViewModel Layer - ComponentViewModel")
 {
+    TEST_CASE("Correct observer IComponentObserver is notified after parameters change")
+    {
+        // вспомогательный код для создания указателя на ComponentInstance
+        CircuitViewModel vm;
+        MockCircuitObserver circObserver;
+        vm.addObserver(&circObserver);
+        ComponentDefinition def = TestHelpers::createLaserDefinition();
+        vm.addComponent(def, 100.0f, 200.0f);
+
+        // Инициализация ComponentViewModel и наблюдателя (PropertyEditorDialog)
+        ComponentViewModel cvm(circObserver.inst);
+        MockComponentObserver propertyEditor1(cvm);
+        MockComponentObserver propertyEditor2(cvm);
+
+        // Изменяем один из параметров компонента
+        std::string propertyToChange("power");
+        std::string newValue("5.0");
+        cvm.modifyProperty(propertyToChange, newValue);
+
+        // Проверяем, что все наблюдатели были оповещены
+        REQUIRE(propertyEditor1.propertyModified == true);
+        REQUIRE(propertyEditor2.propertyModified == true);
+    }
     TEST_CASE("Test ComponentViewModel modifies value correctly")
     {
         // вспомогательный код для создания указателя на ComponentInstance
@@ -71,6 +97,7 @@ TEST_SUITE("ViewModel Layer - ComponentViewModel")
 
         cvm.modifyProperty(propertyToChange, newValue);
 
+        // проверяем, что данные действительно изменились
         for (auto &paramInst : cvm.getInstanceParamsVector()) {
             if (paramInst.at(keyStd) == propertyToChange) {
                 auto it = paramInst.find("default");
