@@ -16,7 +16,20 @@ PropertyEditorDialog::PropertyEditorDialog(ComponentViewModel *vm,
     , definition(def)
 {
     setWindowTitle(def->name);
+    mCompVM->addObserver(this);
     buildUI();
+}
+
+PropertyEditorDialog::~PropertyEditorDialog()
+{
+    if (mCompVM) {
+        mCompVM->removeObserver(this);
+    }
+}
+
+void PropertyEditorDialog::onPropertyModyfied()
+{
+    qDebug() << "Parameters were successfully changed.";
 }
 
 void PropertyEditorDialog::buildUI()
