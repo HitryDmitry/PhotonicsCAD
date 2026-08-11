@@ -129,21 +129,21 @@ void PropertyEditorDialog::applyChanges()
                 }
             }
 
-            // if (containsValue) {
-            //     // Конвертируем числовые и строковые типы обратно в std::string
-            //     if (datatype == "double") {
-            //         double val = static_cast<QDoubleSpinBox *>(editor)->value();
-            //         paramInst["default"] = QString::number(val).toStdString();
+            if (containsValue) {
+                // Конвертируем числовые и строковые типы обратно в std::string
+                if (datatype == "double") {
+                    double val = static_cast<QDoubleSpinBox *>(editor)->value();
+                    mCompVM->modifyProperty(stdKey, QString::number(val).toStdString());
 
-            //     } else if (datatype == "int") {
-            //         int val = static_cast<QSpinBox *>(editor)->value();
-            //         paramInst["default"] = std::to_string(val);
+                } else if (datatype == "int") {
+                    int val = static_cast<QSpinBox *>(editor)->value();
+                    mCompVM->modifyProperty(stdKey, std::to_string(val));
 
-            //     } else {
-            //         QString val = static_cast<QLineEdit *>(editor)->text();
-            //         paramInst["default"] = val.toStdString();
-            //     }
-            // }
+                } else {
+                    QString val = static_cast<QLineEdit *>(editor)->text();
+                    mCompVM->modifyProperty(stdKey, val.toStdString());
+                }
+            }
         }
     }
 }
