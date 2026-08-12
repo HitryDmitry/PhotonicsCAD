@@ -18,18 +18,11 @@ void ComponentViewModel::removeObserver(IComponentObserver *observer)
     }
 }
 
-void ComponentViewModel::modifyProperty(std::string propertyName, std::string newValue)
+void ComponentViewModel::modifyProperty(const std::string &propertyName, const std::string &newValue)
 {
-    for (auto &paramInst : mInstance->mParameters) {
-        if (paramInst.at("key") == propertyName) {
-            auto it = paramInst.find("default");
-            if (it != paramInst.end()) {
-                it->second = newValue;
-            }
-            break;
-        }
+    if (mInstance->setParameter(propertyName, newValue)) {
+        notifyObservers();
     }
-    notifyObservers();
 }
 
 void ComponentViewModel::notifyObservers()

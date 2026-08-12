@@ -34,3 +34,17 @@ ComponentInstance::ComponentInstance(const ComponentDefinition &def)
         mPins.push_back(std::move(pinInst));
     }
 }
+
+bool ComponentInstance::setParameter(const std::string &name, const std::string &value)
+{
+    // for (auto &paramInst : mInstance->mParameters) {
+    //     if (paramInst.at("key") == propertyName) {
+    //         auto it = paramInst.find("default");
+    //         if (it != paramInst.end()) {
+    //             it->second = newValue;
+    //         }
+    //         break;
+    //     }
+    // }
+    return 1;
+}

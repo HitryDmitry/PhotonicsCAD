@@ -19,6 +19,8 @@ class ComponentInstance
 public:
     ComponentInstance(const ComponentDefinition &def);
 
+    bool setParameter(const std::string &name, const std::string &value);
+
     std::string mType;
     Point2D mPosition;
 
