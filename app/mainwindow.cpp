@@ -89,7 +89,7 @@ void MainWindow::onComponentDropped(const QString &type, const QPointF &pos)
 }
 
 // Реализация паттерна "Наблюдатель"
-void MainWindow::onComponentAdded(ComponentInstance *instance, const ComponentDefinition *def)
+void MainWindow::onComponentAdded(ComponentViewModel *cvm, const ComponentDefinition *def)
 {
     // Отрисовываем графическое представление для добавленного компонента
     auto item = new GraphicsComponentItem(instance, def);
@@ -100,7 +100,7 @@ void MainWindow::onComponentAdded(ComponentInstance *instance, const ComponentDe
             SLOT(onComponentDoubleClicked(ComponentInstance *)));
 
     // Позиционируем элемент на сцене в соответствии со значениями из доменной модели
-    item->setPos(instance->mPosition.x, instance->mPosition.y);
+    item->setPos(cvm->getX(), cvm->getY());
 
     m_scene->addItem(item);
 }

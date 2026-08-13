@@ -27,7 +27,7 @@ public:
     void onItemSelected(GraphicsComponentItem *item);
 
     // Реализация чисто виртуального метода интерфейса наблюдателя
-    void onComponentAdded(ComponentInstance *instance, const ComponentDefinition *def) override;
+    void onComponentAdded(ComponentViewModel *cvm, const ComponentDefinition *def) override;
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;

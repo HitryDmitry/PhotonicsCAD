@@ -22,9 +22,18 @@ void CircuitViewModel::addComponent(const ComponentDefinition &def, double x, do
     // ViewModel добавляет его в модель Circuit, которой владеет
     m_circuit->components.push_back(std::move(component));
 
+    // Создаем ComponentViewModel
+    auto componentViewModel = std::make_unique<ComponentViewModel>(rawPtr);
+    auto compVMRawPtr = componentViewModel.get();
+
+    // Сохраняем его в контейнер (CircuitViewModel владеет множеством ComponentViewModel)
+    mComponentVMs.push_back(std::move(componentViewModel));
+
     //Уведомляем подписанные представления (MainWindow)
-    notifyComponentAdded(rawPtr, &def);
+    notifyComponentAdded(compVMRawPtr, &def);
 }
+
+void CircuitViewModel::removeComponent(ComponentViewModel *vm) {}
 
 void CircuitViewModel::addObserver(ICircuitObserver *observer)
 {
@@ -40,10 +49,9 @@ void CircuitViewModel::removeObserver(ICircuitObserver *observer)
                       m_observers.end());
 }
 
-void CircuitViewModel::notifyComponentAdded(ComponentInstance *instance,
-                                            const ComponentDefinition *def)
+void CircuitViewModel::notifyComponentAdded(ComponentViewModel *cvm, const ComponentDefinition *def)
 {
     for (auto *obs : m_observers) {
-        obs->onComponentAdded(instance, def);
+        obs->onComponentAdded(cvm, def);
     }
 }
