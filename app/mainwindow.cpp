@@ -105,17 +105,6 @@ void MainWindow::onComponentAdded(ComponentViewModel *cvm, const ComponentDefini
     m_scene->addItem(item);
 }
 
-void MainWindow::onItemSelected(GraphicsComponentItem *item)
-{
-    ComponentInstance *instance = item->getInstance();
-
-    if (!instance) {
-        qDebug() << "Can't retrieve ComponentInstance from selected GraphicsComponentItem.";
-    }
-
-    qDebug() << "Position: " << instance->mPosition.x << ", " << instance->mPosition.y;
-}
-
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Escape) {

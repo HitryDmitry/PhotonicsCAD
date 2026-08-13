@@ -24,8 +24,6 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow() override;
 
-    void onItemSelected(GraphicsComponentItem *item);
-
     // Реализация чисто виртуального метода интерфейса наблюдателя
     void onComponentAdded(ComponentViewModel *cvm, const ComponentDefinition *def) override;
 
