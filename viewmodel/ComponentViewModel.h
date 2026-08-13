@@ -16,6 +16,9 @@ public:
     void removeObserver(IComponentObserver *);
     void modifyProperty(const std::string &propertyName, const std::string &newValue);
 
+    double getX() const { return mInstance->getX(); }
+    double getY() const { return mInstance->getY(); }
+
     const std::vector<std::map<std::string, std::string>> &getInstanceParamsVector();
 
 private:

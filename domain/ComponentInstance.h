@@ -21,6 +21,9 @@ public:
 
     bool setParameter(const std::string &name, const std::string &value);
 
+    double getX() const;
+    double getY() const;
+
     std::string mType;
     Point2D mPosition;
 

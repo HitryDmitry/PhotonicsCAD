@@ -37,14 +37,23 @@ ComponentInstance::ComponentInstance(const ComponentDefinition &def)
 
 bool ComponentInstance::setParameter(const std::string &name, const std::string &value)
 {
-    // for (auto &paramInst : mInstance->mParameters) {
-    //     if (paramInst.at("key") == propertyName) {
-    //         auto it = paramInst.find("default");
-    //         if (it != paramInst.end()) {
-    //             it->second = newValue;
-    //         }
-    //         break;
-    //     }
-    // }
-    return 1;
+    for (auto &paramInst : mParameters) {
+        if (paramInst.at("key") == name) {
+            auto it = paramInst.find("default");
+            if (it != paramInst.end()) {
+                it->second = value;
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+
+double ComponentInstance::getX() const
+{
+    return mPosition.x;
+}
+double ComponentInstance::getY() const
+{
+    return mPosition.y;
 }
