@@ -3,15 +3,14 @@
 #include <QGraphicsItem>
 #include <QSet>
 
-class PinInstance;
+class ComponentViewModel;
 class WireItem;
 
 class PinItem : public QObject, public QGraphicsEllipseItem
 {
     Q_OBJECT
 public:
-    PinItem(PinInstance *pin, QGraphicsItem *parent = nullptr);
-    PinInstance *getPin() const;
+    PinItem(ComponentViewModel *cvm, QGraphicsItem *parent = nullptr);
     void addWire(WireItem *);
     const QSet<WireItem *> &getWireItems();
 
@@ -24,6 +23,6 @@ protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
-    PinInstance *pin;
+    ComponentViewModel *mCompVM;
     QSet<WireItem *> wireItems;
 };

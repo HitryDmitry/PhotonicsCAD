@@ -92,7 +92,7 @@ void MainWindow::onComponentDropped(const QString &type, const QPointF &pos)
 void MainWindow::onComponentAdded(ComponentViewModel *cvm, const ComponentDefinition *def)
 {
     // Отрисовываем графическое представление для добавленного компонента
-    auto item = new GraphicsComponentItem(instance, def);
+    auto item = new GraphicsComponentItem(cvm, def);
 
     connect(item,
             SIGNAL(doubleClicked(ComponentInstance *)),

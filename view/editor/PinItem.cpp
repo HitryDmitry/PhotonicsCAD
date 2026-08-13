@@ -1,14 +1,14 @@
 #include "PinItem.h"
 #include <QBrush>
-#include "PinInstance.h"
+#include "ComponentViewModel.h"
 #include "WireItem.h"
 #include <qgraphicsscene.h>
 #include <qgraphicssceneevent.h>
 #include <qpen.h>
 
-PinItem::PinItem(PinInstance *pin, QGraphicsItem *parent)
+PinItem::PinItem(ComponentViewModel *cvm, QGraphicsItem *parent)
     : QGraphicsEllipseItem(parent)
-    , pin(pin)
+    , mCompVM(cvm)
 {
     // Включаем получение событий наведения
     setAcceptHoverEvents(true);
@@ -20,11 +20,6 @@ PinItem::PinItem(PinInstance *pin, QGraphicsItem *parent)
     // Set the fill to empty/transparent
     setBrush(Qt::NoBrush);
     setZValue(10.0);
-}
-
-PinInstance *PinItem::getPin() const
-{
-    return pin;
 }
 
 void PinItem::addWire(WireItem *wire)

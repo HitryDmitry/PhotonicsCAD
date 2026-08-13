@@ -7,9 +7,9 @@
 #include "PinItem.h"
 #include "WireItem.h"
 
-GraphicsComponentItem::GraphicsComponentItem(ComponentInstance *instance,
+GraphicsComponentItem::GraphicsComponentItem(ComponentViewModel *compViewModel,
                                              const ComponentDefinition *def)
-    : instance(instance)
+    : mComponentVM(compViewModel)
 {
     setPixmap(QPixmap(def->iconPath));
     setScale(0.25);
@@ -22,6 +22,10 @@ GraphicsComponentItem::GraphicsComponentItem(ComponentInstance *instance,
 
     createPinItems(def);
 }
+
+GraphicsComponentItem::~GraphicsComponentItem() {}
+
+void GraphicsComponentItem::onPropertyModyfied() {}
 
 QVariant GraphicsComponentItem::itemChange(GraphicsItemChange change, const QVariant &value)
 {
@@ -53,9 +57,9 @@ QVariant GraphicsComponentItem::itemChange(GraphicsItemChange change, const QVar
     return QGraphicsPixmapItem::itemChange(change, newValue);
 }
 
-ComponentInstance *GraphicsComponentItem::getInstance()
+const QString &GraphicsComponentItem::getComponentType()
 {
-    return instance;
+    return componentType;
 }
 
 QVector<PinItem *> GraphicsComponentItem::getPins()
@@ -65,7 +69,7 @@ QVector<PinItem *> GraphicsComponentItem::getPins()
 
 void GraphicsComponentItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
-    emit doubleClicked(instance);
+    emit doubleClicked(mComponentVM);
     QGraphicsPixmapItem::mouseDoubleClickEvent(event);
 }
 
@@ -85,7 +89,7 @@ void GraphicsComponentItem::createPinItems(const ComponentDefinition *def)
             stdPinDef[key.toStdString()] = value.toString().toStdString();
         }
 
-        auto pinItem = new PinItem(instance->mPins.at(i).get(), this);
+        auto pinItem = new PinItem(mComponentVM, this);
 
         pins.push_back(pinItem);
 
