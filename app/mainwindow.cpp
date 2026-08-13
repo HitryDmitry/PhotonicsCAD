@@ -7,6 +7,7 @@
 #include "ComponentDefinition.h"
 #include "ComponentInstance.h"
 #include "ComponentViewModel.h"
+#include "GraphicsComponentItem.h"
 #include "GraphicsView.h"
 #include "PropertyEditorDialog.h"
 

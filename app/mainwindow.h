@@ -4,13 +4,13 @@
 #include <QMainWindow>
 #include "CircuitViewModel.h"
 #include "ComponentLibraryManager.h"
-#include "GraphicsComponentItem.h"
 
 class CircuitScene;
 
 QT_BEGIN_NAMESPACE
 class QAction;
 class QToolBar;
+class QGraphicsItem;
 namespace Ui {
 class MainWindow;
 }
