@@ -151,20 +151,6 @@ void CircuitScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsScene::mouseMoveEvent(event);
 }
 
-bool CircuitScene::canConnect(PinInstance *a, PinInstance *b)
-{
-    if (a->signalType != b->signalType)
-        return false;
-
-    if (a->direction == b->direction)
-        return false;
-
-    if (a->component == b->component)
-        return false;
-
-    return true;
-}
-
 void CircuitScene::addItem(QGraphicsItem *item)
 {
     QGraphicsScene::addItem(item);

@@ -6,10 +6,10 @@
 
 struct WireKey
 {
-    const PinInstance *a;
-    const PinInstance *b;
+    const PinRef *a;
+    const PinRef *b;
 
-    WireKey(const PinInstance *p1, const PinInstance *p2)
+    WireKey(const PinRef *p1, const PinRef *p2)
     {
         // canonical ordering
         if (p1 < p2) {
@@ -41,8 +41,19 @@ struct hash<WireKey>
 class Circuit
 {
 public:
-    std::vector<std::unique_ptr<ComponentInstance>> components;
-    std::vector<std::unique_ptr<Wire>> wires;
+    bool addComponent();
+    bool removeComponent();
+    bool moveComponent();
 
-    std::unordered_set<WireKey> wireIndex;
+    bool canConnect(const PinRef &a, const PinRef &b);
+    bool addWire(const PinRef &a, const PinRef &b);
+    bool removeWire(const PinRef &a, const PinRef &b);
+
+    ComponentInstance *findComponent(ComponentId id);
+
+    // private:
+    std::vector<std::unique_ptr<ComponentInstance>> mComponents;
+    std::vector<std::unique_ptr<Wire>> mWires;
+
+    std::unordered_set<WireKey> mWireIdxs;
 };

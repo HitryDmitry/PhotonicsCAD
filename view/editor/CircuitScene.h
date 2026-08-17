@@ -17,7 +17,6 @@ class CircuitScene : public QGraphicsScene
 public:
     explicit CircuitScene(QObject *parent = nullptr);
 
-    bool canConnect(PinInstance *a, PinInstance *b);
     void addItem(QGraphicsItem *item);
     void connectPinToSlots(PinItem *pinToConnect);
     void setCircuit(Circuit *circuit);
