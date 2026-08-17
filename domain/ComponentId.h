@@ -12,6 +12,9 @@ public:
 
     constexpr bool operator==(const ComponentId &) const = default;
 
+    constexpr bool operator<(const ComponentId &other) const { return mValue < other.mValue; }
+    constexpr bool operator>(const ComponentId &other) const { return mValue > other.mValue; }
+
 private:
     std::uint64_t mValue{};
 };
