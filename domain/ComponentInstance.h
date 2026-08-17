@@ -6,6 +6,7 @@
 
 #include "ComponentDefinition.h"
 #include "PinInstance.h"
+#include "PinRef.h"
 
 // Легковесная структура для замены QPointF в доменной модели
 struct Point2D
