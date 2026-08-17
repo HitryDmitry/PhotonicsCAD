@@ -9,33 +9,31 @@ TEST_SUITE("Test connection logic")
     {
         Circuit circuit;
 
-        ComponentDefinition fiberDef = TestHelpers::createOpticalFiberDefinition();
-        ComponentDefinition eomDef = TestHelpers::createElectroOpticModulatorDefinition();
-
-        auto fiberInst = ComponentFactory::createComponent(fiberDef, 100.0, 200.0);
-        auto eomInst = ComponentFactory::createComponent(eomDef, 100.0, 200.0);
-
-        ComponentInstance *fiberRawPtr = fiberInst.get();
-        ComponentInstance *eomRawPtr = eomInst.get();
-
-        circuit.addComponent();
-        circuit.addComponent();
-
         // Формируем два разных идентификатора для входного и выходного пина волокна
         ComponentId fiberId(1);
-        PinIndex fiberInputPin(1);
-        PinIndex fiberOutputPin(2);
+        PinIndex fiberInputPin(0);
+        PinIndex fiberOutputPin(1);
         PinRef fiberInPin{fiberId, fiberInputPin};
         PinRef fiberOutPin{fiberId, fiberOutputPin};
 
         // Также для EOM
         ComponentId eomId(2);
-        PinIndex eomInOpt(1);
-        PinIndex eomPinElectr(2);
-        PinIndex eomOutOpt(3);
+        PinIndex eomInOpt(0);
+        PinIndex eomPinElectr(1);
+        PinIndex eomOutOpt(2);
         PinRef eomInPin{eomId, eomInOpt};
         PinRef eomControlPin{eomId, eomPinElectr};
         PinRef eomOutPin{eomId, eomOutOpt};
+
+        // Создаем компоненты
+        ComponentDefinition fiberDef = TestHelpers::createOpticalFiberDefinition();
+        ComponentDefinition eomDef = TestHelpers::createElectroOpticModulatorDefinition();
+
+        auto fiberInst = ComponentFactory::createComponent(fiberDef, fiberId, 100.0, 200.0);
+        auto eomInst = ComponentFactory::createComponent(eomDef, eomId, 100.0, 200.0);
+
+        circuit.addComponent(std::move(fiberInst));
+        circuit.addComponent(std::move(eomInst));
 
         // можно подключиться к другому компоненту
         REQUIRE(circuit.canConnect(fiberOutPin, eomInPin) == true);
@@ -52,33 +50,31 @@ TEST_SUITE("Test connection logic")
     {
         Circuit circuit;
 
-        ComponentDefinition fiberDef = TestHelpers::createOpticalFiberDefinition();
-        ComponentDefinition eomDef = TestHelpers::createElectroOpticModulatorDefinition();
-
-        auto fiberInst = ComponentFactory::createComponent(fiberDef, 100.0, 200.0);
-        auto eomInst = ComponentFactory::createComponent(eomDef, 100.0, 200.0);
-
-        ComponentInstance *fiberRawPtr = fiberInst.get();
-        ComponentInstance *eomRawPtr = eomInst.get();
-
-        circuit.addComponent();
-        circuit.addComponent();
-
         // Формируем два разных идентификатора для входного и выходного пина волокна
         ComponentId fiberId(1);
-        PinIndex fiberInputPin(1);
-        PinIndex fiberOutputPin(2);
+        PinIndex fiberInputPin(0);
+        PinIndex fiberOutputPin(1);
         PinRef fiberInPin{fiberId, fiberInputPin};
         PinRef fiberOutPin{fiberId, fiberOutputPin};
 
         // Также для EOM
         ComponentId eomId(2);
-        PinIndex eomInOpt(1);
-        PinIndex eomPinElectr(2);
-        PinIndex eomOutOpt(3);
+        PinIndex eomInOpt(0);
+        PinIndex eomPinElectr(1);
+        PinIndex eomOutOpt(2);
         PinRef eomInPin{eomId, eomInOpt};
         PinRef eomControlPin{eomId, eomPinElectr};
         PinRef eomOutPin{eomId, eomOutOpt};
+
+        // Создаем компоненты
+        ComponentDefinition fiberDef = TestHelpers::createOpticalFiberDefinition();
+        ComponentDefinition eomDef = TestHelpers::createElectroOpticModulatorDefinition();
+
+        auto fiberInst = ComponentFactory::createComponent(fiberDef, fiberId, 100.0, 200.0);
+        auto eomInst = ComponentFactory::createComponent(eomDef, eomId, 100.0, 200.0);
+
+        circuit.addComponent(std::move(fiberInst));
+        circuit.addComponent(std::move(eomInst));
 
         // нельзя подключить оптический выход к электрическому
         REQUIRE(circuit.canConnect(eomControlPin, fiberOutPin) == false);
@@ -91,3 +87,5 @@ TEST_SUITE("Test connection logic")
 
     TEST_CASE("Connection successful") {}
 }
+
+TEST_SUITE("Adding/removing components") {}

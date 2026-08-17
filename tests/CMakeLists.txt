@@ -7,8 +7,9 @@ add_subdirectory(domain)
 add_subdirectory(integration)
 add_subdirectory(helpers)
 
-add_executable(photonics_tests main_test.cpp
-                               $<TARGET_OBJECTS:viewmodeltests_lib>)
+add_executable(
+  photonics_tests main_test.cpp $<TARGET_OBJECTS:viewmodeltests_lib>
+                  $<TARGET_OBJECTS:domaintests_lib>)
 
 target_include_directories(photonics_tests PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(
