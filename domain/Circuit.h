@@ -1,5 +1,6 @@
 #pragma once
 #include "ComponentInstance.h"
+#include "PinRef.h"
 #include "Wire.h"
 
 struct WireKey
