@@ -6,15 +6,6 @@
 #include <string>
 #include <map>
 
-#include "ComponentId.h"
-#include "PinIndex.h"
-
-struct PinRef
-{
-    ComponentId componentId;
-    PinIndex pinIndex;
-};
-
 class ComponentInstance;
 class Wire;
 
