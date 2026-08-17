@@ -1,7 +1,9 @@
 #include "ComponentInstance.h"
 
-ComponentInstance::ComponentInstance(const ComponentDefinition &def)
+ComponentInstance::ComponentInstance(const ComponentDefinition &def, ComponentId id)
 {
+    // id компонента
+    mId = id;
     // Тип компонента
     mType = def.type.toStdString();
     size_t paramCount = def.parameters.count();
@@ -35,6 +37,11 @@ ComponentInstance::ComponentInstance(const ComponentDefinition &def)
     }
 }
 
+ComponentId ComponentInstance::getId() const noexcept
+{
+    return mId;
+}
+
 bool ComponentInstance::setParameter(const std::string &name, const std::string &value)
 {
     for (auto &paramInst : mParameters) {
@@ -56,4 +63,17 @@ double ComponentInstance::getX() const
 double ComponentInstance::getY() const
 {
     return mPosition.y;
+}
+
+const PinInstance &ComponentInstance::findPin(PinIndex idx) const
+{
+    const size_t pinIndex = idx.value();
+    const size_t pinCount = mPins.size();
+
+    if (pinIndex >= pinCount) {
+        throw std::out_of_range("Pin index " + std::to_string(pinIndex) + " is out of range (0.."
+                                + std::to_string(pinCount - 1) + ")");
+    }
+
+    return *mPins[pinIndex];
 }
