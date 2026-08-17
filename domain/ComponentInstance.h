@@ -26,6 +26,8 @@ public:
     double getX() const;
     double getY() const;
 
+    const std::string &getType();
+
     const PinInstance &findPin(PinIndex idx) const;
 
     std::string mType;

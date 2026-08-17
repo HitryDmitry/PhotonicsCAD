@@ -65,6 +65,11 @@ double ComponentInstance::getY() const
     return mPosition.y;
 }
 
+const std::string &ComponentInstance::getType()
+{
+    return mType;
+}
+
 const PinInstance &ComponentInstance::findPin(PinIndex idx) const
 {
     const size_t pinIndex = idx.value();

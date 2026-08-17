@@ -19,6 +19,8 @@ public:
     double getX() const { return mInstance->getX(); }
     double getY() const { return mInstance->getY(); }
 
+    const std::string &getType() { return mInstance->getType(); };
+
     const std::vector<std::map<std::string, std::string>> &getInstanceParamsVector();
 
 private:
