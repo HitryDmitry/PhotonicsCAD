@@ -18,7 +18,8 @@ add_library(
   ${SOURCES_DIR}/Wire.h
   ${SOURCES_DIR}/ComponentFactory.h
   ${SOURCES_DIR}/ComponentId.h
-  ${SOURCES_DIR}/PinIndex.h)
+  ${SOURCES_DIR}/PinIndex.h
+  ${SOURCES_DIR}/ComponentIdGenerator.h)
 
 target_include_directories(domain_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(
