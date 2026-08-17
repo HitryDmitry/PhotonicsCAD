@@ -7,6 +7,12 @@ struct PinRef
     ComponentId componentId;
     PinIndex pinIndex;
 
+    bool operator==(const PinRef &other) const
+    {
+        return componentId.value() == other.componentId.value()
+               && pinIndex.value() == other.pinIndex.value();
+    }
+
     bool operator<(const PinRef &other) const
     {
         if (componentId != other.componentId)
