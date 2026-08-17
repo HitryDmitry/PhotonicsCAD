@@ -1,6 +1,7 @@
 #pragma once
 #include "Circuit.h"
 #include "ComponentDefinition.h"
+#include "ComponentIdGenerator.h"
 #include "ComponentViewModel.h"
 #include <memory>
 #include <vector>
@@ -33,4 +34,5 @@ private:
     std::vector<std::unique_ptr<ComponentViewModel>> mComponentVMs;
     std::unique_ptr<Circuit> m_circuit;
     std::vector<ICircuitObserver *> m_observers;
+    ComponentIdGenerator mIdGen;
 };

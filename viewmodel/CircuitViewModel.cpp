@@ -15,12 +15,14 @@ Circuit *CircuitViewModel::getCircuit() const
 
 void CircuitViewModel::addComponent(const ComponentDefinition &def, double x, double y)
 {
+    auto newCompId = mIdGen.generateNext();
+
     // Создание компонента с помощью фабрики
-    auto component = ComponentFactory::createComponent(def, x, y);
+    auto component = ComponentFactory::createComponent(def, newCompId, x, y);
     ComponentInstance *rawPtr = component.get();
 
     // ViewModel добавляет его в модель Circuit, которой владеет
-    m_circuit->components.push_back(std::move(component));
+    m_circuit->mComponents.push_back(std::move(component));
 
     // Создаем ComponentViewModel
     auto componentViewModel = std::make_unique<ComponentViewModel>(rawPtr);
