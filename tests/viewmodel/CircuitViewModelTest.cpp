@@ -7,7 +7,8 @@
 class MockCircuitObserver : public ICircuitObserver
 {
 public:
-    void onComponentAdded(ComponentInstance *instance, const ComponentDefinition *def) override
+    ~MockCircuitObserver() override;
+    void onComponentAdded(ComponentViewModel *cvm, const ComponentDefinition *def) override
     {
         componentTypes.push_back(instance->mType);
         inst = instance;
