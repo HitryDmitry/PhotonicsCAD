@@ -1,42 +1,39 @@
 #pragma once
-
 #include "ComponentInstance.h"
 #include "Wire.h"
-#include <memory>
 
 struct WireKey
 {
-    const PinRef *a;
-    const PinRef *b;
+    PinRef a;
+    PinRef b;
 
-    WireKey(const PinRef *p1, const PinRef *p2)
+    WireKey(const PinRef &p1, const PinRef &p2)
+        : a(p1)
+        , b(p2)
     {
-        // canonical ordering
-        if (p1 < p2) {
-            a = p1;
-            b = p2;
-        } else {
-            a = p2;
-            b = p1;
+        // canonical ordering по значению
+        if (a > b) {
+            std::swap(a, b);
         }
     }
 
     bool operator==(const WireKey &other) const { return a == other.a && b == other.b; }
 };
 
-namespace std {
 template<>
-struct hash<WireKey>
+struct std::hash<WireKey>
 {
     size_t operator()(const WireKey &k) const
     {
-        size_t h1 = std::hash<const void *>{}(k.a);
-        size_t h2 = std::hash<const void *>{}(k.b);
+        // Хэшируем значения
+        size_t h1 = std::hash<ComponentId>{}(k.a.componentId)
+                    ^ (std::hash<PinIndex>{}(k.a.pinIndex) << 1);
+        size_t h2 = std::hash<ComponentId>{}(k.b.componentId)
+                    ^ (std::hash<PinIndex>{}(k.b.pinIndex) << 1);
 
         return h1 ^ (h2 + 0x9e3779b9 + (h1 << 6) + (h1 >> 2));
     }
 };
-} // namespace std
 
 class Circuit
 {
