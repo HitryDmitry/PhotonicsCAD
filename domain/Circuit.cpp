@@ -1,5 +1,11 @@
 #include "Circuit.h"
 
+bool Circuit::addComponent(std::unique_ptr<ComponentInstance> ptr)
+{
+    mComponents.push_back(std::move(ptr));
+    return true;
+}
+
 bool Circuit::canConnect(const PinRef &a, const PinRef &b)
 {
     auto compA = findComponent(a.componentId);

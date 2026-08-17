@@ -41,7 +41,7 @@ struct hash<WireKey>
 class Circuit
 {
 public:
-    bool addComponent();
+    bool addComponent(std::unique_ptr<ComponentInstance> ptr);
     bool removeComponent();
     bool moveComponent();
 

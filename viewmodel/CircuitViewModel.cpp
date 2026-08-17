@@ -22,7 +22,7 @@ void CircuitViewModel::addComponent(const ComponentDefinition &def, double x, do
     ComponentInstance *rawPtr = component.get();
 
     // ViewModel добавляет его в модель Circuit, которой владеет
-    m_circuit->mComponents.push_back(std::move(component));
+    m_circuit->addComponent(std::move(component));
 
     // Создаем ComponentViewModel
     auto componentViewModel = std::make_unique<ComponentViewModel>(rawPtr);
