@@ -1,4 +1,6 @@
+#pragma once
 #include <cstdint>
+#include <functional>
 
 class PinIndex
 {
@@ -11,4 +13,10 @@ public:
 
 private:
     std::uint16_t mValue{};
+};
+
+template<>
+struct std::hash<PinIndex>
+{
+    size_t operator()(const PinIndex &idx) const { return idx.value(); }
 };

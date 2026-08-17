@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdint>
+#include <functional>
 
 class ComponentId
 {
@@ -18,4 +19,10 @@ public:
 
 private:
     std::uint64_t mValue{};
+};
+
+template<>
+struct std::hash<ComponentId>
+{
+    size_t operator()(const ComponentId &id) const { return id.value(); }
 };
