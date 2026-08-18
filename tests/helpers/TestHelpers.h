@@ -1,5 +1,7 @@
 #pragma once
 #include "ComponentDefinition.h"
+#include "ComponentId.h"
+#include "PinIndex.h"
 
 namespace TestHelpers {
 
@@ -176,6 +178,15 @@ inline ComponentDefinition createCustomDefinition(const QString &type,
     def.pins = pins;
     def.parameters = parameters;
     return def;
+}
+
+inline ComponentId makeComponentId(uint64_t id)
+{
+    return ComponentId{id};
+}
+inline PinIndex makePinIndex(uint16_t index)
+{
+    return PinIndex{index};
 }
 
 } // namespace TestHelpers

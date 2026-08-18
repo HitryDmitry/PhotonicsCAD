@@ -40,14 +40,20 @@ class Circuit
 {
 public:
     bool addComponent(std::unique_ptr<ComponentInstance> ptr);
-    bool removeComponent();
-    bool moveComponent();
+    bool removeComponent(ComponentId id);
+    bool moveComponent(ComponentId id, int newX, int newY);
 
     bool canConnect(const PinRef &a, const PinRef &b);
     bool addWire(const PinRef &a, const PinRef &b);
     bool removeWire(const PinRef &a, const PinRef &b);
 
     ComponentInstance *findComponent(ComponentId id);
+
+    Wire *findWire(const PinRef &a, const PinRef &b);
+
+    size_t getComponentCount() const { return mComponents.size(); }
+    size_t getWireCount() const { return mWires.size(); }
+    size_t getWireKeyCount() const { return mWireIdxs.size(); }
 
     // private:
     std::vector<std::unique_ptr<ComponentInstance>> mComponents;
