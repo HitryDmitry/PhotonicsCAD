@@ -15,12 +15,40 @@ PinInstance::PinInstance(const std::map<std::string, std::string> &pinDef)
     direction = getValue("direction");
 }
 
-std::unordered_set<Wire *> PinInstance::getWires()
+bool PinInstance::addWirePtr(Wire *wirePtr)
 {
-    return wires;
+    if (!wirePtr)
+        return false;
+
+    // Проверка на дубликат
+    if (wires.find(wirePtr) != wires.end()) {
+        return false;
+    }
+
+    wires.insert(wirePtr);
+    return true;
 }
 
-void PinInstance::addWirePtr(Wire *wirePtr)
+bool PinInstance::removeWirePtr(Wire *wirePtr)
 {
-    wires.insert(wirePtr);
+    if (!wirePtr)
+        return false;
+
+    auto it = wires.find(wirePtr);
+    if (it == wires.end()) {
+        return false;
+    }
+
+    wires.erase(it);
+    return true;
+}
+
+bool PinInstance::hasWire(Wire *wirePtr) const
+{
+    return wires.find(wirePtr) != wires.end();
+}
+
+void PinInstance::clearWires()
+{
+    wires.clear();
 }
