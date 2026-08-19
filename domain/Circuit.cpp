@@ -16,17 +16,38 @@ bool Circuit::addComponent(std::unique_ptr<ComponentInstance> ptr)
 
 bool Circuit::removeComponent(ComponentId id)
 {
-    auto it = std::find_if(mComponents.begin(), mComponents.end(), [&id](const auto &comp) {
+    auto compIt = std::find_if(mComponents.begin(), mComponents.end(), [&id](const auto &comp) {
         return comp->getId() == id;
     });
 
-    if (it == mComponents.end()) {
+    if (compIt == mComponents.end()) {
         return false;
     }
 
-    // Удаляем все провода, связанные с этим компонентом
-    // (это требует дополнительной логики)
-    mComponents.erase(it);
+    // // Удаляем все провода, связанные с этим компонентом (все WireKey, у которых
+    // // хотя бы один PinRef содержит ComponentId, равный id нашего компонента)
+    // for (auto wireIt = mWires.begin(); wireIt != mWires.end();) {
+    //     if (wireIt->first.connectedToComponent(id)) {
+    //         wireIt = mWires.erase(wireIt);
+    //     } else {
+    //         ++wireIt;
+    //     }
+    // }
+
+    // Собираем ключи проводов для удаления
+    std::vector<WireKey> keysToRemove;
+    for (const auto &[key, wire] : mWires) {
+        if (key.connectedToComponent(id)) {
+            keysToRemove.push_back(key);
+        }
+    }
+
+    // Удаляем провода по собранным ключам
+    for (const auto &key : keysToRemove) {
+        mWires.erase(key);
+    }
+
+    mComponents.erase(compIt);
     return true;
 }
 

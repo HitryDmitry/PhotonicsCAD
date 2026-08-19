@@ -19,6 +19,11 @@ struct WireKey
     }
 
     bool operator==(const WireKey &other) const { return a == other.a && b == other.b; }
+
+    bool connectedToComponent(ComponentId id) const
+    {
+        return a.componentId == id || b.componentId == id;
+    }
 };
 
 template<>
