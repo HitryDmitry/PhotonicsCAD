@@ -1,34 +1,31 @@
 #pragma once
-#include <QHash>
+#include "ComponentId.h"
 #include "PinInstance.h"
 
 class Wire
 {
 public:
-    Wire(PinInstance *startPin = nullptr, PinInstance *endPin = nullptr)
-        : from(startPin)
-        , to(endPin)
-    {}
+    Wire(PinInstance *startPin = nullptr, PinInstance *endPin = nullptr);
+
+    ~Wire();
+
+    PinInstance *getStartPin() const { return from; }
+    PinInstance *getEndPin() const { return to; }
+    PinInstance *getOtherPin(PinInstance *pin) const;
+
+    bool connectsToComponent(ComponentId id) const;
+    bool connectsToPin(PinInstance *pin) const;
 
     bool operator==(const Wire &other) const
     {
         return (from == other.from && to == other.to) || (from == other.to && to == other.from);
     }
 
-    friend size_t qHash(const Wire &wire, size_t seed = 0)
-    {
-        // Приводим к каноническому виду: меньший указатель первым
-        auto [first, second] = std::minmax(wire.from, wire.to);
-        return qHash(first, seed) ^ (qHash(second, seed) << 1);
-    }
+    // Запрещаем копирование
+    Wire(const Wire &) = delete;
+    Wire &operator=(const Wire &) = delete;
 
-    friend size_t qHash(Wire *wire, size_t seed = 0)
-    {
-        // Приводим к каноническому виду: меньший указатель первым
-        auto [first, second] = std::minmax(wire->from, wire->to);
-        return qHash(first, seed) ^ (qHash(second, seed) << 1);
-    }
-
+private:
     PinInstance *from;
     PinInstance *to;
 };

@@ -16,6 +16,7 @@ add_library(
   ${SOURCES_DIR}/PinInstance.cpp
   ${SOURCES_DIR}/PinInstance.h
   ${SOURCES_DIR}/Wire.h
+  ${SOURCES_DIR}/Wire.cpp
   ${SOURCES_DIR}/ComponentFactory.h
   ${SOURCES_DIR}/ComponentId.h
   ${SOURCES_DIR}/PinIndex.h
