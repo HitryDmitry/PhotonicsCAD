@@ -35,6 +35,10 @@ bool Circuit::canConnect(const PinRef &a, const PinRef &b)
     auto compA = findComponent(a.componentId);
     auto compB = findComponent(b.componentId);
 
+    if (!compA || !compB) {
+        return false;
+    }
+
     auto pinA = compA->findPin(a.pinIndex);
     auto pinB = compB->findPin(b.pinIndex);
 

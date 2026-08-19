@@ -282,161 +282,207 @@ TEST_SUITE("Adding/removing wires")
         CHECK(circuit.getWireCount() == 0);
     }
 }
-// TEST_SUITE("Adding/removing components")
-// {
-//     TEST_CASE("AddComponent - should add single component")
-//     {
-//         Circuit circuit;
-//         auto component = createTestComponent(1);
 
-//         bool result = circuit.addComponent(std::move(component));
+TEST_SUITE("Adding/removing components")
+{
+    TEST_CASE("AddComponent - should add single component")
+    {
+        Circuit circuit;
+        auto fiberId = makeComponentId(1);
 
-//         CHECK(result == true);
-//         CHECK(circuit.getComponentCount() == 1);
+        ComponentDefinition fiberDef = createOpticalFiberDefinition();
+        auto fiber = ComponentFactory::createComponent(fiberDef, fiberId, 100.0, 200.0);
 
-//         auto *found = circuit.findComponent(makeComponentId(1));
-//         REQUIRE(found != nullptr);
-//         CHECK(found->getId() == makeComponentId(1));
-//     }
+        bool result = circuit.addComponent(std::move(fiber));
 
-//     TEST_CASE("AddComponent - should add multiple components")
-//     {
-//         Circuit circuit;
+        CHECK(result == true);
+        CHECK(circuit.getComponentCount() == 1);
 
-//         auto comp1 = createTestComponent(1);
-//         auto comp2 = createTestComponent(2);
-//         auto comp3 = createTestComponent(3);
+        auto *found = circuit.findComponent(fiberId);
+        REQUIRE(found != nullptr);
+        CHECK(found->getId() == fiberId);
+    }
 
-//         CHECK(circuit.addComponent(std::move(comp1)));
-//         CHECK(circuit.addComponent(std::move(comp2)));
-//         CHECK(circuit.addComponent(std::move(comp3)));
+    TEST_CASE("AddComponent - should add multiple components")
+    {
+        Circuit circuit;
 
-//         CHECK(circuit.getComponentCount() == 3);
-//         CHECK(circuit.findComponent(makeComponentId(1)) != nullptr);
-//         CHECK(circuit.findComponent(makeComponentId(2)) != nullptr);
-//         CHECK(circuit.findComponent(makeComponentId(3)) != nullptr);
-//     }
+        auto fiberId = makeComponentId(1);
+        auto eomId = makeComponentId(2);
+        auto laserId = makeComponentId(3);
 
-//     TEST_CASE("AddComponent - should handle components with same ID")
-//     {
-//         Circuit circuit;
+        ComponentDefinition fiberDef = createOpticalFiberDefinition();
+        ComponentDefinition eomDef = createElectroOpticModulatorDefinition();
+        ComponentDefinition laserDef = createLaserDefinition();
+        auto fiber = ComponentFactory::createComponent(fiberDef, fiberId, 100.0, 200.0);
+        auto eom = ComponentFactory::createComponent(eomDef, eomId, 700.0, 900.0);
+        auto laser = ComponentFactory::createComponent(laserDef, laserId, 300.0, 400.0);
 
-//         auto comp1 = createTestComponent(1);
-//         auto comp2 = createTestComponent(1); // Тот же ID
+        CHECK(circuit.addComponent(std::move(fiber)));
+        CHECK(circuit.addComponent(std::move(eom)));
+        CHECK(circuit.addComponent(std::move(laser)));
 
-//         CHECK(circuit.addComponent(std::move(comp1)));
-//         CHECK(circuit.addComponent(
-//             std::move(comp2))); // Должен добавить (если нет проверки на дубликаты)
+        CHECK(circuit.getComponentCount() == 3);
+        CHECK(circuit.findComponent(makeComponentId(1)) != nullptr);
+        CHECK(circuit.findComponent(makeComponentId(2)) != nullptr);
+        CHECK(circuit.findComponent(makeComponentId(3)) != nullptr);
+    }
 
-//         // Примечание: текущая реализация позволяет дубликаты
-//         CHECK(circuit.getComponentCount() == 2);
+    TEST_CASE("AddComponent - components with same ID should not be added")
+    {
+        Circuit circuit;
 
-//         // findComponent вернет первый найденный
-//         auto *found = circuit.findComponent(makeComponentId(1));
-//         CHECK(found != nullptr);
-//     }
+        auto fiberId = makeComponentId(1);
 
-//     TEST_CASE("AddComponent - should handle empty component")
-//     {
-//         Circuit circuit;
+        ComponentDefinition fiberDef = createOpticalFiberDefinition();
+        auto fiber = ComponentFactory::createComponent(fiberDef, fiberId, 100.0, 200.0);
+        auto fiberDuplicate = ComponentFactory::createComponent(fiberDef, fiberId, 100.0, 200.0);
 
-//         bool result = circuit.addComponent(nullptr);
+        CHECK(circuit.addComponent(std::move(fiber)));
+        CHECK(circuit.addComponent(std::move(fiberDuplicate)) == false);
 
-//         // В текущей реализации push_back(nullptr) вызовет ошибку компиляции
-//         // или неопределенное поведение. Это показывает необходимость проверки.
-//         CHECK(result == true); // Текущая реализация не проверяет nullptr
-//         CHECK(circuit.getComponentCount() == 1);
-//     }
+        CHECK(circuit.getComponentCount() == 1);
 
-//     TEST_CASE("RemoveComponent - should remove existing component")
-//     {
-//         Circuit circuit;
-//         auto component = createTestComponent(1);
-//         circuit.addComponent(std::move(component));
+        auto *found = circuit.findComponent(fiberId);
+        CHECK(found != nullptr);
+    }
 
-//         bool result = circuit.removeComponent(makeComponentId(1));
+    TEST_CASE("AddComponent - should handle empty component")
+    {
+        Circuit circuit;
 
-//         CHECK(result == true);
-//         CHECK(circuit.getComponentCount() == 0);
-//         CHECK(circuit.findComponent(makeComponentId(1)) == nullptr);
-//     }
+        bool result = circuit.addComponent(nullptr);
 
-//     TEST_CASE("RemoveComponent - should remove correct component from multiple")
-//     {
-//         Circuit circuit;
-//         circuit.addComponent(createTestComponent(1));
-//         circuit.addComponent(createTestComponent(2));
-//         circuit.addComponent(createTestComponent(3));
+        CHECK(result == false);
+        CHECK(circuit.getComponentCount() == 0);
+    }
 
-//         bool result = circuit.removeComponent(makeComponentId(2));
+    TEST_CASE("RemoveComponent - should remove existing component")
+    {
+        Circuit circuit;
+        auto fiberId = makeComponentId(1);
+        ComponentDefinition fiberDef = createOpticalFiberDefinition();
+        auto fiber = ComponentFactory::createComponent(fiberDef, fiberId, 100.0, 200.0);
 
-//         CHECK(result == true);
-//         CHECK(circuit.getComponentCount() == 2);
-//         CHECK(circuit.findComponent(makeComponentId(1)) != nullptr);
-//         CHECK(circuit.findComponent(makeComponentId(2)) == nullptr);
-//         CHECK(circuit.findComponent(makeComponentId(3)) != nullptr);
-//     }
+        circuit.addComponent(std::move(fiber));
 
-//     TEST_CASE("RemoveComponent - should return false for non-existing component")
-//     {
-//         Circuit circuit;
-//         circuit.addComponent(createTestComponent(1));
+        bool result = circuit.removeComponent(fiberId);
 
-//         bool result = circuit.removeComponent(makeComponentId(999));
+        CHECK(result == true);
+        CHECK(circuit.getComponentCount() == 0);
+        CHECK(circuit.findComponent(makeComponentId(1)) == nullptr);
+    }
 
-//         CHECK(result == false);
-//         CHECK(circuit.getComponentCount() == 1);
-//     }
+    TEST_CASE("RemoveComponent - should remove correct component from multiple")
+    {
+        Circuit circuit;
+        auto fiberId = makeComponentId(1);
+        auto eomId = makeComponentId(2);
+        auto laserId = makeComponentId(3);
 
-//     TEST_CASE("RemoveComponent - should handle removal from empty circuit")
-//     {
-//         Circuit circuit;
+        ComponentDefinition fiberDef = createOpticalFiberDefinition();
+        ComponentDefinition eomDef = createElectroOpticModulatorDefinition();
+        ComponentDefinition laserDef = createLaserDefinition();
+        auto fiber = ComponentFactory::createComponent(fiberDef, fiberId, 100.0, 200.0);
+        auto eom = ComponentFactory::createComponent(eomDef, eomId, 700.0, 900.0);
+        auto laser = ComponentFactory::createComponent(laserDef, laserId, 300.0, 400.0);
 
-//         bool result = circuit.removeComponent(makeComponentId(1));
+        circuit.addComponent(std::move(fiber));
+        circuit.addComponent(std::move(eom));
+        circuit.addComponent(std::move(laser));
 
-//         CHECK(result == false);
-//         CHECK(circuit.getComponentCount() == 0);
-//     }
-//     TEST_CASE("Circuit - should handle component removal with wires")
-//     {
-//         Circuit circuit;
-//         circuit.addComponent(createTestComponent(1, 2));
-//         circuit.addComponent(createTestComponent(2, 2));
+        bool result = circuit.removeComponent(makeComponentId(2));
 
-//         PinRef pinA{makeComponentId(1), makePinIndex(0)};
-//         PinRef pinB{makeComponentId(2), makePinIndex(1)};
+        CHECK(result == true);
+        CHECK(circuit.getComponentCount() == 2);
+        CHECK(circuit.findComponent(makeComponentId(1)) != nullptr);
+        CHECK(circuit.findComponent(makeComponentId(2)) == nullptr);
+        CHECK(circuit.findComponent(makeComponentId(3)) != nullptr);
+    }
 
-//         circuit.addWire(pinA, pinB);
+    TEST_CASE("RemoveComponent - should return false for non-existing component")
+    {
+        Circuit circuit;
+        auto fiberId = makeComponentId(1);
+        ComponentDefinition fiberDef = createOpticalFiberDefinition();
+        auto fiber = ComponentFactory::createComponent(fiberDef, fiberId, 100.0, 200.0);
 
-//         // Удаляем компонент, но провода остаются (это баг в текущей реализации)
-//         circuit.removeComponent(makeComponentId(1));
+        circuit.addComponent(std::move(fiber));
 
-//         // В идеале провода должны быть удалены, но текущая реализация этого не делает
-//         CHECK(circuit.getComponentCount() == 1);
-//         CHECK(circuit.getWireCount() == 1); // Провод все еще существует
-//     }
+        bool result = circuit.removeComponent(makeComponentId(999));
 
-//     TEST_CASE("Circuit - should validate pin existence")
-//     {
-//         Circuit circuit;
-//         circuit.addComponent(createTestComponent(1, 2));
+        CHECK(result == false);
+        CHECK(circuit.getComponentCount() == 1);
+    }
 
-//         PinRef validPin{makeComponentId(1), makePinIndex(0)};
-//         PinRef invalidPin{makeComponentId(1), makePinIndex(5)}; // Несуществующий пин
+    TEST_CASE("RemoveComponent - should handle removal from empty circuit")
+    {
+        Circuit circuit;
 
-//         // В текущей реализации findPin может выбросить исключение
-//         CHECK_THROWS_AS(circuit.canConnect(validPin, invalidPin), std::out_of_range);
-//     }
+        bool result = circuit.removeComponent(makeComponentId(1));
 
-//     TEST_CASE("Circuit - should handle nullptr from findComponent")
-//     {
-//         Circuit circuit;
+        CHECK(result == false);
+        CHECK(circuit.getComponentCount() == 0);
+    }
 
-//         PinRef pinA{makeComponentId(999), makePinIndex(0)};
-//         PinRef pinB{makeComponentId(2), makePinIndex(1)};
+    TEST_CASE("Circuit - should handle component removal with wires")
+    {
+        Circuit circuit;
 
-//         // В текущей реализации будет nullptr dereference
-//         // CHECK_THROWS_AS(circuit.canConnect(pinA, pinB), std::runtime_error);
-//         // Это показывает необходимость проверки в коде
-//     }
-// }
+        auto fiberId = makeComponentId(1);
+        auto eomId = makeComponentId(2);
+        auto laserId = makeComponentId(3);
+
+        ComponentDefinition fiberDef = createOpticalFiberDefinition();
+        ComponentDefinition eomDef = createElectroOpticModulatorDefinition();
+        ComponentDefinition laserDef = createLaserDefinition();
+        auto fiberInst = ComponentFactory::createComponent(fiberDef, fiberId, 100.0, 200.0);
+        auto eomInst = ComponentFactory::createComponent(eomDef, eomId, 700.0, 900.0);
+        auto laserInst = ComponentFactory::createComponent(laserDef, laserId, 300.0, 400.0);
+
+        circuit.addComponent(std::move(fiberInst));
+        circuit.addComponent(std::move(eomInst));
+        circuit.addComponent(std::move(laserInst));
+
+        PinRef pinA{laserId, makePinIndex(0)};
+        PinRef pinB{fiberId, makePinIndex(0)};
+        PinRef pinC{fiberId, makePinIndex(1)};
+        PinRef pinD{eomId, makePinIndex(0)};
+
+        CHECK(circuit.addWire(pinA, pinB));
+        CHECK(circuit.addWire(pinC, pinD));
+
+        // Удаляем компонент, и привязанные к нему провода должны удалиться
+        circuit.removeComponent(fiberId);
+
+        CHECK(circuit.getComponentCount() == 2);
+        CHECK(circuit.getWireCount() == 0);
+    }
+
+    TEST_CASE("Circuit - should validate pin existence")
+    {
+        Circuit circuit;
+        auto fiberId = makeComponentId(1);
+
+        ComponentDefinition fiberDef = createOpticalFiberDefinition();
+        auto fiber = ComponentFactory::createComponent(fiberDef, fiberId, 100.0, 200.0);
+
+        circuit.addComponent(std::move(fiber));
+
+        PinRef validPin{fiberId, makePinIndex(0)};
+        PinRef invalidPin{fiberId, makePinIndex(5)}; // Несуществующий пин
+
+        // В текущей реализации findPin выбросит исключение
+        CHECK_THROWS_AS(circuit.canConnect(validPin, invalidPin), std::out_of_range);
+    }
+
+    TEST_CASE("Circuit - should handle nullptr from findComponent")
+    {
+        Circuit circuit;
+
+        PinRef pinA{makeComponentId(999), makePinIndex(0)};
+        PinRef pinB{makeComponentId(2), makePinIndex(1)};
+
+        CHECK(circuit.canConnect(pinA, pinB) == false);
+    }
+}
