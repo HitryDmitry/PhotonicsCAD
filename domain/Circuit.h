@@ -24,6 +24,15 @@ struct WireKey
     {
         return a.componentId == id || b.componentId == id;
     }
+
+    ComponentId getOtherComponent(ComponentId id) const
+    {
+        if (a.componentId == id)
+            return b.componentId;
+        if (b.componentId == id)
+            return a.componentId;
+        throw std::invalid_argument("Component not connected to this wire");
+    }
 };
 
 template<>
