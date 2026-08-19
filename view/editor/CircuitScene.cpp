@@ -64,35 +64,35 @@ void CircuitScene::onConnectionStarted(PinItem *pin)
 
 void CircuitScene::onConnectionCompleted(PinItem *from, PinItem *to)
 {
-    if (from == to) {
-        onConnectionCancelled();
-    } else {
-        auto fromPin = from->getPin();
-        auto toPin = to->getPin();
+    // if (from == to) {
+    //     onConnectionCancelled();
+    // } else {
+    //     auto fromPin = from->getPin();
+    //     auto toPin = to->getPin();
 
-        WireKey key(fromPin, toPin);
+    //     WireKey key(fromPin, toPin);
 
-        if (canConnect(fromPin, toPin) && !circuit->wireIndex.contains(key)) {
-            tempWire->setEndPin(to);
+    //     if (canConnect(fromPin, toPin) && !circuit->wireIndex.contains(key)) {
+    //         tempWire->setEndPin(to);
 
-            auto wire = std::make_unique<Wire>(fromPin, toPin);
-            auto wirePtr = wire.get();
+    //         auto wire = std::make_unique<Wire>(fromPin, toPin);
+    //         auto wirePtr = wire.get();
 
-            from->addWire(tempWire);
-            fromPin->addWirePtr(wirePtr);
+    //         from->addWire(tempWire);
+    //         fromPin->addWirePtr(wirePtr);
 
-            to->addWire(tempWire);
-            toPin->addWirePtr(wirePtr);
+    //         to->addWire(tempWire);
+    //         toPin->addWirePtr(wirePtr);
 
-            circuit->wireIndex.insert(key);
-            circuit->wires.push_back(std::move(wire));
+    //         circuit->wireIndex.insert(key);
+    //         circuit->wires.push_back(std::move(wire));
 
-            tempWire = nullptr;
-            startPin = nullptr;
-        } else {
-            qDebug() << "Can't connect!!";
-        }
-    }
+    //         tempWire = nullptr;
+    //         startPin = nullptr;
+    //     } else {
+    //         qDebug() << "Can't connect!!";
+    //     }
+    // }
 }
 
 void CircuitScene::onConnectionCancelled()
@@ -112,30 +112,30 @@ void CircuitScene::onEscapeButton()
 
 void CircuitScene::onDeleteButton(QGraphicsItem *item)
 {
-    if (auto *wireItem = qgraphicsitem_cast<WireItem *>(item)) {
-        qDebug() << "Deleting selected wire!";
+    // if (auto *wireItem = qgraphicsitem_cast<WireItem *>(item)) {
+    //     qDebug() << "Deleting selected wire!";
 
-        WireKey key(wireItem->getStartPin()->getPin(), wireItem->getEndPin()->getPin());
-        if (circuit->wireIndex.contains(key)) {
-            circuit->wireIndex.erase(key);
-            auto &wires = circuit->wires;
-            for (auto it = wires.begin(); it != wires.end();) {
-                auto &wirePtr = *it;
-                bool found = (wirePtr->from == wireItem->getStartPin()->getPin()
-                              && wirePtr->to == wireItem->getEndPin()->getPin())
-                             || (wirePtr->to == wireItem->getStartPin()->getPin()
-                                 && wirePtr->from == wireItem->getEndPin()->getPin());
-                if (wirePtr && found) {
-                    it = wires.erase(it); // erase возвращает следующий валидный итератор
-                } else {
-                    ++it;
-                }
-            }
-        }
+    //     WireKey key(wireItem->getStartPin()->getPin(), wireItem->getEndPin()->getPin());
+    //     if (circuit->wireIndex.contains(key)) {
+    //         circuit->wireIndex.erase(key);
+    //         auto &wires = circuit->wires;
+    //         for (auto it = wires.begin(); it != wires.end();) {
+    //             auto &wirePtr = *it;
+    //             bool found = (wirePtr->from == wireItem->getStartPin()->getPin()
+    //                           && wirePtr->to == wireItem->getEndPin()->getPin())
+    //                          || (wirePtr->to == wireItem->getStartPin()->getPin()
+    //                              && wirePtr->from == wireItem->getEndPin()->getPin());
+    //             if (wirePtr && found) {
+    //                 it = wires.erase(it); // erase возвращает следующий валидный итератор
+    //             } else {
+    //                 ++it;
+    //             }
+    //         }
+    //     }
 
-        removeItem(wireItem);
-        // TODO: Удалить этот провод из всех контейнеров
-    }
+    //     removeItem(wireItem);
+    //     // TODO: Удалить этот провод из всех контейнеров
+    // }
 }
 
 void CircuitScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
@@ -173,7 +173,6 @@ void CircuitScene::connectPinToSlots(PinItem *pinToConnect)
             this,
             SLOT(onConnectionCompleted(PinItem *, PinItem *)));
     connect(pinToConnect, SIGNAL(connectionCancelled()), this, SLOT(onConnectionCancelled()));
-    // connect(pinToConnect, , this, updateTempWire());
 }
 
 void CircuitScene::setCircuit(Circuit *newCircuit)
