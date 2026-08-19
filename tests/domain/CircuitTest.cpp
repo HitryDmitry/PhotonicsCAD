@@ -24,7 +24,6 @@ TEST_SUITE("Test connection logic")
         PinIndex eomPinElectr(1);
         PinIndex eomOutOpt(2);
         PinRef eomInPin{eomId, eomInOpt};
-        PinRef eomControlPin{eomId, eomPinElectr};
         PinRef eomOutPin{eomId, eomOutOpt};
 
         // Создаем компоненты
@@ -115,7 +114,6 @@ TEST_SUITE("Adding/removing wires")
 
         CHECK(result == true);
         CHECK(circuit.getWireCount() == 1);
-        CHECK(circuit.getWireKeyCount() == 1);
     }
 
     TEST_CASE("AddWire - should handle multiple wires")
@@ -149,7 +147,6 @@ TEST_SUITE("Adding/removing wires")
         CHECK(circuit.addWire(pinC, pinD));
 
         CHECK(circuit.getWireCount() == 2);
-        CHECK(circuit.getWireKeyCount() == 2);
     }
 
     TEST_CASE("AddWire - should handle canonical ordering")
@@ -177,7 +174,6 @@ TEST_SUITE("Adding/removing wires")
 
         CHECK(resultReverse == false);
         CHECK(circuit.getWireCount() == 1);
-        CHECK(circuit.getWireKeyCount() == 1);
     }
 
     TEST_CASE("AddWire - should not add duplicate wires")
@@ -206,7 +202,6 @@ TEST_SUITE("Adding/removing wires")
 
         CHECK(resultDuplicate == false);
         CHECK(circuit.getWireCount() == 1);
-        CHECK(circuit.getWireKeyCount() == 1);
     }
 
     TEST_CASE("RemoveWire - should remove existing wire")
@@ -234,7 +229,6 @@ TEST_SUITE("Adding/removing wires")
 
         CHECK(result == true);
         CHECK(circuit.getWireCount() == 0);
-        CHECK(circuit.getWireKeyCount() == 0);
     }
 
     TEST_CASE("RemoveWire - should handle canonical ordering")
@@ -262,7 +256,6 @@ TEST_SUITE("Adding/removing wires")
 
         CHECK(result == true);
         CHECK(circuit.getWireCount() == 0);
-        CHECK(circuit.getWireKeyCount() == 0);
     }
 
     TEST_CASE("RemoveWire - should return false for non-existing wire")

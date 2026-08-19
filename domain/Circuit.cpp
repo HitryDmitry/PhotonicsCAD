@@ -52,7 +52,14 @@ bool Circuit::canConnect(const PinRef &a, const PinRef &b)
 
 bool Circuit::addWire(const PinRef &a, const PinRef &b)
 {
-    // Проверяем существование компонентов
+    WireKey newWireKey(a, b);
+
+    // Проверка существования
+    if (mWires.contains(newWireKey)) {
+        return false;
+    }
+
+    // Проверка компонентов и пинов
     auto compA = findComponent(a.componentId);
     auto compB = findComponent(b.componentId);
 
@@ -60,23 +67,16 @@ bool Circuit::addWire(const PinRef &a, const PinRef &b)
         return false;
     }
 
-    // Проверяем возможность соединения
     if (!canConnect(a, b)) {
         return false;
     }
 
-    // Проверяем дубликаты
-    WireKey key(a, b);
-    if (mWireIdxs.find(key) != mWireIdxs.end()) {
-        return false;
-    }
-
-    // Создаем провод
     auto pinA = compA->findPin(a.pinIndex);
     auto pinB = compB->findPin(b.pinIndex);
 
-    mWireIdxs.insert(key);
-    mWires.push_back(std::make_unique<Wire>(&pinA, &pinB));
+    // Создаем и сохраняем провод с ключом
+    auto wire = std::make_unique<Wire>(&pinA, &pinB);
+    mWires.emplace(newWireKey, std::move(wire));
 
     return true;
 }
@@ -85,17 +85,20 @@ bool Circuit::removeWire(const PinRef &a, const PinRef &b)
 {
     WireKey key(a, b);
 
-    auto it = mWireIdxs.find(key);
-    if (it == mWireIdxs.end()) {
+    auto it = mWires.find(key);
+    if (it == mWires.end()) {
         return false;
     }
 
-    // Находим и удаляем соответствующий провод
-    // (сложно, т.к. нет прямой связи между WireKey и Wire)
-    // Требуется дополнительное поле или другая структура данных
-
-    mWireIdxs.erase(it);
+    mWires.erase(it);
     return true;
+}
+
+Wire *Circuit::findWire(const PinRef &a, const PinRef &b)
+{
+    WireKey key(a, b);
+    auto it = mWires.find(key);
+    return (it != mWires.end()) ? it->second.get() : nullptr;
 }
 
 ComponentInstance *Circuit::findComponent(ComponentId id)

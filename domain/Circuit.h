@@ -48,16 +48,12 @@ public:
     bool removeWire(const PinRef &a, const PinRef &b);
 
     ComponentInstance *findComponent(ComponentId id);
-
     Wire *findWire(const PinRef &a, const PinRef &b);
 
     size_t getComponentCount() const { return mComponents.size(); }
     size_t getWireCount() const { return mWires.size(); }
-    size_t getWireKeyCount() const { return mWireIdxs.size(); }
 
     // private:
     std::vector<std::unique_ptr<ComponentInstance>> mComponents;
-    std::vector<std::unique_ptr<Wire>> mWires;
-
-    std::unordered_set<WireKey> mWireIdxs;
+    std::unordered_map<WireKey, std::unique_ptr<Wire>> mWires;
 };
