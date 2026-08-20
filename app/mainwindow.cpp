@@ -36,8 +36,11 @@ MainWindow::MainWindow(QWidget *parent)
     // Регистрация MainWindow как наблюдателя во ViewModel
     viewModel->addObserver(this);
 
+    // Сырой указатель на ViewModel
+    auto viewModelPtr = viewModel.get();
+
     // Создание сцены
-    m_scene = new CircuitScene(this);
+    m_scene = new CircuitScene(this, viewModelPtr);
 
     // Обработка нажатия Escape - удаление временного провода
     connect(this, SIGNAL(escButtonPressed()), m_scene, SLOT(onEscapeButton()));
@@ -47,9 +50,6 @@ MainWindow::MainWindow(QWidget *parent)
             SIGNAL(deleteButtonPressed(QGraphicsItem *)),
             m_scene,
             SLOT(onDeleteButton(QGraphicsItem *)));
-
-    // Передаем указатель на схему, которой теперь владеет ViewModel, в сцену-редактор
-    m_scene->setCircuit(viewModel->getCircuit());
 
     // Устанавливаем сцену в GraphicsView из ui
     ui->graphicsView->setScene(m_scene);

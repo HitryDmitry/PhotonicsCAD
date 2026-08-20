@@ -1,7 +1,6 @@
 #include "CircuitScene.h"
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
-#include "Circuit.h"
 #include "GraphicsComponentItem.h"
 #include "PinItem.h"
 #include "WireItem.h"
