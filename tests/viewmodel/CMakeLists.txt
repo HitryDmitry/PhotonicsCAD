@@ -1,8 +1,10 @@
 cmake_minimum_required(VERSION 3.20)
 project(viewmodeltests)
 
-add_library(viewmodeltests_lib OBJECT
-            ${CMAKE_CURRENT_SOURCE_DIR}/CircuitViewModelTest.cpp)
+add_library(
+  viewmodeltests_lib OBJECT
+  ${CMAKE_CURRENT_SOURCE_DIR}/CircuitViewModelTest.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/ComponentViewModelTest.cpp)
 
 # Получаем include-директории из doctest
 get_target_property(DOCTEST_INCLUDE_DIRS doctest::doctest

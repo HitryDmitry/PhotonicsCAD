@@ -66,35 +66,7 @@ void CircuitScene::onPinClicked(PinItem *pin)
 
 void CircuitScene::tryToCompleteConnection(PinItem *from, PinItem *to)
 {
-    // if (from == to) {
-    //     onConnectionCancelled();
-    // } else {
-    //     auto fromPin = from->getPin();
-    //     auto toPin = to->getPin();
-
-    //     WireKey key(fromPin, toPin);
-
-    //     if (canConnect(fromPin, toPin) && !circuit->wireIndex.contains(key)) {
-    //         tempWire->setEndPin(to);
-
-    //         auto wire = std::make_unique<Wire>(fromPin, toPin);
-    //         auto wirePtr = wire.get();
-
-    //         from->addWire(tempWire);
-    //         fromPin->addWirePtr(wirePtr);
-
-    //         to->addWire(tempWire);
-    //         toPin->addWirePtr(wirePtr);
-
-    //         circuit->wireIndex.insert(key);
-    //         circuit->wires.push_back(std::move(wire));
-
-    //         tempWire = nullptr;
-    //         startPin = nullptr;
-    //     } else {
-    //         qDebug() << "Can't connect!!";
-    //     }
-    // }
+    // circuitVM.
 }
 
 void CircuitScene::cancelConnection()
