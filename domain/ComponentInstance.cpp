@@ -70,7 +70,7 @@ const std::string &ComponentInstance::getType()
     return mType;
 }
 
-const PinInstance &ComponentInstance::findPin(PinIndex idx) const
+const PinInstance &ComponentInstance::getPin(PinIndex idx) const
 {
     const size_t pinIndex = idx.value();
     const size_t pinCount = mPins.size();
@@ -81,4 +81,22 @@ const PinInstance &ComponentInstance::findPin(PinIndex idx) const
     }
 
     return *mPins[pinIndex];
+}
+
+PinInstance &ComponentInstance::getPin(PinIndex idx)
+{
+    const size_t pinIndex = idx.value();
+    const size_t pinCount = mPins.size();
+
+    if (pinIndex >= pinCount) {
+        throw std::out_of_range("Pin index " + std::to_string(pinIndex) + " is out of range (0.."
+                                + std::to_string(pinCount - 1) + ")");
+    }
+
+    return *mPins[pinIndex];
+}
+
+bool ComponentInstance::hasPin(PinIndex idx) const
+{
+    return idx.value() >= 0 && idx.value() < static_cast<std::uint16_t>(mPins.size());
 }

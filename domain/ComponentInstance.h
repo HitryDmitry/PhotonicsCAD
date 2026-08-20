@@ -31,7 +31,11 @@ public:
 
     const std::string &getType();
 
-    const PinInstance &findPin(PinIndex idx) const;
+    const PinInstance &getPin(PinIndex idx) const;
+    PinInstance &getPin(PinIndex idx);
+    bool hasPin(PinIndex idx) const;
+
+    PinInstance *findPin(PinIndex idx) { return hasPin(idx) ? &getPin(idx) : nullptr; }
 
     std::string mType;
     Point2D mPosition;
