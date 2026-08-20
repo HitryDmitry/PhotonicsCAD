@@ -3,14 +3,15 @@
 
 #include <QGraphicsScene>
 #include <QVector>
-#include "Wire.h"
+
+#include "CircuitViewModel.h"
 
 class WireItem;
 class PinItem;
 class PinInstance;
 class Circuit;
 
-class CircuitScene : public QGraphicsScene
+class CircuitScene : public QGraphicsScene, public ICircuitObserver
 {
     Q_OBJECT
 
@@ -20,6 +21,9 @@ public:
     void addItem(QGraphicsItem *item);
     void connectPinToSlots(PinItem *pinToConnect);
     void setCircuit(Circuit *circuit);
+
+    ~CircuitScene() override {};
+    void onComponentAdded(ComponentViewModel *cvm, const ComponentDefinition *def) override {};
 
 public slots:
     void onConnectionStarted(PinItem *pin);
