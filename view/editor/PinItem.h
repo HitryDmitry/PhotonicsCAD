@@ -15,9 +15,7 @@ public:
     const QSet<WireItem *> &getWireItems();
 
 signals:
-    void connectionStarted(PinItem *pin);
-    void connectionCompleted(PinItem *from, PinItem *to);
-    void connectionCancelled();
+    void pinClicked(PinItem *pin);
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;

@@ -34,6 +34,6 @@ const QSet<WireItem *> &PinItem::getWireItems()
 
 void PinItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    emit connectionStarted(this);
+    emit pinClicked(this);
     event->accept();
 }
