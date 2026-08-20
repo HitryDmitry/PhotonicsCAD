@@ -96,8 +96,8 @@ bool Circuit::addWire(const PinRef &a, const PinRef &b)
         return false;
     }
 
-    auto pinA = compA->getPin(a.pinIndex);
-    auto pinB = compB->getPin(b.pinIndex);
+    auto &pinA = compA->getPin(a.pinIndex);
+    auto &pinB = compB->getPin(b.pinIndex);
 
     // Создаем и сохраняем провод с ключом
     auto wire = std::make_unique<Wire>(&pinA, &pinB);
