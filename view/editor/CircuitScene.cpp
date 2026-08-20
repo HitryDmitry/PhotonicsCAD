@@ -52,10 +52,10 @@ void CircuitScene::drawBackground(QPainter *painter, const QRectF &rect)
     painter->drawLines(darkLines);
 }
 
-void CircuitScene::onConnectionStarted(PinItem *pin)
+void CircuitScene::onPinClicked(PinItem *pin)
 {
     if (tempWire) {
-        onConnectionCompleted(startPin, pin);
+        tryToCompleteConnection(startPin, pin);
     } else {
         startPin = pin;
         tempWire = new WireItem(startPin);
@@ -64,7 +64,7 @@ void CircuitScene::onConnectionStarted(PinItem *pin)
     }
 }
 
-void CircuitScene::onConnectionCompleted(PinItem *from, PinItem *to)
+void CircuitScene::tryToCompleteConnection(PinItem *from, PinItem *to)
 {
     // if (from == to) {
     //     onConnectionCancelled();
@@ -97,7 +97,7 @@ void CircuitScene::onConnectionCompleted(PinItem *from, PinItem *to)
     // }
 }
 
-void CircuitScene::onConnectionCancelled()
+void CircuitScene::cancelConnection()
 {
     if (tempWire) {
         qDebug() << "Connection cancelled, deleting tempWire!";
@@ -109,7 +109,7 @@ void CircuitScene::onConnectionCancelled()
 
 void CircuitScene::onEscapeButton()
 {
-    onConnectionCancelled();
+    cancelConnection();
 }
 
 void CircuitScene::onDeleteButton(QGraphicsItem *item)

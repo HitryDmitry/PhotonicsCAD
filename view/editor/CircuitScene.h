@@ -23,10 +23,11 @@ public:
     ~CircuitScene() override {};
     void onComponentAdded(ComponentViewModel *cvm, const ComponentDefinition *def) override {};
 
+    void tryToCompleteConnection(PinItem *from, PinItem *to);
+    void cancelConnection();
+
 public slots:
-    void onConnectionStarted(PinItem *pin);
-    void onConnectionCompleted(PinItem *from, PinItem *to);
-    void onConnectionCancelled();
+    void onPinClicked(PinItem *pin);
     void onEscapeButton();
     void onDeleteButton(QGraphicsItem *item);
 
