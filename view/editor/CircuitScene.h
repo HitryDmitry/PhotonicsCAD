@@ -2,13 +2,11 @@
 #define CIRCUITSCENE_H
 
 #include <QGraphicsScene>
-#include <QVector>
 
 #include "CircuitViewModel.h"
 
 class WireItem;
 class PinItem;
-class PinInstance;
 class Circuit;
 
 class CircuitScene : public QGraphicsScene, public ICircuitObserver
@@ -16,7 +14,7 @@ class CircuitScene : public QGraphicsScene, public ICircuitObserver
     Q_OBJECT
 
 public:
-    explicit CircuitScene(QObject *parent = nullptr);
+    explicit CircuitScene(QObject *parent = nullptr, CircuitViewModel *cvm = nullptr);
 
     void addItem(QGraphicsItem *item);
     void connectPinToSlots(PinItem *pinToConnect);
@@ -43,7 +41,7 @@ private:
     WireItem *tempWire = nullptr;
     PinItem *startPin = nullptr;
 
-    Circuit *circuit = nullptr;
+    CircuitViewModel *circuitVM;
 };
 
 #endif

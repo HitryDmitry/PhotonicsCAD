@@ -6,9 +6,12 @@
 #include "PinItem.h"
 #include "WireItem.h"
 
-CircuitScene::CircuitScene(QObject *parent)
+CircuitScene::CircuitScene(QObject *parent, CircuitViewModel *cvm)
     : QGraphicsScene(parent)
-{}
+    , circuitVM(cvm)
+{
+    circuitVM->addObserver(this);
+}
 
 void CircuitScene::drawBackground(QPainter *painter, const QRectF &rect)
 {
@@ -165,9 +168,4 @@ void CircuitScene::addItem(QGraphicsItem *item)
 void CircuitScene::connectPinToSlots(PinItem *pinToConnect)
 {
     connect(pinToConnect, SIGNAL(pinClicked(PinItem *)), this, SLOT(onConnectionStarted(PinItem *)));
-}
-
-void CircuitScene::setCircuit(Circuit *newCircuit)
-{
-    circuit = newCircuit;
 }
