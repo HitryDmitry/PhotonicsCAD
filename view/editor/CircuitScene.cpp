@@ -27,7 +27,7 @@ void CircuitScene::drawBackground(QPainter *painter, const QRectF &rect)
     QList<QLineF> darkLines;
 
     //  Рисуем вертикальные линии
-    for (qreal x = left; x < rect.right(); x += gridSize) {
+    for (qsizetype x = left; x < rect.right(); x += gridSize) {
         if (int(x) % (gridSize * 5) == 0)
             darkLines.append(QLineF(x, rect.top(), x, rect.bottom()));
         else
@@ -35,7 +35,7 @@ void CircuitScene::drawBackground(QPainter *painter, const QRectF &rect)
     }
 
     //  Рисуем горизонтальные линии
-    for (qreal y = top; y < rect.bottom(); y += gridSize) {
+    for (qsizetype y = top; y < rect.bottom(); y += gridSize) {
         if (int(y) % (gridSize * 5) == 0)
             darkLines.append(QLineF(rect.left(), y, rect.right(), y));
         else
