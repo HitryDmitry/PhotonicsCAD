@@ -24,7 +24,7 @@ public:
     const QString &getComponentType();
 
 signals:
-    void doubleClicked(ComponentViewModel *cvm);
+    void doubleClicked(ComponentId id);
 
 private:
     QString componentType;

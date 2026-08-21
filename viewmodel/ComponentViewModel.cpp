@@ -42,6 +42,11 @@ const std::string &ComponentViewModel::getType()
     return mCircuitVM->getComponent(mId)->getType();
 }
 
+const ComponentId ComponentViewModel::getId()
+{
+    return mId;
+}
+
 void ComponentViewModel::notifyObservers()
 {
     for (auto &o : mObservers) {

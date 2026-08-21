@@ -69,7 +69,7 @@ QVector<PinItem *> GraphicsComponentItem::getPins()
 
 void GraphicsComponentItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
-    emit doubleClicked(mComponentVM);
+    emit doubleClicked(mComponentVM->getId());
     QGraphicsPixmapItem::mouseDoubleClickEvent(event);
 }
 
