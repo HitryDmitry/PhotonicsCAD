@@ -3,7 +3,7 @@
 #include <algorithm>
 
 CircuitViewModel::CircuitViewModel()
-    : m_circuit(std::make_unique<Circuit>())
+    : mCircuit(std::make_unique<Circuit>())
 {}
 
 CircuitViewModel::~CircuitViewModel() = default;
@@ -16,7 +16,7 @@ void CircuitViewModel::addComponent(const ComponentDefinition &def, double x, do
     auto component = ComponentFactory::createComponent(def, newCompId, x, y);
 
     // ViewModel добавляет его в модель Circuit, которой владеет
-    m_circuit->addComponent(std::move(component));
+    mCircuit->addComponent(std::move(component));
 
     // Создаем ComponentViewModel
     auto componentViewModel = std::make_unique<ComponentViewModel>(newCompId, this);
@@ -33,21 +33,19 @@ void CircuitViewModel::removeComponent(ComponentViewModel *vm) {}
 
 void CircuitViewModel::addObserver(ICircuitObserver *observer)
 {
-    if (observer
-        && std::find(m_observers.begin(), m_observers.end(), observer) == m_observers.end()) {
-        m_observers.push_back(observer);
+    if (observer && std::find(mObservers.begin(), mObservers.end(), observer) == mObservers.end()) {
+        mObservers.push_back(observer);
     }
 }
 
 void CircuitViewModel::removeObserver(ICircuitObserver *observer)
 {
-    m_observers.erase(std::remove(m_observers.begin(), m_observers.end(), observer),
-                      m_observers.end());
+    mObservers.erase(std::remove(mObservers.begin(), mObservers.end(), observer), mObservers.end());
 }
 
 void CircuitViewModel::notifyComponentAdded(ComponentViewModel *cvm, const ComponentDefinition *def)
 {
-    for (auto *obs : m_observers) {
+    for (auto *obs : mObservers) {
         obs->onComponentAdded(cvm, def);
     }
 }
