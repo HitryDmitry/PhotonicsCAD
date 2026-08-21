@@ -29,11 +29,12 @@ public:
     void removeObserver(ICircuitObserver *observer);
 
     ComponentInstance *getComponent(ComponentId id);
+    ComponentViewModel *getComponentVM(ComponentId id);
 
 private:
     void notifyComponentAdded(ComponentViewModel *cvm, const ComponentDefinition *def);
 
-    std::vector<std::unique_ptr<ComponentViewModel>> mComponentVMs;
+    std::unordered_map<ComponentId, std::unique_ptr<ComponentViewModel>> mComponentVMs;
     std::unique_ptr<Circuit> mCircuit;
     std::vector<ICircuitObserver *> mObservers;
     ComponentIdGenerator mIdGen;

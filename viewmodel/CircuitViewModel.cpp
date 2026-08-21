@@ -23,7 +23,7 @@ void CircuitViewModel::addComponent(const ComponentDefinition &def, double x, do
     auto compVMRawPtr = componentViewModel.get();
 
     // Сохраняем его в контейнер (CircuitViewModel владеет множеством ComponentViewModel)
-    mComponentVMs.push_back(std::move(componentViewModel));
+    mComponentVMs.emplace(newCompId, std::move(componentViewModel));
 
     //Уведомляем подписанные представления (MainWindow)
     notifyComponentAdded(compVMRawPtr, &def);
@@ -46,6 +46,16 @@ void CircuitViewModel::removeObserver(ICircuitObserver *observer)
 ComponentInstance *CircuitViewModel::getComponent(ComponentId id)
 {
     return mCircuit->findComponent(id);
+}
+
+ComponentViewModel *CircuitViewModel::getComponentVM(ComponentId id)
+{
+    auto it = mComponentVMs.find(id);
+
+    if (it != mComponentVMs.end()) {
+        return it->second.get();
+    }
+    return nullptr;
 }
 
 void CircuitViewModel::notifyComponentAdded(ComponentViewModel *cvm, const ComponentDefinition *def)
