@@ -26,6 +26,7 @@ public:
     void clearWires();
 
     void setComponent(ComponentInstance *comp);
+    PinIndex getPinIdx() { return mIdx; };
 
 private:
     std::unordered_set<Wire *> wires;
