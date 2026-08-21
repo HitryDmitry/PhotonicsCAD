@@ -32,7 +32,7 @@ ComponentInstance::ComponentInstance(const ComponentDefinition &def, ComponentId
         }
 
         auto pinInst = std::make_unique<PinInstance>(stdPinDef);
-        pinInst->component = this;
+        pinInst->setComponent(this);
         mPins.push_back(std::move(pinInst));
     }
 }

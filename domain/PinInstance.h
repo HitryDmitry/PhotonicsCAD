@@ -6,6 +6,8 @@
 #include <string>
 #include <map>
 
+#include "PinIndex.h"
+
 class ComponentInstance;
 class Wire;
 
@@ -23,11 +25,13 @@ public:
     bool hasWire(Wire *wirePtr) const;
     void clearWires();
 
-    std::string id;
-    std::string signalType; // "optical" / "electrical"
-    std::string direction;  // "input" / "output"
-    ComponentInstance *component = nullptr;
+    void setComponent(ComponentInstance *comp);
 
 private:
     std::unordered_set<Wire *> wires;
+    PinIndex mIdx;
+    std::string id;         // "in" / "out"
+    std::string signalType; // "optical" / "electrical"
+    std::string direction;  // "input" / "output"
+    ComponentInstance *component = nullptr;
 };

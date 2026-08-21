@@ -52,3 +52,8 @@ void PinInstance::clearWires()
 {
     wires.clear();
 }
+
+void PinInstance::setComponent(ComponentInstance *comp)
+{
+    component = comp;
+}
