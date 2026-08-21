@@ -96,9 +96,9 @@ void MainWindow::onComponentAdded(ComponentViewModel *cvm, const ComponentDefini
     auto item = new GraphicsComponentItem(cvm, def);
 
     connect(item,
-            SIGNAL(doubleClicked(ComponentInstance *)),
+            SIGNAL(doubleClicked(ComponentId)),
             this,
-            SLOT(onComponentDoubleClicked(ComponentInstance *)));
+            SLOT(onComponentDoubleClicked(ComponentId)));
 
     // Позиционируем элемент на сцене в соответствии со значениями из доменной модели
     item->setPos(cvm->getX(), cvm->getY());
@@ -124,17 +124,17 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     }
 }
 
-void MainWindow::onComponentDoubleClicked(ComponentInstance *instance)
+void MainWindow::onComponentDoubleClicked(ComponentId id)
 {
     const ComponentDefinition *def = componentLibrary.getByType(
-        QString::fromStdString(instance->mType));
+        QString::fromStdString(viewModel->getComponent(id)->getType()));
 
     if (!def)
         return;
 
-    ComponentViewModel cvm(instance);
+    auto cvm = viewModel->getComponentVM(id);
 
-    PropertyEditorDialog dialog(&cvm, def, this);
+    PropertyEditorDialog dialog(cvm, def, this);
     dialog.exec();
 }
 
