@@ -42,7 +42,7 @@ const std::string &ComponentViewModel::getType()
     return mCircuitVM->getComponent(mId)->getType();
 }
 
-const ComponentId ComponentViewModel::getId()
+ComponentId ComponentViewModel::getId()
 {
     return mId;
 }

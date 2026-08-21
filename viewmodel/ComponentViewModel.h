@@ -26,7 +26,7 @@ public:
 
     const std::string &getType();
 
-    const ComponentId getId();
+    ComponentId getId();
 
     const std::vector<std::map<std::string, std::string>> &getInstanceParamsVector();
 
