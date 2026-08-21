@@ -1,7 +1,9 @@
 #include "ComponentViewModel.h"
+#include "CircuitViewModel.h"
 
-ComponentViewModel::ComponentViewModel(ComponentInstance *instance)
-    : mInstance(instance)
+ComponentViewModel::ComponentViewModel(ComponentId id, CircuitViewModel *cvm)
+    : mId(id)
+    , mCircuitVM(cvm)
 {}
 
 void ComponentViewModel::addObserver(IComponentObserver *observer)
@@ -20,9 +22,24 @@ void ComponentViewModel::removeObserver(IComponentObserver *observer)
 
 void ComponentViewModel::modifyProperty(const std::string &propertyName, const std::string &newValue)
 {
-    if (mInstance->setParameter(propertyName, newValue)) {
+    if (mCircuitVM->getComponent(mId)->setParameter(propertyName, newValue)) {
         notifyObservers();
     }
+}
+
+double ComponentViewModel::getX() const
+{
+    return mCircuitVM->getComponent(mId)->getX();
+}
+
+double ComponentViewModel::getY() const
+{
+    return mCircuitVM->getComponent(mId)->getY();
+}
+
+const std::string &ComponentViewModel::getType()
+{
+    return mCircuitVM->getComponent(mId)->getType();
 }
 
 void ComponentViewModel::notifyObservers()
@@ -34,5 +51,5 @@ void ComponentViewModel::notifyObservers()
 
 const std::vector<std::map<std::string, std::string> > &ComponentViewModel::getInstanceParamsVector()
 {
-    return mInstance->mParameters;
+    return mCircuitVM->getComponent(mId)->mParameters;
 }

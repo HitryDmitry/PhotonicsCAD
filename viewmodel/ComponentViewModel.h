@@ -1,5 +1,10 @@
 #pragma once
-#include "ComponentInstance.h"
+#include "ComponentId.h"
+#include <map>
+#include <memory>
+#include <string>
+
+class CircuitViewModel;
 
 class IComponentObserver
 {
@@ -11,20 +16,21 @@ public:
 class ComponentViewModel
 {
 public:
-    explicit ComponentViewModel(ComponentInstance *instance);
+    explicit ComponentViewModel(ComponentId id, CircuitViewModel *cvm);
     void addObserver(IComponentObserver *);
     void removeObserver(IComponentObserver *);
     void modifyProperty(const std::string &propertyName, const std::string &newValue);
 
-    double getX() const { return mInstance->getX(); }
-    double getY() const { return mInstance->getY(); }
+    double getX() const;
+    double getY() const;
 
-    const std::string &getType() { return mInstance->getType(); };
+    const std::string &getType();
 
     const std::vector<std::map<std::string, std::string>> &getInstanceParamsVector();
 
 private:
     void notifyObservers();
     std::vector<IComponentObserver *> mObservers;
-    ComponentInstance *mInstance;
+    ComponentId mId;
+    CircuitViewModel *mCircuitVM;
 };

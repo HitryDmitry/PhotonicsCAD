@@ -43,6 +43,11 @@ void CircuitViewModel::removeObserver(ICircuitObserver *observer)
     mObservers.erase(std::remove(mObservers.begin(), mObservers.end(), observer), mObservers.end());
 }
 
+ComponentInstance *CircuitViewModel::getComponent(ComponentId id)
+{
+    return mCircuit->findComponent(id);
+}
+
 void CircuitViewModel::notifyComponentAdded(ComponentViewModel *cvm, const ComponentDefinition *def)
 {
     for (auto *obs : mObservers) {

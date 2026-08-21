@@ -28,6 +28,8 @@ public:
     void addObserver(ICircuitObserver *observer);
     void removeObserver(ICircuitObserver *observer);
 
+    ComponentInstance *getComponent(ComponentId id);
+
 private:
     void notifyComponentAdded(ComponentViewModel *cvm, const ComponentDefinition *def);
 
