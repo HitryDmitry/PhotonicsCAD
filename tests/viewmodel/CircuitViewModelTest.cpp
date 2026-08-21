@@ -17,24 +17,6 @@ public:
     std::vector<std::string> componentTypes;
 };
 
-class MockComponentObserver : public IComponentObserver
-{
-public:
-    explicit MockComponentObserver(ComponentViewModel &subject)
-        : mSubject(subject)
-    {
-        mSubject.addObserver(this);
-    }
-    void onPropertyModyfied() override { propertyModified = true; }
-    ~MockComponentObserver() override { mSubject.removeObserver(this); }
-
-    // void getDefaultParamsForBuildingUI() {}
-    // void applyChanges() {}
-
-    ComponentViewModel &mSubject;
-    bool propertyModified = false;
-};
-
 TEST_SUITE("ViewModel Layer - CircuitViewModel")
 {
     TEST_CASE("CircuitViewModel should notify observers on adding a component")
