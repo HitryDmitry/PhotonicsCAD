@@ -6,6 +6,8 @@
 #include <memory>
 #include <vector>
 
+enum CircuitState { Dragging, Completed };
+
 // Интерфейс наблюдателя для связи ViewModel -> View
 class ICircuitObserver
 {
@@ -23,8 +25,6 @@ public:
     void addComponent(const ComponentDefinition &def, double x, double y);
     void removeComponent(ComponentViewModel *vm);
 
-    Circuit* getCircuit() const;
-
     void addObserver(ICircuitObserver *observer);
     void removeObserver(ICircuitObserver *observer);
 
@@ -35,4 +35,6 @@ private:
     std::unique_ptr<Circuit> m_circuit;
     std::vector<ICircuitObserver *> m_observers;
     ComponentIdGenerator mIdGen;
+
+    CircuitState state{Completed};
 };

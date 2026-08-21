@@ -8,24 +8,18 @@ CircuitViewModel::CircuitViewModel()
 
 CircuitViewModel::~CircuitViewModel() = default;
 
-Circuit *CircuitViewModel::getCircuit() const
-{
-    return m_circuit.get();
-}
-
 void CircuitViewModel::addComponent(const ComponentDefinition &def, double x, double y)
 {
     auto newCompId = mIdGen.generateNext();
 
     // Создание компонента с помощью фабрики
     auto component = ComponentFactory::createComponent(def, newCompId, x, y);
-    ComponentInstance *rawPtr = component.get();
 
     // ViewModel добавляет его в модель Circuit, которой владеет
     m_circuit->addComponent(std::move(component));
 
     // Создаем ComponentViewModel
-    auto componentViewModel = std::make_unique<ComponentViewModel>(rawPtr);
+    auto componentViewModel = std::make_unique<ComponentViewModel>(newCompId, this);
     auto compVMRawPtr = componentViewModel.get();
 
     // Сохраняем его в контейнер (CircuitViewModel владеет множеством ComponentViewModel)
