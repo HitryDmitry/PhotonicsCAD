@@ -54,9 +54,11 @@ void CircuitScene::drawBackground(QPainter *painter, const QRectF &rect)
 
 void CircuitScene::onPinClicked(PinItem *pin)
 {
-    if (tempWire) {
+    if (circuitVM->checkConnectionStarted()) {
         tryToCompleteConnection(startPin, pin);
     } else {
+        circuitVM->changeCircuitState(); // Изменяем состояние схемы на Dragging
+
         startPin = pin;
         tempWire = new WireItem(startPin);
         tempWire->setZValue(-1); // Помещаем провод позади всех
@@ -66,7 +68,15 @@ void CircuitScene::onPinClicked(PinItem *pin)
 
 void CircuitScene::tryToCompleteConnection(PinItem *from, PinItem *to)
 {
-    // circuitVM.
+    if (circuitVM->tryToConnect(from->getPinRef(), to->getPinRef())) {
+        tempWire->setEndPin(to);
+
+        from->addWire(tempWire);
+        to->addWire(tempWire);
+
+        tempWire = nullptr;
+        startPin = nullptr;
+    }
 }
 
 void CircuitScene::cancelConnection()

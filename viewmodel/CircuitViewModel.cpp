@@ -58,6 +58,31 @@ ComponentViewModel *CircuitViewModel::getComponentVM(ComponentId id)
     return nullptr;
 }
 
+void CircuitViewModel::changeCircuitState()
+{
+    if (state == CircuitState::Completed) {
+        state = CircuitState::Dragging;
+    } else {
+        state = CircuitState::Completed;
+    }
+}
+
+bool CircuitViewModel::checkConnectionStarted()
+{
+    if (state == CircuitState::Completed)
+        return true;
+    return false;
+}
+
+bool CircuitViewModel::tryToConnect(const PinRef &a, const PinRef &b)
+{
+    if (mCircuit->addWire(a, b)) {
+        changeCircuitState();
+        return true;
+    }
+    return false;
+}
+
 void CircuitViewModel::notifyComponentAdded(ComponentViewModel *cvm, const ComponentDefinition *def)
 {
     for (auto *obs : mObservers) {
