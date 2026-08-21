@@ -138,5 +138,5 @@ void CircuitScene::addItem(QGraphicsItem *item)
 
 void CircuitScene::connectPinToSlots(PinItem *pinToConnect)
 {
-    connect(pinToConnect, SIGNAL(pinClicked(PinItem *)), this, SLOT(onConnectionStarted(PinItem *)));
+    connect(pinToConnect, SIGNAL(pinClicked(PinItem *)), this, SLOT(onPinClicked(PinItem *)));
 }
