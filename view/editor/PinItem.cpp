@@ -32,6 +32,21 @@ const QSet<WireItem *> &PinItem::getWireItems()
     return wireItems;
 }
 
+ComponentId PinItem::getComponentId()
+{
+    return mCompVM->getId();
+}
+
+PinIndex PinItem::getPinIdx()
+{
+    return mIdx;
+}
+
+PinRef PinItem::getPinRef()
+{
+    return PinRef(getComponentId(), getPinIdx());
+}
+
 void PinItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     emit pinClicked(this);

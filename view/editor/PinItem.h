@@ -3,6 +3,8 @@
 #include <QGraphicsItem>
 #include <QSet>
 
+#include "PinRef.h"
+
 class ComponentViewModel;
 class WireItem;
 
@@ -14,6 +16,10 @@ public:
     void addWire(WireItem *);
     const QSet<WireItem *> &getWireItems();
 
+    ComponentId getComponentId();
+    PinIndex getPinIdx();
+    PinRef getPinRef();
+
 signals:
     void pinClicked(PinItem *pin);
 
@@ -23,4 +29,5 @@ protected:
 private:
     ComponentViewModel *mCompVM;
     QSet<WireItem *> wireItems;
+    PinIndex mIdx;
 };
