@@ -31,7 +31,7 @@ ComponentInstance::ComponentInstance(const ComponentDefinition &def, ComponentId
             stdPinDef[key.toStdString()] = value.toString().toStdString();
         }
 
-        auto pinInst = std::make_unique<PinInstance>(stdPinDef);
+        auto pinInst = std::make_unique<PinInstance>(stdPinDef, PinIndex(i));
         pinInst->setComponent(this);
         mPins.push_back(std::move(pinInst));
     }

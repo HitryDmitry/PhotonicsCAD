@@ -14,7 +14,7 @@ class Wire;
 class PinInstance
 {
 public:
-    PinInstance(const std::map<std::string, std::string> &pinDef);
+    PinInstance(const std::map<std::string, std::string> &pinDef, PinIndex idx);
 
     const std::unordered_set<Wire *> &getWires() const { return wires; }
     size_t getWireCount() const { return wires.size(); }

@@ -1,7 +1,8 @@
 #include "PinInstance.h"
 #include "Wire.h"
 
-PinInstance::PinInstance(const std::map<std::string, std::string> &pinDef)
+PinInstance::PinInstance(const std::map<std::string, std::string> &pinDef, PinIndex idx)
+    : mIdx(idx)
 {
     // В std::map нет метода .value(), возвращающего дефолтное значение при отсутствии ключа.
     // Напишем лямбду-помощник, чтобы безопасно извлекать строки без риска вызвать исключение.
