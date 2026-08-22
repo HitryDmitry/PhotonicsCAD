@@ -7,6 +7,7 @@ class WireItem : public QGraphicsPathItem
 {
 public:
     WireItem(PinItem *startPin);
+    ~WireItem();
 
     void setEndPoint(const QPointF &pos);
     void setEndPin(PinItem *pin);

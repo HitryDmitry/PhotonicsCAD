@@ -19,6 +19,12 @@ WireItem::WireItem(PinItem *startPin)
     setPath(initPath);
 }
 
+WireItem::~WireItem()
+{
+    startPin->removeWire(this);
+    endPin->removeWire(this);
+}
+
 void WireItem::setEndPoint(const QPointF &pos)
 {
     tempEnd = pos;
