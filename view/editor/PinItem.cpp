@@ -25,12 +25,21 @@ PinItem::PinItem(QGraphicsItem *parent, ComponentViewModel *cvm, PinIndex idx)
 
 void PinItem::addWire(WireItem *wire)
 {
-    wireItems.insert(wire);
+    mWireItems.insert(wire);
+}
+
+void PinItem::removeWire(WireItem *wire)
+{
+    if (mWireItems.remove(wire)) {
+        qDebug() << "WireItem was removed.";
+    } else {
+        qDebug() << "Can't remove WireItem!";
+    }
 }
 
 const QSet<WireItem *> &PinItem::getWireItems()
 {
-    return wireItems;
+    return mWireItems;
 }
 
 ComponentId PinItem::getComponentId()

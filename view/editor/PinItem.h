@@ -14,6 +14,7 @@ class PinItem : public QObject, public QGraphicsEllipseItem
 public:
     PinItem(QGraphicsItem *parent, ComponentViewModel *cvm, PinIndex idx);
     void addWire(WireItem *);
+    void removeWire(WireItem *);
     const QSet<WireItem *> &getWireItems();
 
     ComponentId getComponentId();
@@ -28,6 +29,6 @@ protected:
 
 private:
     ComponentViewModel *mCompVM;
-    QSet<WireItem *> wireItems;
+    QSet<WireItem *> mWireItems;
     PinIndex mIdx;
 };
