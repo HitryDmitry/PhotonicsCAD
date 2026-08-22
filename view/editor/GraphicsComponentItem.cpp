@@ -1,11 +1,10 @@
 #include "GraphicsComponentItem.h"
 #include <QDebug>
 #include <QPixmap>
-#include <qmath.h>
-#include <map>
-#include <string>
+#include "PinInstance.h"
 #include "PinItem.h"
 #include "WireItem.h"
+#include <qmath.h>
 
 GraphicsComponentItem::GraphicsComponentItem(ComponentViewModel *compViewModel,
                                              const ComponentDefinition *def)
@@ -20,7 +19,7 @@ GraphicsComponentItem::GraphicsComponentItem(ComponentViewModel *compViewModel,
     setFlag(ItemSendsGeometryChanges);
     setCacheMode(DeviceCoordinateCache);
 
-    createPinItems(def);
+    createPinItems();
 }
 
 GraphicsComponentItem::~GraphicsComponentItem() {}
@@ -47,7 +46,7 @@ QVariant GraphicsComponentItem::itemChange(GraphicsItemChange change, const QVar
     }
 
     // ОБНОВЛЕНИЕ ПРОВОДОВ
-    for (const auto &pinItemIter : std::as_const(pins)) {
+    for (const auto &pinItemIter : std::as_const(mPins)) {
         for (const auto &wireItemIter : pinItemIter->getWireItems()) {
             wireItemIter->updatePath();
         }
@@ -64,7 +63,7 @@ const QString &GraphicsComponentItem::getComponentType()
 
 QVector<PinItem *> GraphicsComponentItem::getPins()
 {
-    return pins;
+    return mPins;
 }
 
 void GraphicsComponentItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
@@ -73,25 +72,15 @@ void GraphicsComponentItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *even
     QGraphicsPixmapItem::mouseDoubleClickEvent(event);
 }
 
-void GraphicsComponentItem::createPinItems(const ComponentDefinition *def)
+void GraphicsComponentItem::createPinItems()
 {
-    int count = def->pins.size();
+    auto &pins = mComponentVM->getInstancePins();
+    int count = pins.size();
 
     for (int i = 0; i < count; i++) {
-        // Ссылка на словарь, описывающий пин: def->pins.at(i)
-        // Возможно это понадобится при определении положения пинов в зависимости от
-        // параметров пина
-        const auto &currentPin = def->pins.at(i);
+        auto pinItem = new PinItem(this, mComponentVM, pins.at(i).get()->getPinIdx());
 
-        // Конвертируем QMap<QString, QVariant> в std::map<std::string, std::string>
-        std::map<std::string, std::string> stdPinDef;
-        for (const auto &[key, value] : currentPin.asKeyValueRange()) {
-            stdPinDef[key.toStdString()] = value.toString().toStdString();
-        }
-
-        auto pinItem = new PinItem(mComponentVM, this);
-
-        pins.push_back(pinItem);
+        mPins.push_back(pinItem);
 
         QPixmap componentPixmap = this->pixmap();
         int pixWidth = componentPixmap.width();

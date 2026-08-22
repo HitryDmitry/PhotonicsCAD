@@ -5,6 +5,7 @@
 #include <string>
 
 class CircuitViewModel;
+class PinInstance;
 
 class IComponentObserver
 {
@@ -29,6 +30,7 @@ public:
     ComponentId getId();
 
     const std::vector<std::map<std::string, std::string>> &getInstanceParamsVector();
+    const std::vector<std::unique_ptr<PinInstance>> &getInstancePins();
 
 private:
     void notifyObservers();

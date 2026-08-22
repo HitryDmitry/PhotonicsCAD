@@ -58,3 +58,8 @@ const std::vector<std::map<std::string, std::string> > &ComponentViewModel::getI
 {
     return mCircuitVM->getComponent(mId)->mParameters;
 }
+
+const std::vector<std::unique_ptr<PinInstance> > &ComponentViewModel::getInstancePins()
+{
+    return mCircuitVM->getComponent(mId)->mPins;
+}

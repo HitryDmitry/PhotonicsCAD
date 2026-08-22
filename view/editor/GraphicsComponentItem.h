@@ -18,7 +18,7 @@ public:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
 
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
-    void createPinItems(const ComponentDefinition *def);
+    void createPinItems();
     QVector<PinItem *> getPins();
 
     const QString &getComponentType();
@@ -28,6 +28,6 @@ signals:
 
 private:
     QString componentType;
-    QVector<PinItem *> pins;
+    QVector<PinItem *> mPins;
     ComponentViewModel *mComponentVM;
 };
