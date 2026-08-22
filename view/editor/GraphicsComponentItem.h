@@ -22,6 +22,7 @@ public:
     QVector<PinItem *> getPins();
 
     const QString &getComponentType();
+    ComponentId getComponentId();
 
 signals:
     void doubleClicked(ComponentId id);

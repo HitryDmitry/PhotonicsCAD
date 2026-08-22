@@ -61,6 +61,11 @@ const QString &GraphicsComponentItem::getComponentType()
     return componentType;
 }
 
+ComponentId GraphicsComponentItem::getComponentId()
+{
+    return mComponentVM->getId();
+}
+
 QVector<PinItem *> GraphicsComponentItem::getPins()
 {
     return mPins;
