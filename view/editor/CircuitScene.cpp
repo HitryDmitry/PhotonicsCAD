@@ -68,6 +68,10 @@ void CircuitScene::onPinClicked(PinItem *pin)
 
 void CircuitScene::tryToCompleteConnection(PinItem *from, PinItem *to)
 {
+    if (!from || !to) {
+        throw std::runtime_error(
+            "TryToCompleteConnection: can't connect if one of the pinItems is nullptr!");
+    }
     if (circuitVM->tryToConnect(from->getPinRef(), to->getPinRef())) {
         tempWire->setEndPin(to);
 
@@ -86,6 +90,8 @@ void CircuitScene::cancelConnection()
         removeItem(tempWire);
         delete tempWire;
         tempWire = nullptr;
+
+        circuitVM->changeCircuitState();
     }
 }
 

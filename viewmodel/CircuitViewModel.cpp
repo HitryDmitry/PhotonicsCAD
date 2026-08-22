@@ -69,7 +69,7 @@ void CircuitViewModel::changeCircuitState()
 
 bool CircuitViewModel::checkConnectionStarted()
 {
-    if (state == CircuitState::Completed)
+    if (state == CircuitState::Dragging)
         return true;
     return false;
 }
