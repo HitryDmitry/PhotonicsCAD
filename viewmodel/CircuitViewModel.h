@@ -34,6 +34,7 @@ public:
     void changeCircuitState();
     bool checkConnectionStarted();
     bool tryToConnect(const PinRef &a, const PinRef &b);
+    bool removeWire(const PinRef &a, const PinRef &b);
 
 private:
     void notifyComponentAdded(ComponentViewModel *cvm, const ComponentDefinition *def);

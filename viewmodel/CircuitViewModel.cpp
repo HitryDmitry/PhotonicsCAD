@@ -83,6 +83,14 @@ bool CircuitViewModel::tryToConnect(const PinRef &a, const PinRef &b)
     return false;
 }
 
+bool CircuitViewModel::removeWire(const PinRef &a, const PinRef &b)
+{
+    if (mCircuit->removeWire(a, b)) {
+        return true;
+    }
+    return false;
+}
+
 void CircuitViewModel::notifyComponentAdded(ComponentViewModel *cvm, const ComponentDefinition *def)
 {
     for (auto *obs : mObservers) {
