@@ -116,6 +116,28 @@ void CircuitScene::onDeleteButton(QGraphicsItem *item)
             throw std::runtime_error("Can't delete wire!");
         }
     }
+
+    else if (auto *graphicsComponent = qgraphicsitem_cast<GraphicsComponentItem *>(item)) {
+        if (circuitVM->removeComponent(graphicsComponent->getComponentId())) {
+            qDebug() << "Component removed from the circuit.";
+
+            const auto pins = graphicsComponent->getPins();
+            for (const auto &pin : pins) {
+                // Копируем QSet, чтобы можно было безопасно итерироваться по нему
+                const auto wireItems = pin->getWireItems();
+                for (auto wireItem : wireItems) {
+                    removeItem(wireItem);
+                    delete wireItem;
+                }
+            }
+            removeItem(graphicsComponent);
+            delete graphicsComponent;
+        }
+
+        else {
+            throw std::runtime_error("Can't delete component!");
+        }
+    }
 }
 
 void CircuitScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
