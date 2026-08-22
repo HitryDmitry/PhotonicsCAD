@@ -102,30 +102,20 @@ void CircuitScene::onEscapeButton()
 
 void CircuitScene::onDeleteButton(QGraphicsItem *item)
 {
-    // if (auto *wireItem = qgraphicsitem_cast<WireItem *>(item)) {
-    //     qDebug() << "Deleting selected wire!";
+    if (auto *wireItem = qgraphicsitem_cast<WireItem *>(item)) {
+        auto *startPin = wireItem->getStartPin();
+        auto *endPin = wireItem->getEndPin();
 
-    //     WireKey key(wireItem->getStartPin()->getPin(), wireItem->getEndPin()->getPin());
-    //     if (circuit->wireIndex.contains(key)) {
-    //         circuit->wireIndex.erase(key);
-    //         auto &wires = circuit->wires;
-    //         for (auto it = wires.begin(); it != wires.end();) {
-    //             auto &wirePtr = *it;
-    //             bool found = (wirePtr->from == wireItem->getStartPin()->getPin()
-    //                           && wirePtr->to == wireItem->getEndPin()->getPin())
-    //                          || (wirePtr->to == wireItem->getStartPin()->getPin()
-    //                              && wirePtr->from == wireItem->getEndPin()->getPin());
-    //             if (wirePtr && found) {
-    //                 it = wires.erase(it); // erase возвращает следующий валидный итератор
-    //             } else {
-    //                 ++it;
-    //             }
-    //         }
-    //     }
+        if (circuitVM->removeWire(startPin->getPinRef(), endPin->getPinRef())) {
+            qDebug() << "Wire removed from the circuit.";
+            removeItem(wireItem);
+            delete wireItem;
+        }
 
-    //     removeItem(wireItem);
-    //     // TODO: Удалить этот провод из всех контейнеров
-    // }
+        else {
+            throw std::runtime_error("Can't delete wire!");
+        }
+    }
 }
 
 void CircuitScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
