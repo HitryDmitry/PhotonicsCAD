@@ -23,7 +23,7 @@ public:
     ~CircuitViewModel();
 
     void addComponent(const ComponentDefinition &def, double x, double y);
-    void removeComponent(ComponentViewModel *vm);
+    bool removeComponent(ComponentId id);
 
     void addObserver(ICircuitObserver *observer);
     void removeObserver(ICircuitObserver *observer);

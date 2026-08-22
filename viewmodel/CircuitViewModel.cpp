@@ -29,7 +29,13 @@ void CircuitViewModel::addComponent(const ComponentDefinition &def, double x, do
     notifyComponentAdded(compVMRawPtr, &def);
 }
 
-void CircuitViewModel::removeComponent(ComponentViewModel *vm) {}
+bool CircuitViewModel::removeComponent(ComponentId id)
+{
+    if (mCircuit->removeComponent(id)) {
+        return true;
+    }
+    return false;
+}
 
 void CircuitViewModel::addObserver(ICircuitObserver *observer)
 {
