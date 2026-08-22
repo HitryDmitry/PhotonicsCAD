@@ -6,9 +6,10 @@
 #include <qgraphicssceneevent.h>
 #include <qpen.h>
 
-PinItem::PinItem(ComponentViewModel *cvm, QGraphicsItem *parent)
+PinItem::PinItem(QGraphicsItem *parent, ComponentViewModel *cvm, PinIndex idx)
     : QGraphicsEllipseItem(parent)
     , mCompVM(cvm)
+    , mIdx(idx)
 {
     // Включаем получение событий наведения
     setAcceptHoverEvents(true);

@@ -12,7 +12,7 @@ class PinItem : public QObject, public QGraphicsEllipseItem
 {
     Q_OBJECT
 public:
-    PinItem(ComponentViewModel *cvm, QGraphicsItem *parent = nullptr);
+    PinItem(QGraphicsItem *parent, ComponentViewModel *cvm, PinIndex idx);
     void addWire(WireItem *);
     const QSet<WireItem *> &getWireItems();
 
