@@ -27,6 +27,9 @@ public:
 
     void setComponent(ComponentInstance *comp);
     PinIndex getPinIdx() { return mIdx; };
+    const std::string &getSignalType() { return signalType; };
+    const std::string &getDirection() { return direction; };
+    const ComponentInstance *getComponent() { return component; };
 
 private:
     std::unordered_set<Wire *> wires;

@@ -63,13 +63,13 @@ bool Circuit::canConnect(const PinRef &a, const PinRef &b)
     auto pinA = compA->getPin(a.pinIndex);
     auto pinB = compB->getPin(b.pinIndex);
 
-    if (pinA.signalType != pinB.signalType)
+    if (pinA.getSignalType() != pinB.getSignalType())
         return false;
 
-    if (pinA.direction == pinB.direction)
+    if (pinA.getDirection() == pinB.getDirection())
         return false;
 
-    if (pinA.component == pinB.component)
+    if (pinA.getComponent() == pinB.getComponent())
         return false;
 
     return true;

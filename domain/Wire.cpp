@@ -36,10 +36,10 @@ PinInstance *Wire::getOtherPin(PinInstance *pin) const
 
 bool Wire::connectsToComponent(ComponentId id) const
 {
-    if (!from || !to || !from->component || !to->component) {
+    if (!from || !to || !from->getComponent() || !to->getComponent()) {
         return false;
     }
-    return from->component->getId() == id || to->component->getId() == id;
+    return from->getComponent()->getId() == id || to->getComponent()->getId() == id;
 }
 
 bool Wire::connectsToPin(PinInstance *pin) const
