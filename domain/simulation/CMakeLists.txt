@@ -1,18 +1,18 @@
-add_library(simulation_lib SHARED
-    SimulationGraph.h
-    GraphBuilder.h
-    GraphBuilder.cpp
-    IComponentModel.h
-    LinearModels.h
-    ComponentModelFactory.h
-    Solver.h
-    Solver.cpp
-)
+cmake_minimum_required(VERSION 3.20)
+project(simulation_lib)
 
-target_include_directories(simulation_lib PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/..
-)
+add_library(
+  simulation_lib SHARED
+  SimulationGraph.h
+  GraphBuilder.h
+  GraphBuilder.cpp
+  IComponentModel.h
+  LinearModels.h
+  ComponentModelFactory.h
+  Solver.h
+  Solver.cpp)
 
-# ДОБАВИЛИ component_library В КОНЕЦ СТРОКИ:
+target_include_directories(simulation_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
+                                                 ${CMAKE_CURRENT_SOURCE_DIR}/..)
+
 target_link_libraries(simulation_lib PUBLIC domain_lib component_library)
