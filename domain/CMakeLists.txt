@@ -24,6 +24,4 @@ add_library(
   ${SOURCES_DIR}/PinRef.h)
 
 target_include_directories(domain_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(
-  domain_lib PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Widgets
-                     component_library)
+target_link_libraries(domain_lib PRIVATE component_library)
