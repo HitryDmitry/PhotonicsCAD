@@ -22,3 +22,14 @@ struct PinRef
 
     bool operator>(const PinRef &other) const { return other < *this; }
 };
+
+template<>
+struct std::hash<PinRef>
+{
+    size_t operator()(const PinRef &p) const
+    {
+        uint64_t combined = (static_cast<uint64_t>(p.componentId.value()) << 16)
+                            | p.pinIndex.value();
+        return std::hash<uint64_t>{}(combined);
+    }
+};
