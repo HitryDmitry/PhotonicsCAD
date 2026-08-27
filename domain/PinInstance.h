@@ -25,7 +25,6 @@ public:
 
     void setComponent(ComponentInstance *comp);
 
-    // --- ИСПРАВЛЕНИЕ: добавлены const в конце методов ---
     PinIndex getPinIdx() const { return mIdx; }
     const std::string &getSignalType() const { return signalType; }
     const std::string &getDirection() const { return direction; }
