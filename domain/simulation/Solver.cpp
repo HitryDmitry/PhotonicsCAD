@@ -15,8 +15,8 @@ SimulationResult Solver::solveFrequencyDomain(
     }
 
     // Считаем схему для каждой частоты отдельно
-    for (size_t f_idx = 0; f_idx < frequencies.size(); ++f_idx) {
-        double currentFreq = frequencies[f_idx];
+    for (size_t fIdx = 0; fIdx < frequencies.size(); ++fIdx) {
+        double currentFreq = frequencies[fIdx];
 
         // В этой мапе будем накапливать значения сигнала на ВСЕХ пинах схемы в процессе расчета
         // (Используем std::map, т.к. PinRef имеет operator<)
@@ -73,7 +73,7 @@ SimulationResult Solver::solveFrequencyDomain(
         for (const auto& obsPin : graph.observationPoints) {
             auto it = graph.inputToOutput.find(obsPin);
             if (it != graph.inputToOutput.end()) {
-                result.frequencyResponses[obsPin][f_idx] = pinSignals[it->second];
+                result.frequencyResponses[obsPin][fIdx] = pinSignals[it->second];
             }
         }
     }
