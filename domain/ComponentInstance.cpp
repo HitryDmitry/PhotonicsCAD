@@ -78,7 +78,7 @@ double ComponentInstance::getY() const
     return mPosition.y;
 }
 
-const std::string &ComponentInstance::getType()
+const std::string &ComponentInstance::getType() const
 {
     return mType;
 }

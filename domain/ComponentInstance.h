@@ -30,7 +30,7 @@ public:
     double getX() const;
     double getY() const;
 
-    const std::string &getType();
+    const std::string &getType() const;
 
     const PinInstance &getPin(PinIndex idx) const;
     PinInstance &getPin(PinIndex idx);
