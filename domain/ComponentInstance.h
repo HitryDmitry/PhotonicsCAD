@@ -25,6 +25,7 @@ public:
     ComponentId getId() const noexcept;
 
     bool setParameter(const std::string &name, const std::string &value);
+    std::string getParameter(const std::string &name) const;
 
     double getX() const;
     double getY() const;

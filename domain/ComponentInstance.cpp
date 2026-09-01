@@ -56,6 +56,19 @@ bool ComponentInstance::setParameter(const std::string &name, const std::string 
     return 0;
 }
 
+std::string ComponentInstance::getParameter(const std::string &name) const
+{
+    for (auto &paramInst : mParameters) {
+        if (paramInst.at("key") == name) {
+            auto it = paramInst.find("default");
+            if (it != paramInst.end()) {
+                return it->first;
+            }
+        }
+    }
+    return {};
+}
+
 double ComponentInstance::getX() const
 {
     return mPosition.x;
