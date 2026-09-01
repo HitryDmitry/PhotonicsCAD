@@ -15,4 +15,4 @@ target_include_directories(domaintests_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
                                                   ${DOCTEST_INCLUDE_DIRS})
 
 target_link_libraries(domaintests_lib domain_lib viewmodel_lib
-                      component_library test_helpers)
+                      component_library test_helpers simulation_lib)
