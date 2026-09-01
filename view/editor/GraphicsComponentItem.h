@@ -11,10 +11,12 @@ class GraphicsComponentItem : public QObject, public QGraphicsPixmapItem, public
     Q_OBJECT
 public:
     GraphicsComponentItem(ComponentViewModel *compViewModel, const ComponentDefinition *def);
-
     ~GraphicsComponentItem() override;
-    void onPropertyModyfied() override;
 
+    // --- ДОБАВЛЕНО ДЛЯ ЗАЩИТЫ ОТ НАЛОЖЕНИЙ ---
+    QRectF boundingRect() const override;
+
+    void onPropertyModyfied() override;
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
 
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;

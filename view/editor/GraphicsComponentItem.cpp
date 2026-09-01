@@ -1,10 +1,12 @@
 #include "GraphicsComponentItem.h"
 #include <QDebug>
 #include <QPixmap>
+#include <QGraphicsScene> // Нужно для проверки пересечений
+#include <qmath.h>
+
 #include "PinInstance.h"
 #include "PinItem.h"
 #include "WireItem.h"
-#include <qmath.h>
 
 GraphicsComponentItem::GraphicsComponentItem(ComponentViewModel *compViewModel,
                                              const ComponentDefinition *def)
@@ -26,34 +28,55 @@ GraphicsComponentItem::~GraphicsComponentItem() {}
 
 void GraphicsComponentItem::onPropertyModyfied() {}
 
+// Переопределяем хитбокс компонента (для коллизий)
+QRectF GraphicsComponentItem::boundingRect() const
+{
+    QRectF originalRect = QGraphicsPixmapItem::boundingRect();
+    double padding = 20.0; // Отступ, чтобы блоки не слипались вплотную
+    return originalRect.adjusted(-padding, -padding, padding, padding);
+}
+
+// =========================================================
+// Перехватываем перемещение (Сетка + Защита от наложений)
+// =========================================================
 QVariant GraphicsComponentItem::itemChange(GraphicsItemChange change, const QVariant &value)
 {
-    QVariant newValue = value;
-
-    // SNAP TO GRID
-    // Срабатывает только когда пользователь двигает объект по сцене
     if (change == ItemPositionChange && scene()) {
-        QPointF newPos = value.toPointF();
+        QPointF proposedPos = value.toPointF();
 
-        // Шаг сетки. Сейчас стоит 20 пикселей.
+        // 1. ПРИВЯЗКА К СЕТКЕ (SNAP TO GRID)
         int gridSize = 20;
+        qreal xV = qRound(proposedPos.x() / gridSize) * gridSize;
+        qreal yV = qRound(proposedPos.y() / gridSize) * gridSize;
+        QPointF snappedPos(xV, yV);
 
-        qreal xV = qRound(newPos.x() / gridSize) * gridSize;
-        qreal yV = qRound(newPos.y() / gridSize) * gridSize;
+        // 2. ЗАЩИТА ОТ НАЛОЖЕНИЙ
+        QPolygonF proposedShape = mapToScene(boundingRect());
+        proposedShape.translate(snappedPos - pos()); // Сдвигаем хитбокс на новую позицию
 
-        // Записываем новые координаты
-        newValue = QPointF(xV, yV);
-    }
+        // Получаем все элементы сцены, которые пересекаются с новой позицией
+        QList<QGraphicsItem*> itemsInArea = scene()->items(proposedShape, Qt::IntersectsItemBoundingRect);
 
-    // ОБНОВЛЕНИЕ ПРОВОДОВ
-    for (const auto &pinItemIter : std::as_const(mPins)) {
-        for (const auto &wireItemIter : pinItemIter->getWireItems()) {
-            wireItemIter->updatePath();
+        for (QGraphicsItem* item : itemsInArea) {
+            if (item == this) continue;
+
+            // Если наткнулись на другой компонент (игнорируем провода и пины)
+            if (dynamic_cast<GraphicsComponentItem*>(item)) {
+                return pos(); // Отменяем перемещение (возвращаем старую позицию)
+            }
         }
+
+        // 3. ОБНОВЛЕНИЕ ПРОВОДОВ
+        for (const auto &pinItemIter : std::as_const(mPins)) {
+            for (const auto &wireItemIter : pinItemIter->getWireItems()) {
+                wireItemIter->updatePath();
+            }
+        }
+
+        return snappedPos;
     }
 
-    // Возвращаем newValue (которое мы примагнитили к сетке)
-    return QGraphicsPixmapItem::itemChange(change, newValue);
+    return QGraphicsPixmapItem::itemChange(change, value);
 }
 
 const QString &GraphicsComponentItem::getComponentType()
