@@ -1,7 +1,12 @@
 cmake_minimum_required(VERSION 3.20)
 project(domaintests)
 
-add_library(domaintests_lib OBJECT ${CMAKE_CURRENT_SOURCE_DIR}/CircuitTest.cpp)
+add_library(
+  domaintests_lib OBJECT
+  ${CMAKE_CURRENT_SOURCE_DIR}/CircuitTest.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/LinearModelsTest.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/SimulationGraphTest.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/SolverTest.cpp)
 
 get_target_property(DOCTEST_INCLUDE_DIRS doctest::doctest
                     INTERFACE_INCLUDE_DIRECTORIES)
