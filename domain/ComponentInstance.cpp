@@ -62,7 +62,7 @@ std::string ComponentInstance::getParameter(const std::string &name) const
         if (paramInst.at("key") == name) {
             auto it = paramInst.find("default");
             if (it != paramInst.end()) {
-                return it->first;
+                return it->second;
             }
         }
     }
