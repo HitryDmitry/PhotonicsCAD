@@ -15,4 +15,4 @@ add_library(
 target_include_directories(simulation_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
                                                  ${CMAKE_CURRENT_SOURCE_DIR}/..)
 
-target_link_libraries(simulation_lib PUBLIC domain_lib component_library)
+target_link_libraries(simulation_lib PRIVATE domain_lib component_library)

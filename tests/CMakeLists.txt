@@ -14,6 +14,6 @@ add_executable(
 target_include_directories(photonics_tests PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(
   photonics_tests PRIVATE doctest::doctest domain_lib viewmodel_lib
-                          component_library test_helpers)
+                          component_library test_helpers simulation_lib)
 
 add_test(NAME photonics_tests COMMAND photonics_tests)
