@@ -29,7 +29,7 @@ SimulationResult Solver::solveFrequencyDomain(
             ComponentInstance* comp = const_cast<Circuit*>(circuit)->findComponent(compId);
             if (!comp) continue;
 
-            auto model = ComponentModelFactory::create(comp->getType());
+            auto model = ComponentModelFactory::create(comp);
 
             std::complex<double> inputSignal = 0.0;
             bool isSource = true;
@@ -55,7 +55,7 @@ SimulationResult Solver::solveFrequencyDomain(
                 inputSignal = 1.0;
             }
 
-            // 2. Умножаем сигнал на передаточную функцию компонента (математика)
+            // 2. Умножаем сигнал на передаточную функцию компонента
             std::complex<double> outputSignal = inputSignal * model->transferFunction(currentFreq);
 
             // 3. Отправляем результат на все ВЫХОДЫ компонента
