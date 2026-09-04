@@ -1,7 +1,5 @@
 #include "GraphBuilder.h"
-#include "Circuit.h"
 #include "ComponentDefinition.h"
-#include "PinInstance.h"
 #include "TestHelpers.h"
 #include <doctest/doctest.h>
 
@@ -69,7 +67,7 @@ public:
         // Кэшируем индексы пинов для этого компонента
         cachePinIndices(mNextId, defIt->second);
 
-        return ComponentId(mNextId.value() + 1);
+        return mNextId++;
     }
 
     // Добавление провода между компонентами
@@ -212,12 +210,12 @@ TEST_CASE("GraphBuilder - Simple chain of components")
     CircuitBuilder builder;
 
     // Создаем схему: Laser -> Fiber -> Photodetector
-    auto laser = builder.addComponent("laser");
-    auto fiber = builder.addComponent("optical_fiber");
-    auto pd = builder.addComponent("photodetector");
+    auto laserId = builder.addComponent("laser");
+    auto fiberId = builder.addComponent("optical_fiber");
+    auto pdId = builder.addComponent("photodetector");
 
-    builder.addWire(laser, "out", fiber, "in");
-    builder.addWire(fiber, "out", pd, "opt_in");
+    builder.addWire(laserId, "out", fiberId, "in");
+    builder.addWire(fiberId, "out", pdId, "opt_in");
 
     auto circuit = builder.build();
     auto graph = GraphBuilder::build(circuit.get());
@@ -227,15 +225,15 @@ TEST_CASE("GraphBuilder - Simple chain of components")
     SUBCASE("Sources")
     {
         CHECK(graph->sources.size() == 1);
-        CHECK(graph->sources[0] == laser);
+        CHECK(graph->sources[0] == laserId);
     }
 
     SUBCASE("Execution order")
     {
         CHECK(graph->executionOrder.size() == 3);
-        CHECK(graph->executionOrder[0] == laser);
-        CHECK(graph->executionOrder[1] == fiber);
-        CHECK(graph->executionOrder[2] == pd);
+        CHECK(graph->executionOrder[0] == laserId);
+        CHECK(graph->executionOrder[1] == fiberId);
+        CHECK(graph->executionOrder[2] == pdId);
     }
 }
 
