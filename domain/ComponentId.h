@@ -17,6 +17,19 @@ public:
     constexpr bool operator<(const ComponentId &other) const { return mValue < other.mValue; }
     constexpr bool operator>(const ComponentId &other) const { return mValue > other.mValue; }
 
+    constexpr ComponentId &operator++()
+    {
+        mValue++;
+        return *this;
+    }
+
+    constexpr ComponentId operator++(int)
+    {
+        ComponentId temp = *this;
+        ++*this;
+        return temp;
+    }
+
 private:
     std::uint64_t mValue{};
 };
