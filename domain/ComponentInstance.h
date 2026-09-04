@@ -38,6 +38,8 @@ public:
 
     PinInstance *findPin(PinIndex idx) { return hasPin(idx) ? &getPin(idx) : nullptr; }
 
+    int getNumPins() { return mPins.size(); }
+
     std::string mType;
     Point2D mPosition;
 
