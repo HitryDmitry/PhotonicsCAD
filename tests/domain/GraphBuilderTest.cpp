@@ -326,30 +326,28 @@ TEST_CASE("GraphBuilder - Multiple sources")
     }
 }
 
-// TEST_CASE("GraphBuilder - With amplifier")
-// {
-//     CircuitBuilder builder;
+TEST_CASE("GraphBuilder - Dangling input is ignored as if there is no signal on it")
+{
+    CircuitBuilder builder;
 
-//     auto laser = builder.addComponent("laser");
-//     auto modulator = builder.addComponent("electro_optic_modulator");
-//     auto amp = builder.addComponent("microwave_amplifier");
-//     auto pd1 = builder.addComponent("photodetector");
-//     auto pd2 = builder.addComponent("photodetector");
+    auto laser = builder.addComponent("laser");
+    auto modulator = builder.addComponent("electro_optic_modulator");
+    auto amp = builder.addComponent("microwave_amplifier");
+    auto pd = builder.addComponent("photodetector");
 
-//     //образуется цикл
-//     builder.addWire(laser, "out", modulator, "opt_in");
-//     builder.addWire(modulator, "opt_out", pd1, "opt_in");
-//     builder.addWire(laser, "out", pd2, "opt_in");
-//     builder.addWire(pd2, "elec_out", amp, "in");
-//     builder.addWire(amp, "out", modulator, "rf_in");
+    builder.addWire(laser, "out", modulator, "opt_in");
+    builder.addWire(modulator, "opt_out", pd, "opt_in");
+    builder.addWire(amp, "out", modulator, "rf_in"); // вход усилителя ни к чему не подключен
 
-//     auto circuit = builder.build();
-//     auto graph = GraphBuilder::build(circuit.get());
+    auto circuit = builder.build();
+    auto graph = GraphBuilder::build(circuit.get());
 
-//     // Проверяем, что график построен корректно
-//     CHECK(graph != nullptr);
-//     CHECK(graph->sources.size() == 1);
-// }
+    // Проверяем, что граф построен
+    CHECK(graph != nullptr);
+    // Всего лишь один источник (усилитель не считается источником,
+    // хоть его вход и находится в неопределенном состоянии)
+    CHECK(graph->sources.size() == 1);
+}
 
 TEST_CASE("GraphBuilder - Cyclic graph throws exception")
 {
