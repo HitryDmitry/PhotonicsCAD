@@ -4,6 +4,7 @@
 #include <doctest/doctest.h>
 
 #include <algorithm>
+#include <iostream>
 #include <map>
 #include <stdexcept>
 
@@ -276,6 +277,14 @@ TEST_CASE("GraphBuilder - Splitter with two branches")
         CHECK(findPos(splitter) < findPos(fiber2));
         CHECK(findPos(fiber1) < findPos(pd1));
         CHECK(findPos(fiber2) < findPos(pd2));
+
+        // Проверяем порядок вычисления компонентов
+        CHECK(graph->executionOrder.at(0).value() == 1);
+        CHECK(graph->executionOrder.at(1).value() == 2);
+        CHECK(graph->executionOrder.at(2).value() == 4);
+        CHECK(graph->executionOrder.at(3).value() == 3);
+        CHECK(graph->executionOrder.at(4).value() == 6);
+        CHECK(graph->executionOrder.at(5).value() == 5);
     }
 }
 
@@ -347,6 +356,21 @@ TEST_CASE("GraphBuilder - Dangling input is ignored as if there is no signal on 
     // Всего лишь один источник (усилитель не считается источником,
     // хоть его вход и находится в неопределенном состоянии)
     CHECK(graph->sources.size() == 1);
+
+    SUBCASE("Topological order")
+    {
+        auto findPos = [&](ComponentId id) -> size_t {
+            auto it = std::find(graph->executionOrder.begin(), graph->executionOrder.end(), id);
+            REQUIRE(it != graph->executionOrder.end());
+            return std::distance(graph->executionOrder.begin(), it);
+        };
+
+        CHECK(findPos(laser) < findPos(modulator));
+        CHECK(findPos(modulator) < findPos(pd));
+    }
+
+    // Висячий компонент не добавляется в последовательность для вычисления
+    CHECK(graph->executionOrder.size() == 3);
 }
 
 TEST_CASE("GraphBuilder - Cyclic graph throws exception")
