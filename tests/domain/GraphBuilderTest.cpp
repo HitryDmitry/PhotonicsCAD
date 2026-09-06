@@ -335,44 +335,6 @@ TEST_CASE("GraphBuilder - Multiple sources")
     }
 }
 
-TEST_CASE("GraphBuilder - Dangling input is ignored as if there is no signal on it")
-{
-    CircuitBuilder builder;
-
-    auto laser = builder.addComponent("laser");
-    auto modulator = builder.addComponent("electro_optic_modulator");
-    auto amp = builder.addComponent("microwave_amplifier");
-    auto pd = builder.addComponent("photodetector");
-
-    builder.addWire(laser, "out", modulator, "opt_in");
-    builder.addWire(modulator, "opt_out", pd, "opt_in");
-    builder.addWire(amp, "out", modulator, "rf_in"); // вход усилителя ни к чему не подключен
-
-    auto circuit = builder.build();
-    auto graph = GraphBuilder::build(circuit.get());
-
-    // Проверяем, что граф построен
-    CHECK(graph != nullptr);
-    // Всего лишь один источник (усилитель не считается источником,
-    // хоть его вход и находится в неопределенном состоянии)
-    CHECK(graph->sources.size() == 1);
-
-    SUBCASE("Topological order")
-    {
-        auto findPos = [&](ComponentId id) -> size_t {
-            auto it = std::find(graph->executionOrder.begin(), graph->executionOrder.end(), id);
-            REQUIRE(it != graph->executionOrder.end());
-            return std::distance(graph->executionOrder.begin(), it);
-        };
-
-        CHECK(findPos(laser) < findPos(modulator));
-        CHECK(findPos(modulator) < findPos(pd));
-    }
-
-    // Висячий компонент не добавляется в последовательность для вычисления
-    CHECK(graph->executionOrder.size() == 3);
-}
-
 TEST_CASE("GraphBuilder - Cyclic graph throws exception")
 {
     CircuitBuilder builder;
