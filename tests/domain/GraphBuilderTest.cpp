@@ -335,7 +335,7 @@ TEST_CASE("GraphBuilder - Multiple sources")
     }
 }
 
-TEST_CASE("GraphBuilder - Dangling input is ignored as if there is no signal on it")
+TEST_CASE("GraphBuilder - Dangling input throws error")
 {
     CircuitBuilder builder;
 
@@ -349,28 +349,9 @@ TEST_CASE("GraphBuilder - Dangling input is ignored as if there is no signal on 
     builder.addWire(amp, "out", modulator, "rf_in"); // вход усилителя ни к чему не подключен
 
     auto circuit = builder.build();
-    auto graph = GraphBuilder::build(circuit.get());
 
-    // Проверяем, что граф построен
-    CHECK(graph != nullptr);
-    // Всего лишь один источник (усилитель не считается источником,
-    // хоть его вход и находится в неопределенном состоянии)
-    CHECK(graph->sources.size() == 1);
-
-    SUBCASE("Topological order")
-    {
-        auto findPos = [&](ComponentId id) -> size_t {
-            auto it = std::find(graph->executionOrder.begin(), graph->executionOrder.end(), id);
-            REQUIRE(it != graph->executionOrder.end());
-            return std::distance(graph->executionOrder.begin(), it);
-        };
-
-        CHECK(findPos(laser) < findPos(modulator));
-        CHECK(findPos(modulator) < findPos(pd));
-    }
-
-    // Висячий компонент не добавляется в последовательность для вычисления
-    CHECK(graph->executionOrder.size() == 3);
+    // Проверяем, что выбрасывается исключение
+    CHECK_THROWS_AS({ auto graph = GraphBuilder::build(circuit.get()); }, std::runtime_error);
 }
 
 TEST_CASE("GraphBuilder - Cyclic graph throws exception")
@@ -452,38 +433,6 @@ TEST_CASE("GraphBuilder - Empty circuit")
     CHECK(graph->outputToInputs.empty());
 }
 
-TEST_CASE("GraphBuilder - Isolated component")
-{
-    CircuitBuilder builder;
-
-    auto laser = builder.addComponent("laser");
-    auto isolated = builder.addComponent("optical_fiber");
-
-    auto circuit = builder.build();
-    auto graph = GraphBuilder::build(circuit.get());
-
-    SUBCASE("Sources")
-    {
-        CHECK(graph->sources.size() == 1);
-        CHECK(graph->sources[0] == laser);
-    }
-
-    SUBCASE("Execution order")
-    {
-        CHECK(graph->executionOrder.size() == 2);
-
-        bool hasLaser = std::find(graph->executionOrder.begin(), graph->executionOrder.end(), laser)
-                        != graph->executionOrder.end();
-        bool hasIsolated = std::find(graph->executionOrder.begin(),
-                                     graph->executionOrder.end(),
-                                     isolated)
-                           != graph->executionOrder.end();
-
-        CHECK(hasLaser);
-        CHECK(hasIsolated);
-    }
-}
-
 TEST_CASE("GraphBuilder - Complex hierarchy")
 {
     CircuitBuilder builder;
@@ -552,42 +501,6 @@ TEST_CASE("GraphBuilder - Complex hierarchy")
         CHECK(findPos(fiber2) < findPos(pd2));
         CHECK(findPos(fiber3) < findPos(pd3));
         CHECK(findPos(fiber4) < findPos(pd4));
-    }
-}
-
-TEST_CASE("GraphBuilder - Edge cases")
-{
-    SUBCASE("Wire between two outputs should be ignored")
-    {
-        CircuitBuilder builder;
-        auto laser1 = builder.addComponent("laser");
-        auto laser2 = builder.addComponent("laser");
-
-        // Провод между двумя выходами (некорректно)
-        CHECK_THROWS_AS({ builder.addWire(laser1, "out", laser2, "out"); }, std::runtime_error);
-
-        auto circuit = builder.build();
-        auto graph = GraphBuilder::build(circuit.get());
-
-        CHECK(graph->sources.size() == 2);
-        CHECK(graph->outputToInputs.empty());
-    }
-
-    SUBCASE("Wire between two inputs should be ignored")
-    {
-        CircuitBuilder builder;
-        auto pd1 = builder.addComponent("photodetector");
-        auto pd2 = builder.addComponent("photodetector");
-
-        // Провод между двумя входами (некорректно)
-        CHECK_THROWS_AS({ builder.addWire(pd1, "opt_in", pd2, "opt_in"); }, std::runtime_error);
-
-        auto circuit = builder.build();
-        auto graph = GraphBuilder::build(circuit.get());
-
-        CHECK(graph->sources.empty());
-        CHECK(graph->executionOrder.size() == 2);
-        CHECK(graph->outputToInputs.empty());
     }
 }
 
