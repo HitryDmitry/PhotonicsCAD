@@ -107,6 +107,14 @@ public:
      */
     const ComponentDefinition *getDefinition(ComponentId id);
 
+    /**
+     * @brief Получение индекса пина по ID компонента и текстовому id пина
+     * @param id ID компонента
+     * @param pinId ID пина (текстовое)
+     * @return Указатель на определение или nullptr
+     */
+    PinIndex getPinIndex(ComponentId id, const std::string &pinId);
+
 private:
     // Приватные методы для создания определений компонентов
     ComponentDefinition createSplitterDefinition();
@@ -115,7 +123,6 @@ private:
 
     // Вспомогательные методы для работы с пинами
     void cachePinIndices(ComponentId id, const ComponentDefinition &def);
-    PinIndex getPinIndex(ComponentId id, const std::string &pinId);
 
     // Данные
     Circuit mCircuit;
