@@ -44,6 +44,11 @@ std::unique_ptr<SimulationGraph> GraphBuilder::build(const Circuit* circuit) {
 
             compAdjacency[pinA.componentId].push_back(pinB.componentId);
             inDegrees[pinB.componentId]++;
+
+            // Если b - единственный вход компонента, добавляем его в точки для наблюдения
+            if (compB->mPins.size() == 1) {
+                graph->observationPoints.push_back(pinB);
+            }
         }
         else if (bIsOutput && !aIsOutput) {
             graph->outputToInputs[pinB].push_back(pinA);
@@ -52,12 +57,16 @@ std::unique_ptr<SimulationGraph> GraphBuilder::build(const Circuit* circuit) {
 
             compAdjacency[pinB.componentId].push_back(pinA.componentId);
             inDegrees[pinA.componentId]++;
+
+            if (compA->mPins.size() == 1) {
+                graph->observationPoints.push_back(pinA);
+            }
         }
     }
 
     std::queue<ComponentId> queue;
     for (const auto& pair : inDegrees) {
-        // Определяем количество пинов компонента (у источника может быть только один)
+        // Определяем количество пинов компонента (у источника может быть только один выходной)
         const auto *comp = const_cast<Circuit *>(circuit)->findComponent(pair.first);
         auto numCompPins = comp->mPins.size();
 

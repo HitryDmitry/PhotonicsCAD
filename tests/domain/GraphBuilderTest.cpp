@@ -411,3 +411,164 @@ TEST_CASE("GraphBuilder - Various topologies")
         }
     }
 }
+
+TEST_CASE("GraphBuilder - Observation points with spectrum analyzer")
+{
+    CircuitBuilder builder;
+
+    // Создаем схему: Laser -> Fiber -> Spectrum Analyzer
+    auto laser = builder.addComponent("laser");
+    auto fiber = builder.addComponent("optical_fiber");
+    auto pd = builder.addComponent("photodetector");
+    auto esa = builder.addComponent("electrical_spectrum_analyzer");
+
+    builder.addWire(laser, "out", fiber, "in");
+    builder.addWire(fiber, "out", pd, "opt_in");
+    builder.addWire(pd, "elec_out", esa, "in");
+
+    auto circuit = builder.build();
+    auto graph = GraphBuilder::build(circuit.get());
+
+    REQUIRE(graph != nullptr);
+
+    SUBCASE("Observation points count")
+    {
+        // Анализатор спектра имеет один входной пин, поэтому должен быть добавлен
+        CHECK(graph->observationPoints.size() == 1);
+    }
+
+    SUBCASE("Observation point is correct")
+    {
+        // Проверяем, что observationPoint указывает на вход анализатора
+        auto &obsPoint = graph->observationPoints[0];
+
+        // Находим компонент с типом electrical_spectrum_analyzer
+        bool found = false;
+        auto &circuitRef = const_cast<Circuit &>(*circuit);
+        for (const auto &compPtr : circuitRef.mComponents) {
+            if (compPtr->getType() == "electrical_spectrum_analyzer") {
+                CHECK(obsPoint.componentId == compPtr->getId());
+                found = true;
+                break;
+            }
+        }
+        CHECK(found);
+    }
+}
+
+TEST_CASE("GraphBuilder - Multiple observation points")
+{
+    CircuitBuilder builder;
+
+    // Создаем схему с несколькими точками наблюдения
+    auto laser = builder.addComponent("laser");
+    auto splitter = builder.addComponent("optical_splitter");
+    auto esa1 = builder.addComponent("electrical_spectrum_analyzer");
+    auto esa2 = builder.addComponent("electrical_spectrum_analyzer");
+    auto pd1 = builder.addComponent("photodetector");
+    auto pd2 = builder.addComponent("photodetector");
+
+    // Laser -> Splitter -> PD1(2) -> ESA1(2)
+    builder.addWire(laser, "out", splitter, "in");
+    builder.addWire(splitter, "out1", pd1, "opt_in");
+    builder.addWire(splitter, "out2", pd2, "opt_in");
+    builder.addWire(pd1, "elec_out", esa1, "in");
+    builder.addWire(pd2, "elec_out", esa2, "in");
+
+    auto circuit = builder.build();
+    auto graph = GraphBuilder::build(circuit.get());
+
+    REQUIRE(graph != nullptr);
+
+    SUBCASE("Observation points count")
+    {
+        // Должно быть два анализатора спектра
+        CHECK(graph->observationPoints.size() == 2);
+    }
+
+    SUBCASE("Different signal types")
+    {
+        // Проверяем, что оба анализатора присутствуют
+        int esaCount = 0;
+        auto &circuitRef = const_cast<Circuit &>(*circuit);
+        for (const auto &compPtr : circuitRef.mComponents) {
+            if (compPtr->getType() == "electrical_spectrum_analyzer") {
+                esaCount++;
+
+                // Проверяем, что компонент есть в observationPoints
+                bool found = false;
+                for (const auto &obsPoint : graph->observationPoints) {
+                    if (obsPoint.componentId == compPtr->getId()) {
+                        found = true;
+                        break;
+                    }
+                }
+                CHECK(found);
+            }
+        }
+        CHECK(esaCount == 2);
+    }
+}
+
+TEST_CASE("GraphBuilder - Components with multiple pins not in observation points")
+{
+    CircuitBuilder builder;
+
+    // Компонент с несколькими пинами не должен автоматически добавляться
+    // в observationPoints (только если явно указан)
+    auto laser = builder.addComponent("laser");
+    auto splitter = builder.addComponent("optical_splitter"); // 3 пина (in, out1, out2)
+    auto fiber = builder.addComponent("optical_fiber");
+    auto pd = builder.addComponent("photodetector");
+
+    builder.addWire(laser, "out", splitter, "in");
+    builder.addWire(splitter, "out1", fiber, "in");
+    builder.addWire(fiber, "out", pd, "opt_in");
+
+    auto circuit = builder.build();
+    auto graph = GraphBuilder::build(circuit.get());
+
+    REQUIRE(graph != nullptr);
+
+    SUBCASE("Splitter not in observation points")
+    {
+        // Сплиттер имеет 3 пина, поэтому не должен быть в observationPoints
+        bool splitterFound = false;
+        for (const auto &obsPoint : graph->observationPoints) {
+            auto *comp = const_cast<Circuit *>(circuit.get())->findComponent(obsPoint.componentId);
+            if (comp && comp->getType() == "optical_splitter") {
+                splitterFound = true;
+                break;
+            }
+        }
+        CHECK(!splitterFound);
+    }
+
+    SUBCASE("Fiber not in observation points")
+    {
+        // Волокно имеет 2 пина, поэтому не должно быть в observationPoints
+        bool fiberFound = false;
+        for (const auto &obsPoint : graph->observationPoints) {
+            auto *comp = const_cast<Circuit *>(circuit.get())->findComponent(obsPoint.componentId);
+            if (comp && comp->getType() == "optical_fiber") {
+                fiberFound = true;
+                break;
+            }
+        }
+        CHECK(!fiberFound);
+    }
+
+    SUBCASE("Photodetector not in observation points")
+    {
+        // Фотодетектор имеет 2 пина, поэтому не должен быть в observationPoints
+        bool pdFound = false;
+        for (const auto &obsPoint : graph->observationPoints) {
+            auto *comp = const_cast<Circuit *>(circuit.get())->findComponent(obsPoint.componentId);
+            if (comp && comp->getType() == "photodetector") {
+                pdFound = true;
+                break;
+            }
+        }
+        CHECK(!pdFound);
+    }
+}

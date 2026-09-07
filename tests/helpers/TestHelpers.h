@@ -161,6 +161,30 @@ inline ComponentDefinition createMicrowaveAmplifierDefinition()
     return def;
 }
 
+inline ComponentDefinition createElectricalSpectrumAnalyzerDefinition()
+{
+    ComponentDefinition def;
+    def.type = "electrical_spectrum_analyzer";
+    def.name = "Electrical Spectrum Analyzer";
+    def.iconPath = ":/icons/esa.png";
+
+    // Пины
+    def.pins = {createPin("in", "Electrical Input", "input", "electrical")};
+
+    // Параметры
+    def.parameters
+        = {createParameter("frequency_span", "Frequency Span", "GHz", "double", 100.0, 0.1, 100000.0),
+           createParameter("resolution_bandwidth",
+                           "Resolution Bandwidth",
+                           "MHz",
+                           "double",
+                           10.0,
+                           0.001,
+                           10000.0)};
+
+    return def;
+}
+
 // Если нужно создавать кастомный компонент с произвольными параметрами
 inline ComponentDefinition createCustomDefinition(const QString &type,
                                                   const QString &name,

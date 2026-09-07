@@ -14,6 +14,7 @@ CircuitBuilder::CircuitBuilder()
     registerComponentType(TestHelpers::createElectroOpticModulatorDefinition());
     registerComponentType(TestHelpers::createPhotodetectorDefinition());
     registerComponentType(TestHelpers::createMicrowaveAmplifierDefinition());
+    registerComponentType(TestHelpers::createElectricalSpectrumAnalyzerDefinition());
 
     // Регистрируем дополнительные компоненты для тестов
     registerComponentType(createSplitterDefinition());
