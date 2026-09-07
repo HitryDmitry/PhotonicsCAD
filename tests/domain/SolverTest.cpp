@@ -23,7 +23,7 @@ TEST_CASE("LinearSolver - Simple chain of components")
     // Вытаскиваем из него сырой указатель
     auto circuitPtr = circuit.get();
     // Уникальный указатель на граф
-    auto graph = GraphBuilder::build(circuit.get());
+    auto graph = GraphBuilder::build(circuitPtr);
     auto graphPtr = graph.get();
 
     // Формируем массив частот [194, 194.5, 195 ГГц] на которых будет рассчитан результат

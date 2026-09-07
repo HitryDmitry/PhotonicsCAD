@@ -18,7 +18,7 @@ public:
     {
         // Пока что предполагаем, что лазер излучает строго на одной частоте
         if (frequencyHz == mFreqHz) {
-            return {std::sqrt(mPowerWatt), 0.0};
+            return {mPowerWatt, 0.0};
         }
         return {0.0, 0.0};
     }
@@ -44,8 +44,8 @@ public:
 
     std::complex<double> transferFunction(double frequencyHz) override
     {
-        // Расчет потерь: exp(-α * L)
-        double loss = exp(-mDampDecrement * mLengthMeters);
+        // Расчет потерь (по мощности): exp(-2 * α * L)
+        double loss = exp(-2.0 * mDampDecrement * mLengthMeters);
 
         // Фазовая задержка: exp(-j * β * L)
         double beta = (2.0 * M_PI * frequencyHz * mRefractiveIndex) / Physics::C; // скорость света
