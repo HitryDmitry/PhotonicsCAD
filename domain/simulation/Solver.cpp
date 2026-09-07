@@ -1,22 +1,21 @@
 #include "Solver.h"
 #include "ComponentModelFactory.h"
 
-SimulationResult Solver::solveFrequencyDomain(
-    const SimulationGraph& graph,
-    const Circuit* circuit,
-    const std::vector<double>& frequencies)
+SimulationResult Solver::solveFrequencyDomain(const SimulationGraph &graph,
+                                              const Circuit *circuit,
+                                              const std::vector<double> &frequenciesHz)
 {
     SimulationResult result;
-    result.frequencies = frequencies;
+    result.frequenciesHz = frequenciesHz;
 
     // Подготавливаем память под результаты
     for (const auto& obsPin : graph.observationPoints) {
-        result.frequencyResponses[obsPin].resize(frequencies.size(), 0.0);
+        result.frequencyResponses[obsPin].resize(frequenciesHz.size(), 0.0);
     }
 
     // Считаем схему для каждой частоты отдельно
-    for (size_t fIdx = 0; fIdx < frequencies.size(); ++fIdx) {
-        double currentFreq = frequencies[fIdx];
+    for (size_t fIdx = 0; fIdx < frequenciesHz.size(); ++fIdx) {
+        double currentFreqHz = frequenciesHz[fIdx];
 
         // В этой мапе будем накапливать значения сигнала на ВСЕХ пинах схемы в процессе расчета
         // (Используем std::map, т.к. PinRef имеет operator<)
@@ -56,7 +55,8 @@ SimulationResult Solver::solveFrequencyDomain(
             }
 
             // 2. Умножаем сигнал на передаточную функцию компонента
-            std::complex<double> outputSignal = inputSignal * model->transferFunction(currentFreq);
+            std::complex<double> outputSignal = inputSignal
+                                                * model->transferFunction(currentFreqHz);
 
             // 3. Отправляем результат на все ВЫХОДЫ компонента
             for (const auto& pinPtr : comp->mPins) {

@@ -1,5 +1,6 @@
 #include "Solver.h"
 #include "CircuitBuilder.h"
+#include "Constants.h"
 #include "GraphBuilder.h"
 
 #include <doctest/doctest.h>
@@ -26,7 +27,7 @@ TEST_CASE("LinearSolver - Simple chain of components")
     auto graphPtr = graph.get();
 
     // Формируем массив частот [194, 194.5, 195 ГГц] на которых будет рассчитан результат
-    std::vector<double> frequencies{194 * 1e9, 194.5 * 1e9, 195 * 1e9};
+    std::vector<double> frequencies{193 * Units::GHz, 193.5 * Units::GHz, 194 * Units::GHz};
 
     // Вход фотодетектора
     PinRef pdInput{pdId, builder.getPinIndex(pdId, "opt_in")};

@@ -1,54 +1,55 @@
 #pragma once
+#include "Constants.h"
 #include "IComponentModel.h"
 
 class LaserModel : public IComponentModel {
 private:
-    double mPower;
-    double mFreq;
+    double mPowerWatt;
+    double mFreqHz;
     double mRIN;
 
 public:
-    LaserModel(double power, double freq, double RIN)
-        : mPower(power)
-        , mFreq(freq)
+    LaserModel(double mWpower, double freqGHz, double RIN)
+        : mPowerWatt(mWpower * Units::mW)
+        , mFreqHz(freqGHz * Units::GHz)
         , mRIN(RIN)
     {}
-    std::complex<double> transferFunction(double frequency) override
+    std::complex<double> transferFunction(double frequencyHz) override
     {
         // Пока что предполагаем, что лазер излучает строго на одной частоте
-        if (frequency == mFreq) {
-            return {std::sqrt(mPower), 0.0};
+        if (frequencyHz == mFreqHz) {
+            return {std::sqrt(mPowerWatt), 0.0};
         }
         return {0.0, 0.0};
     }
 
-    double getPower() { return mPower; }
-    double getFreq() { return mFreq; }
+    double getPowerWatt() { return mPowerWatt; }
+    double getFreqHz() { return mFreqHz; }
     double getRIN() { return mRIN; }
 };
 
 class FiberModel : public IComponentModel
 {
 private:
-    double mLength;          // длина в метрах
+    double mLengthMeters;    // длина в метрах
     double mDampDecrement;   // декремент затухания (1/м)
     double mRefractiveIndex; // показатель преломления
 
 public:
-    FiberModel(double length, double dampingDecrement, double refractiveIndex)
-        : mLength(length)
+    FiberModel(double lengthMeters, double dampingDecrement, double refractiveIndex)
+        : mLengthMeters(lengthMeters)
         , mDampDecrement(dampingDecrement)
         , mRefractiveIndex(refractiveIndex)
     {}
 
-    std::complex<double> transferFunction(double frequency) override
+    std::complex<double> transferFunction(double frequencyHz) override
     {
         // Расчет потерь: exp(-α * L)
-        double loss = exp(-mDampDecrement * mLength);
+        double loss = exp(-mDampDecrement * mLengthMeters);
 
         // Фазовая задержка: exp(-j * β * L)
-        double beta = (2.0 * M_PI * frequency * mRefractiveIndex) / 3e8; // скорость света
-        double phase = -beta * mLength;
+        double beta = (2.0 * M_PI * frequencyHz * mRefractiveIndex) / Physics::C; // скорость света
+        double phase = -beta * mLengthMeters;
 
         return loss * std::complex<double>(cos(phase), sin(phase));
     }
@@ -64,5 +65,5 @@ public:
         : mSplitRatio(splitRatio)
     {}
 
-    std::complex<double> transferFunction(double frequency) override { return {}; }
+    std::complex<double> transferFunction(double frequencyHz) override { return {}; }
 };
