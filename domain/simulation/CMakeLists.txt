@@ -10,7 +10,8 @@ add_library(
   LinearModels.h
   ComponentModelFactory.h
   Solver.h
-  Solver.cpp)
+  Solver.cpp
+  Constants.h)
 
 target_include_directories(simulation_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
                                                  ${CMAKE_CURRENT_SOURCE_DIR}/..)
