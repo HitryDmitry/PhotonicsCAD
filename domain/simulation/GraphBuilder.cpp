@@ -57,7 +57,14 @@ std::unique_ptr<SimulationGraph> GraphBuilder::build(const Circuit* circuit) {
 
     std::queue<ComponentId> queue;
     for (const auto& pair : inDegrees) {
+        // Определяем количество пинов компонента (у источника может быть только один)
+        const auto *comp = const_cast<Circuit *>(circuit)->findComponent(pair.first);
+        auto numCompPins = comp->mPins.size();
+
         if (pair.second == 0) {
+            if (numCompPins != 1) {
+                throw std::runtime_error("Dangling input! Simulation is impossible.");
+            }
             queue.push(pair.first);
             graph->sources.push_back(pair.first);
         }
