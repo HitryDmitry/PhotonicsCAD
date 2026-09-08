@@ -1,5 +1,5 @@
 #pragma once
-#include <complex>
+#include "Matrix.h"
 
 class IComponentModel {
 public:
@@ -7,5 +7,5 @@ public:
 
     // Передаточная функция (Transfer Function) для частотной области
     // Принимает частоту и возвращает комплексный коэффициент изменения сигнала
-    virtual std::complex<double> transferFunction(double frequency) = 0;
+    virtual Matrix transferFunction(double frequency) = 0;
 };
