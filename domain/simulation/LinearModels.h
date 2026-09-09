@@ -2,25 +2,32 @@
 #include "Constants.h"
 #include "IComponentModel.h"
 
+#include <complex>
+
 class LaserModel : public IComponentModel {
 private:
     double mPowerWatt;
     double mFreqHz;
     double mRIN;
 
+    int mNumPins;
+
 public:
-    LaserModel(double mWpower, double freqGHz, double RIN)
+    LaserModel(double mWpower, double freqGHz, double RIN, int numPins)
         : mPowerWatt(mWpower * Units::mW)
         , mFreqHz(freqGHz * Units::GHz)
         , mRIN(RIN)
+        , mNumPins(numPins)
+
     {}
-    std::complex<double> transferFunction(double frequencyHz) override
+    Matrix transferFunction(double frequencyHz) override
     {
+        Matrix result(mNumPins);
         // Пока что предполагаем, что лазер излучает строго на одной частоте
         if (frequencyHz == mFreqHz) {
-            return {mPowerWatt, 0.0};
+            result.setElement(0, 0, mPowerWatt);
         }
-        return {0.0, 0.0};
+        return result;
     }
 
     double getPowerWatt() { return mPowerWatt; }
@@ -34,15 +41,17 @@ private:
     double mLengthMeters;    // длина в метрах
     double mDampDecrement;   // декремент затухания (1/м)
     double mRefractiveIndex; // показатель преломления
+    int mNumPins;
 
 public:
-    FiberModel(double lengthMeters, double dampingDecrement, double refractiveIndex)
+    FiberModel(double lengthMeters, double dampingDecrement, double refractiveIndex, int numPins)
         : mLengthMeters(lengthMeters)
         , mDampDecrement(dampingDecrement)
         , mRefractiveIndex(refractiveIndex)
+        , mNumPins(numPins)
     {}
 
-    std::complex<double> transferFunction(double frequencyHz) override
+    Matrix transferFunction(double frequencyHz) override
     {
         // Расчет потерь (по мощности): exp(-2 * α * L)
         double loss = exp(-2.0 * mDampDecrement * mLengthMeters);
@@ -51,7 +60,15 @@ public:
         double beta = (2.0 * M_PI * frequencyHz * mRefractiveIndex) / Physics::C; // скорость света
         double phase = -beta * mLengthMeters;
 
-        return loss * std::complex<double>(cos(phase), sin(phase));
+        double S21 = std::abs(loss * std::complex<double>(cos(phase), sin(phase)));
+
+        Matrix result(2, 2);
+        result.setElement(0, 0, 0.0); // Отражение на входе (идеальное согласование)
+        result.setElement(0, 1, 0.0); // Обратная передача
+        result.setElement(1, 0, S21); // Прямая передача
+        result.setElement(1, 1, 0.0); // Отражение на выходе (идеальное согласование)
+
+        return result;
     }
 };
 
@@ -59,11 +76,31 @@ class SplitterModel : public IComponentModel
 {
 private:
     double mSplitRatio;
+    int mNumPins;
 
 public:
-    SplitterModel(double splitRatio)
+    SplitterModel(double splitRatio, int numPins)
         : mSplitRatio(splitRatio)
+        , mNumPins(numPins)
     {}
 
-    std::complex<double> transferFunction(double frequencyHz) override { return {}; }
+    Matrix transferFunction(double frequencyHz) override
+    {
+        Matrix result(mNumPins, mNumPins);
+        double S21Sqr = mSplitRatio;
+        double S31Sqr = 1 - mSplitRatio;
+
+        result.setElement(0, 0, 0.0); // (S11)^2 - Отражение на входе (идеальное согласование)
+        result.setElement(0, 1, 0.0); // (S12)^2 Обратная передача со второго порта на вход
+        result.setElement(0, 2, 0.0); // (S13)^2 Обратная передача с третьего порта на вход
+
+        result.setElement(1, 0, S21Sqr); // (S21)^2
+        result.setElement(1, 1, 0.0);    // (S22)^2
+        result.setElement(1, 1, 0.0);    // (S23)^2
+
+        result.setElement(1, 1, S31Sqr); // (S31)^2
+        result.setElement(1, 1, 0.0);    // (S32)^2
+        result.setElement(1, 1, 0.0);    // (S33)^2
+        return result;
+    }
 };
