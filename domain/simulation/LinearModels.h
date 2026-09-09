@@ -107,3 +107,25 @@ public:
         return result;
     }
 };
+
+class Photodetector : public IComponentModel
+{
+private:
+    double mResponsivity;   // Amperes/Watt
+    double mMaxCurrent;     // Amperes
+    double mLoadResistance; // Ohm
+    double mNumPins;
+
+public:
+    Photodetector(double responsivityAmpPerWatt,
+                  double maxCurrentAmp,
+                  double loadResistOhm,
+                  int numPins)
+        : mResponsivity(responsivityAmpPerWatt)
+        , mMaxCurrent(maxCurrentAmp)
+        , mLoadResistance(loadResistOhm)
+        , mNumPins(numPins)
+    {}
+
+    Matrix<double> transferFunction(double frequencyHz) override { return {}; }
+};
