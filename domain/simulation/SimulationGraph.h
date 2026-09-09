@@ -22,4 +22,9 @@ public:
 
     // Порядок вычисления компонентов
     std::vector<ComponentId> executionOrder;
+
+    // Количество входных пинов у компонента
+    std::unordered_map<ComponentId, int> numInPinsPerComp;
+    // Количество выходных пинов у компонента
+    std::unordered_map<ComponentId, int> numOutPinsPerComp;
 };

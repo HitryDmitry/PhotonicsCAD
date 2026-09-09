@@ -70,6 +70,10 @@ std::unique_ptr<SimulationGraph> GraphBuilder::build(const Circuit* circuit) {
         const auto *comp = const_cast<Circuit *>(circuit)->findComponent(pair.first);
         auto numCompPins = comp->mPins.size();
 
+        // Сохраняем количество входных и выходных пинов для каждого компонента
+        graph->numInPinsPerComp[pair.first] = pair.second;
+        graph->numOutPinsPerComp[pair.first] = numCompPins - pair.second;
+
         if (pair.second == 0) {
             if (numCompPins != 1) {
                 throw std::runtime_error("Dangling input! Simulation is impossible.");

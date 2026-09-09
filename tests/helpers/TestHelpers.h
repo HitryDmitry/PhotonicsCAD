@@ -1,7 +1,11 @@
 #pragma once
+#include "Circuit.h"
 #include "ComponentDefinition.h"
 #include "ComponentId.h"
 #include "PinIndex.h"
+#include "SimulationGraph.h"
+
+#include <iostream>
 
 namespace TestHelpers {
 
@@ -211,6 +215,69 @@ inline ComponentId makeComponentId(uint64_t id)
 inline PinIndex makePinIndex(uint16_t index)
 {
     return PinIndex{index};
+}
+
+// Проверка количества пинов для конкретного компонента
+inline bool verifyPinCounts(const SimulationGraph &graph,
+                            ComponentId id,
+                            int expectedInPins,
+                            int expectedOutPins)
+{
+    auto inIt = graph.numInPinsPerComp.find(id);
+    auto outIt = graph.numOutPinsPerComp.find(id);
+
+    if (inIt == graph.numInPinsPerComp.end() || outIt == graph.numOutPinsPerComp.end()) {
+        return false;
+    }
+
+    return (inIt->second == expectedInPins && outIt->second == expectedOutPins);
+}
+
+// Получение компонентов по типу
+inline std::vector<ComponentId> getComponentsByType(const Circuit &circuit, const std::string &type)
+{
+    std::vector<ComponentId> result;
+    for (const auto &compPtr : const_cast<Circuit &>(circuit).mComponents) {
+        if (compPtr->getType() == type) {
+            result.push_back(compPtr->getId());
+        }
+    }
+    return result;
+}
+
+// Проверка, что сумма входных и выходных пинов равна общему количеству пинов
+inline bool validateTotalPinCounts(const SimulationGraph &graph, const Circuit &circuit)
+{
+    for (const auto &[compId, inCount] : graph.numInPinsPerComp) {
+        auto outIt = graph.numOutPinsPerComp.find(compId);
+        if (outIt == graph.numOutPinsPerComp.end()) {
+            return false;
+        }
+
+        auto *comp = const_cast<Circuit *>(&circuit)->findComponent(compId);
+        if (!comp) {
+            return false;
+        }
+
+        size_t totalPins = comp->mPins.size();
+        if ((inCount + outIt->second) > totalPins) {
+            return false; // Не может быть больше пинов, чем у компонента
+        }
+    }
+    return true;
+}
+
+// Печать информации о пинах для отладки
+inline void printPinInfo(const SimulationGraph &graph)
+{
+    std::cout << "=== Pin Count Info ===\n";
+    for (const auto &[compId, inCount] : graph.numInPinsPerComp) {
+        auto outIt = graph.numOutPinsPerComp.find(compId);
+        if (outIt != graph.numOutPinsPerComp.end()) {
+            std::cout << "Component " << compId.value() << ": IN=" << inCount
+                      << ", OUT=" << outIt->second << "\n";
+        }
+    }
 }
 
 } // namespace TestHelpers
