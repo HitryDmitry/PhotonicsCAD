@@ -8,7 +8,7 @@ class LaserModel : public IComponentModel {
 private:
     double mPowerWatt;
     double mFreqHz;
-    double mRIN;
+    double mRIN; // дБ/Гц
 
     int mNumPins;
 
@@ -24,8 +24,11 @@ public:
     {
         Matrix<double> result(mNumPins, mNumPins);
         // Пока что предполагаем, что лазер излучает строго на одной частоте
+        double currentFreqRIN = std::pow(10.0, mRIN / 10);
         if (frequencyHz == mFreqHz) {
-            result(0, 0) = mPowerWatt;
+            result(0, 0) = mPowerWatt + currentFreqRIN;
+        } else {
+            result(0, 0) = currentFreqRIN;
         }
         return result;
     }
