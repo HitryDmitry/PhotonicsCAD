@@ -1,6 +1,5 @@
 #pragma once
 #include <vector>
-#include <complex>
 #include <map>
 #include "SimulationGraph.h"
 #include "Circuit.h"
@@ -9,7 +8,7 @@
 struct SimulationResult {
     std::vector<double> frequenciesHz; // Массив частот, на которых считали
     // Для каждого пина (точки наблюдения) хранится массив значений сигнала
-    std::map<PinRef, std::vector<std::complex<double>>> frequencyResponses;
+    std::map<PinRef, std::vector<double>> frequencyResponses;
 };
 
 class Solver {
