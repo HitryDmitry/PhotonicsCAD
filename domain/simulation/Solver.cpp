@@ -9,7 +9,7 @@ SimulationResult Solver::solveFrequencyDomain(const SimulationGraph &graph,
     result.frequenciesHz = frequenciesHz;
 
     // Подготавливаем память под результаты
-    for (const auto& obsPin : graph.observationPoints) {
+    for (const auto &obsPin : graph.observationPoints) {
         result.frequencyResponses[obsPin].resize(frequenciesHz.size(), 0.0);
     }
 
@@ -18,62 +18,72 @@ SimulationResult Solver::solveFrequencyDomain(const SimulationGraph &graph,
         double currentFreqHz = frequenciesHz[fIdx];
 
         // В этой мапе будем накапливать значения сигнала на ВСЕХ пинах схемы в процессе расчета
-        // (Используем std::map, т.к. PinRef имеет operator<)
-        std::map<PinRef, std::complex<double>> pinSignals;
+        std::map<PinRef, double> pinPowers;
 
         // Идем по компонентам строго в топологическом порядке (от входов к выходам)
-        for (const auto& compId : graph.executionOrder) {
-
+        for (const auto &compId : graph.executionOrder) {
             // Используем const_cast, так как findComponent в Circuit не помечен как const
-            ComponentInstance* comp = const_cast<Circuit*>(circuit)->findComponent(compId);
-            if (!comp) continue;
+            ComponentInstance *comp = const_cast<Circuit *>(circuit)->findComponent(compId);
+            if (!comp)
+                continue;
 
             auto model = ComponentModelFactory::create(comp);
 
-            std::complex<double> inputSignal = 0.0;
+            // Формируем массив входных мощностей на каждом пине [1 x N], где N - общее количество пинов
+            std::vector<double> inputPowersVec(comp->getNumPins(), 0.0);
             bool isSource = true;
 
-            // 1. Собираем сигнал со всех ВХОДОВ компонента
-            for (const auto& pinPtr : comp->mPins) {
+            // 1. Собираем мощности со всех входов компонента,
+            // считаем, что на выходных пинах приходящая мощность нулевая
+            for (const auto &pinPtr : comp->mPins) {
                 std::string dir = pinPtr->getDirection();
                 if (dir == "input" || dir == "in" || dir == "INPUT") {
                     isSource = false;
-                    PinRef currentInputPin{compId, pinPtr->getPinIdx()};
+                    auto currentPinIdx = pinPtr->getPinIdx();
+                    PinRef currentInputPin{compId, currentPinIdx};
 
                     // Смотрим в граф: какой выходной пин подключен к нашему входу?
                     auto it = graph.inputToOutput.find(currentInputPin);
                     if (it != graph.inputToOutput.end()) {
                         PinRef sourceOutPin = it->second;
-                        inputSignal += pinSignals[sourceOutPin]; // Добавляем пришедший сигнал
+                        inputPowersVec[currentPinIdx.value()] = pinPowers[sourceOutPin];
                     }
                 }
             }
 
             // Если входов нет, значит это источник (лазер). Сигнал зарождается здесь.
             if (isSource) {
-                inputSignal = 1.0;
+                inputPowersVec[0] = 1.0;
             }
 
-            // 2. Умножаем сигнал на передаточную функцию компонента
-            std::complex<double> outputSignal = inputSignal
-                                                * model->transferFunction(currentFreqHz);
+            // Преобразуем вектор входных мощностей в матрицу
+            Matrix inputPowerMtx(inputPowersVec);
+
+            // 2. Умножаем матрицу мощностных S-параметров на столбец входных мощностей
+            // Например, для делителя размер результата:
+            // [3 x 3] * [3 x 1] = [3 x 1] - столбец выходных мощностей
+            Matrix outputPowersMtx = model->transferFunction(currentFreqHz)
+                                     * inputPowerMtx.transpose();
 
             // 3. Отправляем результат на все ВЫХОДЫ компонента
-            for (const auto& pinPtr : comp->mPins) {
+            for (const auto &pinPtr : comp->mPins) {
                 std::string dir = pinPtr->getDirection();
                 if (dir == "output" || dir == "out" || dir == "OUTPUT") {
-                    PinRef currentOutputPin{compId, pinPtr->getPinIdx()};
-                    pinSignals[currentOutputPin] = outputSignal;
+                    auto pinIdx = pinPtr->getPinIdx();
+                    PinRef currentOutputPin{compId, pinIdx};
+
+                    // Индексу выходного пина соответствует индекс в столбце выходных мощностей
+                    pinPowers[currentOutputPin] = outputPowersMtx(pinIdx.value(), 0);
                 }
             }
         }
 
         // 4. После того как посчитали всю схему на данной частоте,
         // сохраняем результаты для точек наблюдения
-        for (const auto& obsPin : graph.observationPoints) {
+        for (const auto &obsPin : graph.observationPoints) {
             auto it = graph.inputToOutput.find(obsPin);
             if (it != graph.inputToOutput.end()) {
-                result.frequencyResponses[obsPin][fIdx] = pinSignals[it->second];
+                result.frequencyResponses[obsPin][fIdx] = pinPowers[it->second];
             }
         }
     }
