@@ -20,12 +20,12 @@ public:
         , mNumPins(numPins)
 
     {}
-    Matrix transferFunction(double frequencyHz) override
+    Matrix<double> transferFunction(double frequencyHz) override
     {
-        Matrix result(mNumPins);
+        Matrix<double> result(mNumPins, mNumPins);
         // Пока что предполагаем, что лазер излучает строго на одной частоте
         if (frequencyHz == mFreqHz) {
-            result.setElement(0, 0, mPowerWatt);
+            result(0, 0) = mPowerWatt;
         }
         return result;
     }
@@ -51,7 +51,7 @@ public:
         , mNumPins(numPins)
     {}
 
-    Matrix transferFunction(double frequencyHz) override
+    Matrix<double> transferFunction(double frequencyHz) override
     {
         // Расчет потерь (по мощности): exp(-2 * α * L)
         double loss = exp(-2.0 * mDampDecrement * mLengthMeters);
@@ -62,11 +62,11 @@ public:
 
         double S21 = std::abs(loss * std::complex<double>(cos(phase), sin(phase)));
 
-        Matrix result(2, 2);
-        result.setElement(0, 0, 0.0); // Отражение на входе (идеальное согласование)
-        result.setElement(0, 1, 0.0); // Обратная передача
-        result.setElement(1, 0, S21); // Прямая передача
-        result.setElement(1, 1, 0.0); // Отражение на выходе (идеальное согласование)
+        Matrix<double> result(2, 2);
+        result(0, 0) = 0.0; // Отражение на входе (идеальное согласование)
+        result(0, 1) = 0.0; // Обратная передача
+        result(1, 0) = S21; // Прямая передача
+        result(1, 1) = 0.0; // Отражение на выходе (идеальное согласование)
 
         return result;
     }
@@ -84,23 +84,23 @@ public:
         , mNumPins(numPins)
     {}
 
-    Matrix transferFunction(double frequencyHz) override
+    Matrix<double> transferFunction(double frequencyHz) override
     {
-        Matrix result(mNumPins, mNumPins);
+        Matrix<double> result(mNumPins, mNumPins);
         double S21Sqr = mSplitRatio;
         double S31Sqr = 1 - mSplitRatio;
 
-        result.setElement(0, 0, 0.0); // (S11)^2 - Отражение на входе (идеальное согласование)
-        result.setElement(0, 1, 0.0); // (S12)^2 Обратная передача со второго порта на вход
-        result.setElement(0, 2, 0.0); // (S13)^2 Обратная передача с третьего порта на вход
+        result(0, 0) = 0.0; // (S11)^2 - Отражение на входе (идеальное согласование)
+        result(0, 1) = 0.0; // (S12)^2 Обратная передача со второго порта на вход
+        result(0, 2) = 0.0; // (S13)^2 Обратная передача с третьего порта на вход
 
-        result.setElement(1, 0, S21Sqr); // (S21)^2
-        result.setElement(1, 1, 0.0);    // (S22)^2
-        result.setElement(1, 1, 0.0);    // (S23)^2
+        result(1, 0) = S21Sqr; // (S21)^2
+        result(1, 1) = 0.0;    // (S22)^2
+        result(1, 1) = 0.0;    // (S23)^2
 
-        result.setElement(1, 1, S31Sqr); // (S31)^2
-        result.setElement(1, 1, 0.0);    // (S32)^2
-        result.setElement(1, 1, 0.0);    // (S33)^2
+        result(1, 1) = S31Sqr; // (S31)^2
+        result(1, 1) = 0.0;    // (S32)^2
+        result(1, 1) = 0.0;    // (S33)^2
         return result;
     }
 };

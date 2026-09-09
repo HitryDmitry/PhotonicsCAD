@@ -7,5 +7,5 @@ public:
 
     // Передаточная функция (Transfer Function) для частотной области
     // Принимает частоту и возвращает комплексный коэффициент изменения сигнала
-    virtual Matrix transferFunction(double frequency) = 0;
+    virtual Matrix<double> transferFunction(double frequency) = 0;
 };
