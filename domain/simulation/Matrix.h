@@ -21,6 +21,16 @@ public:
         , m_data(rows * cols, initial_value)
     {}
 
+    Matrix(std::vector<T> vec)
+        : m_rows(1)
+        , m_cols(vec.size())
+        , m_data(std::move(vec))
+    {
+        if (m_cols == 0) {
+            throw std::invalid_argument("Вектор не может быть пустым.");
+        }
+    }
+
     // Element access (Getter/Setter) - Zero-indexed
     T &operator()(size_t row, size_t col)
     {
