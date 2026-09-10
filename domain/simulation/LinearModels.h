@@ -127,5 +127,13 @@ public:
         , mNumPins(numPins)
     {}
 
-    Matrix<double> transferFunction(double frequencyHz) override { return {}; }
+    Matrix<double> transferFunction(double frequencyHz) override
+    {
+        Matrix<double> result(mNumPins, mNumPins);
+        result(0, 0) = 0.0; // Отражение на входе (идеальное согласование)
+        result(0, 1) = 0.0; // Обратная передача
+        result(1, 0) = mResponsivity * mLoadResistance; // Прямая передача
+        result(1, 1) = 0.0; // Отражение на выходе (идеальное согласование)
+        return result;
+    }
 };
