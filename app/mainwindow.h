@@ -11,6 +11,10 @@ QT_BEGIN_NAMESPACE
 class QAction;
 class QToolBar;
 class QGraphicsItem;
+class QProgressBar;
+class QLabel;
+class QHBoxLayout;
+
 namespace Ui {
 class MainWindow;
 }
@@ -66,5 +70,12 @@ private:
     QToolBar *standardToolBar;
     QToolBar *simulationToolBar;
     QToolBar *viewToolBar;
+
+    // --- ИНДИКАТОР ВЫПОЛНЕНИЯ ---
+    void createProgressBar();
+    QWidget *progressContainer;
+    QHBoxLayout *progressLayout;
+    QProgressBar *progressBar;
+    QLabel *progressBarLabel;
 };
 #endif

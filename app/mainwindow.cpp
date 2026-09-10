@@ -1,8 +1,6 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 
-#include <QKeyEvent>
-#include <QMetaMethod>
 #include "CircuitScene.h"
 #include "ComponentDefinition.h"
 #include "ComponentInstance.h"
@@ -13,9 +11,16 @@
 
 // --- БИБЛИОТЕКИ ДЛЯ ПАНЕЛИ ---
 #include <QAction>
-#include <QToolBar>
 #include <QStyle>
+#include <QToolBar>
+
+// --- ДРУГИЕ БИБЛИОТЕКИ Qt ---
 #include <QDebug>
+#include <QHBoxLayout>
+#include <QKeyEvent>
+#include <QLabel>
+#include <QMetaMethod>
+#include <QProgressBar>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -26,6 +31,9 @@ MainWindow::MainWindow(QWidget *parent)
     // --- СОЗДАНИЕ ВЕРХНЕЙ ПАНЕЛИ ---
     createActions();
     createToolbars();
+
+    // --- СОЗДАНИЕ ИНДИКАТОРА ВЫПОЛНЕНИЯ ---
+    createProgressBar();
 
     ui->listWidget->setDragEnabled(true);
     ui->listWidget->setDragDropMode(ComponentListWidget::DragOnly);
@@ -190,9 +198,31 @@ void MainWindow::createToolbars()
     viewToolBar->addAction(actionFit);
 }
 
+void MainWindow::createProgressBar()
+{
+    progressContainer = new QWidget(this);
+    progressLayout = new QHBoxLayout(progressContainer);
+    progressLayout->setContentsMargins(0, 0, 0, 0);
+
+    progressBar = new QProgressBar(progressContainer);
+    progressBar->setRange(0, 100);
+
+    progressBarLabel = new QLabel(tr("Выполнение:"), progressContainer);
+
+    progressLayout->addWidget(progressBarLabel);
+    progressLayout->addWidget(progressBar);
+
+    ui->verticalLayout->addWidget(progressContainer);
+}
+
 // ЛОГИКА РАБОТЫ КНОПОК ПАНЕЛИ
 
-void MainWindow::runSimulation() { qDebug() << "Запуск расчета схемы..."; }
+void MainWindow::runSimulation()
+{
+    qDebug() << "Запуск расчета схемы...";
+    actionCalculate->setEnabled(false);
+    actionCalculate->setText(tr("Calculating..."));
+}
 
 void MainWindow::zoomIn() { ui->graphicsView->scale(1.25, 1.25); }
 
