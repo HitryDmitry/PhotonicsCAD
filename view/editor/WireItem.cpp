@@ -22,7 +22,9 @@ WireItem::WireItem(PinItem *startPin)
 WireItem::~WireItem()
 {
     startPin->removeWire(this);
-    endPin->removeWire(this);
+    if (endPin) {
+        endPin->removeWire(this);
+    }
 }
 
 void WireItem::setEndPoint(const QPointF &pos)

@@ -33,7 +33,7 @@ void PinItem::removeWire(WireItem *wire)
     if (mWireItems.remove(wire)) {
         qDebug() << "WireItem was removed.";
     } else {
-        qDebug() << "Can't remove WireItem!";
+        qDebug() << "The wire is being dragged and hasn't been added. Can't remove WireItem.";
     }
 }
 
