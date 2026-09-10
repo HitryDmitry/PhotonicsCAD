@@ -99,11 +99,11 @@ public:
 
         result(1, 0) = S21Sqr; // (S21)^2
         result(1, 1) = 0.0;    // (S22)^2
-        result(1, 1) = 0.0;    // (S23)^2
+        result(1, 2) = 0.0;    // (S23)^2
 
-        result(1, 1) = S31Sqr; // (S31)^2
-        result(1, 1) = 0.0;    // (S32)^2
-        result(1, 1) = 0.0;    // (S33)^2
+        result(2, 0) = S31Sqr; // (S31)^2
+        result(2, 1) = 0.0;    // (S32)^2
+        result(2, 2) = 0.0;    // (S33)^2
         return result;
     }
 };
