@@ -32,6 +32,17 @@ public:
             return std::make_unique<SplitterModel>(ratio, numPins);
         }
 
+        else if (type == "photodetector") {
+            double responsivityAmpPerWatt = std::stod(instance->getParameter("responsivity"));
+            double maxCurrentMilliamperes = std::stod(instance->getParameter("max_current"));
+            double loadResistOhm = std::stod(instance->getParameter("load_resistance"));
+
+            return std::make_unique<Photodetector>(responsivityAmpPerWatt,
+                                                   maxCurrentMilliamperes * Units::mA,
+                                                   loadResistOhm,
+                                                   numPins);
+        }
+
         return std::make_unique<FiberModel>(1.0, 0.0, 1.0, numPins);
     }
 };
