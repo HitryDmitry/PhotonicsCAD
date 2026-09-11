@@ -1,6 +1,8 @@
 #include "CircuitViewModel.h"
 #include "ComponentFactory.h"
+
 #include <algorithm>
+#include <numeric>
 
 CircuitViewModel::CircuitViewModel()
     : mCircuit(std::make_unique<Circuit>())
@@ -105,4 +107,63 @@ void CircuitViewModel::notifyComponentAdded(ComponentViewModel *cvm, const Compo
     }
 }
 
-void CircuitViewModel::startSimulation() {}
+void CircuitViewModel::buildGraph()
+{
+    std::promise<std::unique_ptr<SimulationGraph>> graphPromise;
+    mGraphFuture = graphPromise.get_future();
+
+    // std::thread([graphPromise = std::move(graphPromise), this]() mutable {
+    //     try {
+    //         graphPromise.set_value(GraphBuilder::build(mCircuit.get()));
+    //     } catch (...) {
+    //         graphPromise.set_exception(std::current_exception());
+    //     }
+    // }).detach();
+
+    std::future<std::unique_ptr<SimulationGraph>> f = std::async(std::launch::async, [this]() {
+        return GraphBuilder::build(mCircuit.get());
+    });
+
+    mGraph = f.get();
+    notifyGraphIsBuilt();
+}
+
+void CircuitViewModel::solveTheCircuit()
+{
+    std::promise<SimulationResult> simulationPromise;
+    mSimulationFuture = simulationPromise.get_future();
+
+    // --- Пока что используем костыль для сетки частот, должна задаваться в другом месте ---
+    size_t numFreqs = 1e2;
+    std::vector<double> frequencies(numFreqs);
+    double startingFreq = 194e9;
+    std::iota(frequencies.begin(), frequencies.end(), startingFreq);
+    // ---
+
+    std::future<SimulationResult> f = std::async(std::launch::async, [this, &frequencies]() {
+        return mSolver.solveFrequencyDomain(*mGraph.get(), mCircuit.get(), frequencies);
+    });
+
+    mSimResult = f.get();
+    notifySimulationCompleted();
+}
+
+void CircuitViewModel::notifyGraphIsBuilt()
+{
+    for (auto *obs : mObservers) {
+        obs->onGraphBuildingCompleted();
+    }
+}
+
+void CircuitViewModel::notifySimulationCompleted()
+{
+    for (auto *obs : mObservers) {
+        obs->onSimulationCompleted();
+    }
+}
+
+void CircuitViewModel::startSimulation()
+{
+    buildGraph();
+    solveTheCircuit();
+}

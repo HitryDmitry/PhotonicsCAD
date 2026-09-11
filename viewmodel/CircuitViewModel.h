@@ -6,6 +6,7 @@
 #include "GraphBuilder.h"
 #include "Solver.h"
 
+#include <future>
 #include <memory>
 #include <vector>
 
@@ -17,6 +18,7 @@ class ICircuitObserver
 public:
     virtual ~ICircuitObserver() = default;
     virtual void onComponentAdded(ComponentViewModel *cvm, const ComponentDefinition *def) {};
+    virtual void onGraphBuildingCompleted() {};
     virtual void onSimulationCompleted() {};
 };
 
@@ -54,8 +56,15 @@ private:
     CircuitState state{Completed};
 
     // Симуляция схемы
+    void buildGraph();
+    void solveTheCircuit();
+
     void notifyGraphIsBuilt();
     void notifySimulationCompleted();
-    SimulationGraph graph;
-    SimulationResult simResult;
+    // GraphBuilder mGraphBuilder;
+    std::unique_ptr<SimulationGraph> mGraph;
+    Solver mSolver;
+    SimulationResult mSimResult;
+    std::future<std::unique_ptr<SimulationGraph>> mGraphFuture;
+    std::future<SimulationResult> mSimulationFuture;
 };

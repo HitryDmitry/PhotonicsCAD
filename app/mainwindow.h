@@ -30,6 +30,7 @@ public:
 
     // Реализация чисто виртуального метода интерфейса наблюдателя
     void onComponentAdded(ComponentViewModel *cvm, const ComponentDefinition *def) override;
+    void onGraphBuildingCompleted() override;
     void onSimulationCompleted() override;
 
 protected:

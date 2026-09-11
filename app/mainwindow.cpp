@@ -114,6 +114,18 @@ void MainWindow::onComponentAdded(ComponentViewModel *cvm, const ComponentDefini
     m_scene->addItem(item);
 }
 
+void MainWindow::onGraphBuildingCompleted()
+{
+    progressBarLabel->setText(tr("Симуляция:"));
+    progressBar->setValue(30);
+}
+
+void MainWindow::onSimulationCompleted()
+{
+    progressBarLabel->setText(tr("Симуляция завершена."));
+    progressBar->setValue(100);
+}
+
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Escape) {
@@ -221,6 +233,8 @@ void MainWindow::runSimulation()
     qDebug() << "Запуск расчета схемы...";
     actionCalculate->setEnabled(false);
     actionCalculate->setText(tr("Calculating..."));
+
+    viewModel->startSimulation();
 }
 
 void MainWindow::zoomIn() { ui->graphicsView->scale(1.25, 1.25); }
