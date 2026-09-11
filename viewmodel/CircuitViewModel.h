@@ -3,17 +3,21 @@
 #include "ComponentDefinition.h"
 #include "ComponentIdGenerator.h"
 #include "ComponentViewModel.h"
+#include "GraphBuilder.h"
+#include "Solver.h"
+
 #include <memory>
 #include <vector>
 
-enum CircuitState { Dragging, Completed };
+enum CircuitState { Dragging, Completed, Simulating };
 
 // Интерфейс наблюдателя для связи ViewModel -> View
 class ICircuitObserver
 {
 public:
     virtual ~ICircuitObserver() = default;
-    virtual void onComponentAdded(ComponentViewModel *cvm, const ComponentDefinition *def) = 0;
+    virtual void onComponentAdded(ComponentViewModel *cvm, const ComponentDefinition *def) {};
+    virtual void onSimulationCompleted() {};
 };
 
 class CircuitViewModel
@@ -36,6 +40,9 @@ public:
     bool tryToConnect(const PinRef &a, const PinRef &b);
     bool removeWire(const PinRef &a, const PinRef &b);
 
+    // Симуляция схемы
+    void startSimulation();
+
 private:
     void notifyComponentAdded(ComponentViewModel *cvm, const ComponentDefinition *def);
 
@@ -45,4 +52,10 @@ private:
     ComponentIdGenerator mIdGen;
 
     CircuitState state{Completed};
+
+    // Симуляция схемы
+    void notifyGraphIsBuilt();
+    void notifySimulationCompleted();
+    SimulationGraph graph;
+    SimulationResult simResult;
 };

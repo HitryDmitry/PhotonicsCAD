@@ -97,9 +97,12 @@ bool CircuitViewModel::removeWire(const PinRef &a, const PinRef &b)
     return false;
 }
 
+
 void CircuitViewModel::notifyComponentAdded(ComponentViewModel *cvm, const ComponentDefinition *def)
 {
     for (auto *obs : mObservers) {
         obs->onComponentAdded(cvm, def);
     }
 }
+
+void CircuitViewModel::startSimulation() {}

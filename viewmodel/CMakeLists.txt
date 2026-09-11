@@ -18,4 +18,5 @@ target_include_directories(viewmodel_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Добавляем компонентную библиотеку в зависимости, чтобы пробросить пути к
 # ComponentDefinition.h
-target_link_libraries(viewmodel_lib PUBLIC domain_lib component_library)
+target_link_libraries(viewmodel_lib PUBLIC domain_lib component_library
+                                           simulation_lib)

@@ -216,7 +216,6 @@ void MainWindow::createProgressBar()
 }
 
 // ЛОГИКА РАБОТЫ КНОПОК ПАНЕЛИ
-
 void MainWindow::runSimulation()
 {
     qDebug() << "Запуск расчета схемы...";
