@@ -24,6 +24,16 @@ public:
     const QString &getComponentType();
     ComponentId getComponentId();
 
+    // Frame management
+    void showGreenFrame();
+    void hideGreenFrame();
+    bool isFrameVisible() const { return mFrameVisible; }
+
+    // Overrides for custom painting
+    QRectF boundingRect() const override;
+    QPainterPath shape() const override;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+
 signals:
     void doubleClicked(ComponentId id);
 
@@ -31,4 +41,11 @@ private:
     QString componentType;
     QVector<PinItem *> mPins;
     ComponentViewModel *mComponentVM;
+
+    // Helper to compute the frame path
+    QPainterPath framePath() const;
+
+    // Frame state
+    bool mFrameVisible = false;
+    static constexpr qreal FRAME_WIDTH = 24.0; // Maximum glow width
 };

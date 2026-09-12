@@ -182,9 +182,7 @@ void CircuitScene::onSimulationCompleted(const std::vector<PinRef> &observationP
                                    });
 
             if (it != observationPoints.cend()) {
-            } else {
-                throw std::runtime_error(
-                    "CircuitScene: Can't find a component with such an id in observation points.");
+                graphicsComponent->showGreenFrame();
             }
         }
     }
