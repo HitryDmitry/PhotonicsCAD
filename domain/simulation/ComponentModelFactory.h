@@ -41,6 +41,11 @@ public:
                                                    maxCurrentMilliamperes * Units::mA,
                                                    loadResistOhm,
                                                    numPins);
+        } else if (type == "electrical_spectrum_analyzer") {
+            double freqSpanGHz = std::stod(instance->getParameter("frequency_span"));
+            double resBandMHz = std::stod(instance->getParameter("resolution_bandwidth"));
+
+            return std::make_unique<ESA>(freqSpanGHz, resBandMHz, numPins);
         }
 
         return std::make_unique<FiberModel>(1.0, 0.0, 1.0, numPins);

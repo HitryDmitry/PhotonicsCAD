@@ -26,7 +26,7 @@ TEST_CASE("LinearSolver - Simple chain of components")
     auto graph = GraphBuilder::build(circuitPtr);
     auto graphPtr = graph.get();
 
-    // Формируем массив частот [194, 194.5, 195 ГГц] на которых будет рассчитан результат
+    // Формируем массив частот [193, 193.5, 194 ГГц] на которых будет рассчитан результат
     std::vector<double> frequencies{193 * Units::GHz, 193.5 * Units::GHz, 194 * Units::GHz};
 
     // Вход фотодетектора
@@ -64,7 +64,7 @@ TEST_CASE("LinearSolver - Correct photodetector output")
     auto graph = GraphBuilder::build(circuitPtr);
     auto graphPtr = graph.get();
 
-    // Формируем массив частот [194, 194.5, 195 ГГц] на которых будет рассчитан результат
+    // Формируем массив частот [193, 193.5, 194 ГГц] на которых будет рассчитан результат
     std::vector<double> frequencies{193 * Units::GHz, 193.5 * Units::GHz, 194 * Units::GHz};
 
     // Выход фотодетектора

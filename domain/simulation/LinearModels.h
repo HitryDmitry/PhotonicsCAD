@@ -114,7 +114,7 @@ private:
     double mResponsivity;   // Amperes/Watt
     double mMaxCurrent;     // Amperes
     double mLoadResistance; // Ohm
-    double mNumPins;
+    int mNumPins;
 
 public:
     Photodetector(double responsivityAmpPerWatt,
@@ -134,6 +134,28 @@ public:
         result(0, 1) = 0.0; // Обратная передача
         result(1, 0) = mResponsivity * mLoadResistance; // Прямая передача
         result(1, 1) = 0.0; // Отражение на выходе (идеальное согласование)
+        return result;
+    }
+};
+
+class ESA : public IComponentModel
+{
+private:
+    double frequencySpanGHz;
+    double resolutionBandwidthMHz;
+    int mNumPins;
+
+public:
+    ESA(double freqSpanGHz, double resBandMHz, int numPins)
+        : frequencySpanGHz(freqSpanGHz)
+        , resolutionBandwidthMHz(resBandMHz)
+        , mNumPins(numPins)
+    {}
+
+    Matrix<double> transferFunction(double frequencyHz) override
+    {
+        Matrix<double> result(mNumPins, mNumPins);
+        result(0, 0) = 1.0;
         return result;
     }
 };
