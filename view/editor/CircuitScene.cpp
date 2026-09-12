@@ -168,3 +168,24 @@ void CircuitScene::connectPinToSlots(PinItem *pinToConnect)
 {
     connect(pinToConnect, SIGNAL(pinClicked(PinItem *)), this, SLOT(onPinClicked(PinItem *)));
 }
+
+void CircuitScene::onSimulationCompleted(const std::vector<PinRef> &observationPoints)
+{
+    const QList<QGraphicsItem *> allItems = this->items();
+    for (QGraphicsItem *item : allItems) {
+        if (auto *graphicsComponent = qgraphicsitem_cast<GraphicsComponentItem *>(item)) {
+            auto it = std::find_if(observationPoints.cbegin(),
+                                   observationPoints.cend(),
+                                   [graphicsComponent](PinRef pin) {
+                                       return graphicsComponent->getComponentId()
+                                              == pin.componentId;
+                                   });
+
+            if (it != observationPoints.cend()) {
+            } else {
+                throw std::runtime_error(
+                    "CircuitScene: Can't find a component with such an id in observation points.");
+            }
+        }
+    }
+}

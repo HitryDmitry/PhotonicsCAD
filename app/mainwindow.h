@@ -31,7 +31,7 @@ public:
     // Реализация чисто виртуального метода интерфейса наблюдателя
     void onComponentAdded(ComponentViewModel *cvm, const ComponentDefinition *def) override;
     void onGraphBuildingCompleted() override;
-    void onSimulationCompleted() override;
+    void onSimulationCompleted(const std::vector<PinRef> &observationPoints) override;
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;

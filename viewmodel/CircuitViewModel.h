@@ -19,7 +19,7 @@ public:
     virtual ~ICircuitObserver() = default;
     virtual void onComponentAdded(ComponentViewModel *cvm, const ComponentDefinition *def) {};
     virtual void onGraphBuildingCompleted() {};
-    virtual void onSimulationCompleted() {};
+    virtual void onSimulationCompleted(const std::vector<PinRef> &observationPoints) {};
 };
 
 class CircuitViewModel

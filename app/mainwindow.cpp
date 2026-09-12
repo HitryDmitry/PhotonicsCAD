@@ -120,7 +120,7 @@ void MainWindow::onGraphBuildingCompleted()
     progressBar->setValue(30);
 }
 
-void MainWindow::onSimulationCompleted()
+void MainWindow::onSimulationCompleted(const std::vector<PinRef> &observationPoints)
 {
     progressBarLabel->setText(tr("Симуляция завершена."));
     progressBar->setValue(100);

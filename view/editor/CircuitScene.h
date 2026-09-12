@@ -22,6 +22,7 @@ public:
 
     ~CircuitScene() override {};
     void onComponentAdded(ComponentViewModel *cvm, const ComponentDefinition *def) override {};
+    void onSimulationCompleted(const std::vector<PinRef> &observationPoints) override;
 
     void tryToCompleteConnection(PinItem *from, PinItem *to);
     void cancelConnection();
