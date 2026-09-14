@@ -4,6 +4,9 @@ project(ui)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets)
 
+add_subdirectory(imgui)
+add_subdirectory(implot)
+
 set(SOURCES_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_library(
