@@ -17,11 +17,13 @@ void CircuitViewModel::addComponent(const ComponentDefinition &def, double x, do
     // Создание компонента с помощью фабрики
     auto component = ComponentFactory::createComponent(def, newCompId, x, y);
 
+    bool isInstrument = component.get()->mCategory == "instruments";
+
     // ViewModel добавляет его в модель Circuit, которой владеет
     mCircuit->addComponent(std::move(component));
 
     // Создаем ComponentViewModel
-    auto componentViewModel = std::make_unique<ComponentViewModel>(newCompId, this);
+    auto componentViewModel = std::make_unique<ComponentViewModel>(newCompId, this, isInstrument);
     auto compVMRawPtr = componentViewModel.get();
 
     // Сохраняем его в контейнер (CircuitViewModel владеет множеством ComponentViewModel)

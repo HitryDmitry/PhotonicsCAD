@@ -28,8 +28,9 @@ TEST_SUITE("ComponentViewModel basic checks")
     TEST_CASE("ComponentViewModel creation")
     {
         auto compId = makeComponentId(1);
+        bool isInstrument = false;
         CircuitViewModel cvm;
 
-        ComponentViewModel componentVM(compId, &cvm);
+        ComponentViewModel componentVM(compId, &cvm, isInstrument);
     }
 }

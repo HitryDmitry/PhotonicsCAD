@@ -17,7 +17,7 @@ public:
 class ComponentViewModel
 {
 public:
-    explicit ComponentViewModel(ComponentId id, CircuitViewModel *cvm);
+    explicit ComponentViewModel(ComponentId id, CircuitViewModel *cvm, bool isInstrument);
     void addObserver(IComponentObserver *);
     void removeObserver(IComponentObserver *);
     void modifyProperty(const std::string &propertyName, const std::string &newValue);
