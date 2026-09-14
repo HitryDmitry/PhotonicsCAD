@@ -33,6 +33,7 @@ public:
     const std::vector<std::unique_ptr<PinInstance>> &getInstancePins();
     const std::vector<double> &getSimFreqs();
     const std::vector<double> &getSimVals();
+    bool isInstrument();
 
 private:
     void notifyObservers();

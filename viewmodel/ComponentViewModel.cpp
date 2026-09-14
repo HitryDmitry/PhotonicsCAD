@@ -77,3 +77,8 @@ const std::vector<double> &ComponentViewModel::getSimVals()
     PinRef pinOfIntrest{mId, PinIndex(0)};
     return mCircuitVM->getSimVals(pinOfIntrest);
 }
+
+bool ComponentViewModel::isInstrument()
+{
+    return mIsInstrument;
+}
