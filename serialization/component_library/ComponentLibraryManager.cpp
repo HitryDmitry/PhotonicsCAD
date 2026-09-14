@@ -21,7 +21,9 @@ bool ComponentLibraryManager::loadFromJson(const QString &path)
         ComponentDefinition comp;
         comp.type = obj["type"].toString();
         comp.name = obj["name"].toString();
+        comp.category = obj["category"].toString();
         comp.iconPath = obj["icon"].toString();
+        comp.description = obj["description"].toString();
 
         QJsonArray pins = obj["pins"].toArray();
         for (auto pinIter : pins) {
