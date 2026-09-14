@@ -31,6 +31,8 @@ public:
     double getY() const;
 
     const std::string &getType() const;
+    const std::string &getCategory() const;
+    const std::string &getDescription() const;
 
     const PinInstance &getPin(PinIndex idx) const;
     PinInstance &getPin(PinIndex idx);
@@ -40,6 +42,8 @@ public:
 
     int getNumPins() { return mPins.size(); }
 
+    std::string mCategory;
+    std::string mDescription;
     std::string mType;
     Point2D mPosition;
 

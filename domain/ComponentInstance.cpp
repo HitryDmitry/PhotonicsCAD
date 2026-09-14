@@ -6,6 +6,8 @@ ComponentInstance::ComponentInstance(const ComponentDefinition &def, ComponentId
     mId = id;
     // Тип компонента
     mType = def.type.toStdString();
+    mCategory = def.category.toStdString();
+    mDescription = def.description.toStdString();
     size_t paramCount = def.parameters.count();
     // Преобразуем структуру параметров Qt во внутреннюю стандартную структуру, и передаем компоненту
     for (size_t i = 0; i < paramCount; i++) {
@@ -81,6 +83,16 @@ double ComponentInstance::getY() const
 const std::string &ComponentInstance::getType() const
 {
     return mType;
+}
+
+const std::string &ComponentInstance::getCategory() const
+{
+    return mCategory;
+}
+
+const std::string &ComponentInstance::getDescription() const
+{
+    return mDescription;
 }
 
 const PinInstance &ComponentInstance::getPin(PinIndex idx) const
