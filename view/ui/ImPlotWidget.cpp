@@ -3,40 +3,64 @@
 #include "imgui_impl_opengl3.h"
 #include "implot.h"
 
+#include <QTimer>
+
 ImPlotWidget::ImPlotWidget(QWidget *parent)
     : QOpenGLWidget(parent)
 {
-    // Разрешаем виджету принимать фокус для обработки клавиатуры
+    // 1. Задаем жесткую политику размеров, чтобы Layout не сжимал виджет
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    setMinimumSize(450, 400);
+
     setFocusPolicy(Qt::StrongFocus);
     setMouseTracking(true);
+
+    // 2. Вместо update() в paintGL, используем безопасный таймер на 60 FPS
+    QTimer *timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, QOverload<>::of(&QWidget::update));
+    timer->start(16); // ~60 кадров в секунду
 }
 
 ImPlotWidget::~ImPlotWidget()
 {
-    makeCurrent();
-    ImGui_ImplOpenGL3_Shutdown();
-    ImPlot::DestroyContext();
-    ImGui::DestroyContext();
-    doneCurrent();
+    // Проверяем, существует ли еще контекст окна Qt
+    if (isValid()) {
+        makeCurrent();
+
+        // Безопасный вызов Shutdown: проверяем, инициализирован ли бэкенд
+        if (ImGui::GetCurrentContext() != nullptr) {
+            // Проверяем внутренний флаг ImGui, чтобы не вызвать Shutdown дважды
+            if (ImGui::GetIO().BackendRendererName != nullptr) {
+                ImGui_ImplOpenGL3_Shutdown();
+            }
+
+            // Уничтожаем контексты ImPlot и ImGui
+            if (ImPlot::GetCurrentContext() != nullptr) {
+                ImPlot::DestroyContext();
+            }
+            ImGui::DestroyContext();
+        }
+
+        doneCurrent();
+    }
 }
 
 void ImPlotWidget::initializeGL()
 {
     initializeOpenGLFunctions();
 
-    // 1. Создаем контексты ImGui и ImPlot
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImPlot::CreateContext();
+    // Создаем контексты, только если они еще не созданы (актуально для множества окон)
+    if (ImGui::GetCurrentContext() == nullptr) {
+        IMGUI_CHECKVERSION();
+        ImGui::CreateContext();
+        ImPlot::CreateContext();
 
-    ImGuiIO &io = ImGui::GetIO();
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+        ImGuiIO &io = ImGui::GetIO();
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+        ImGui::StyleColorsDark();
+    }
 
-    // Настройка стиля (опционально)
-    ImGui::StyleColorsDark();
-
-    // 2. Инициализируем бэкенд рендеринга (OpenGL 3)
-    // В Qt 6 под Windows/Linux/macOS используется профиль не ниже #version 150 или 330 core
+    // Инициализируем бэкенд для текущего контекста OpenGL
     ImGui_ImplOpenGL3_Init("#version 150");
 
     m_timer.start();
@@ -57,36 +81,50 @@ void ImPlotWidget::paintGL()
     ImGui_ImplOpenGL3_NewFrame();
     ImGui::NewFrame();
 
-    // Позиционируем окно ImGui ровно под размеры QOpenGLWidget
-    ImGui::SetNextWindowPos(ImVec2(0, 0));
-    ImGui::SetNextWindowSize(ImVec2(width(), height()));
+    // 1. Убираем внутренние отступы (padding) окна ImGui,
+    // чтобы график прижимался ровно к краям Qt-виджета
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 
+    // Позиционируем окно ImGui ровно под размеры QOpenGLWidget
+    ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(width(), height()), ImGuiCond_Always);
+
+    // Обязательно убираем все рамки и фоны самого окна ImGui,
+    // чтобы график занимал 100% пространства виджета Qt
     ImGui::Begin("ImPlot Window",
                  nullptr,
                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove
-                     | ImGuiWindowFlags_NoCollapse);
+                     | ImGuiWindowFlags_NoCollapse
+                     | ImGuiWindowFlags_NoBackground); // Добавлен флаг NoBackground
 
-    // --- ОТРИСОВКА ГРАФИКА IMPLOT ---
-    if (ImPlot::BeginPlot("My First ImPlot Widget", ImVec2(-1, -1))) {
-        static float x_data[101];
-        static float y_data[101];
+    // 2. Исправляем выделение памяти: объявляем полноценные массивы на 101 элемент
+    static float x_data[101];
+    static float y_data[101];
+    static bool data_initialized = false;
+
+    if (!data_initialized) {
         for (int i = 0; i <= 100; ++i) {
             x_data[i] = i * 0.1f;
             y_data[i] = sinf(x_data[i]);
         }
+        data_initialized = true;
+    }
 
+    // 3. Передаем ImVec2(-1, -1) — это заставит ImPlot автоматически
+    // растянуться на 100% доступной ширины и высоты окна ImGui
+    if (ImPlot::BeginPlot("My First ImPlot Widget", ImVec2(-1, -1))) {
         ImPlot::PlotLine("Sin(x)", x_data, y_data, 101);
         ImPlot::EndPlot();
     }
 
     ImGui::End();
 
+    // Возвращаем настройки стилей в исходное состояние
+    ImGui::PopStyleVar();
+
     // Рендеринг ImGui сцены
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-    // Постоянно запрашиваем обновление (для интерактивности и плавного зума/перетаскивания)
-    update();
 }
 
 void ImPlotWidget::resizeGL(int w, int h)

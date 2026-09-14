@@ -157,8 +157,20 @@ void MainWindow::onComponentDoubleClicked(ComponentId id)
 
     auto cvm = viewModel->getComponentVM(id);
 
-    PropertyEditorDialog dialog(cvm, def, this);
-    dialog.exec();
+    // PropertyEditorDialog dialog(cvm, def, this);
+    // dialog.exec();
+
+    // 1. Создаем диалог в куче (heap)
+    PropertyEditorDialog *dialog = new PropertyEditorDialog(cvm, def, this);
+
+    // 2. Указываем Qt автоматически удалить объект из памяти, когда окно закроется
+    dialog->setAttribute(Qt::WA_DeleteOnClose);
+
+    // 3. Делаем его модальным, но без блокировки потока через exec()
+    dialog->setWindowModality(Qt::WindowModal);
+
+    // 4. Показываем окно
+    dialog->show();
 }
 
 MainWindow::~MainWindow()

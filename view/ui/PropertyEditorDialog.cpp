@@ -1,11 +1,14 @@
 #include "PropertyEditorDialog.h"
+#include "ComponentDefinition.h"
+#include "ComponentViewModel.h"
+#include "ImPlotWidget.h"
+
 #include <QDoubleSpinBox>
 #include <QFormLayout>
+#include <QHBoxLayout>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QVBoxLayout>
-#include "ComponentDefinition.h"
-#include "ComponentViewModel.h"
 #include <string>
 
 PropertyEditorDialog::PropertyEditorDialog(ComponentViewModel *vm,
@@ -34,7 +37,14 @@ void PropertyEditorDialog::onPropertyModyfied()
 
 void PropertyEditorDialog::buildUI()
 {
-    auto layout = new QVBoxLayout(this);
+    auto horizLayout = new QHBoxLayout(this);
+
+    if (mCompVM->isInstrument()) {
+        ImPlotWidget *plotWidget = new ImPlotWidget(this);
+        horizLayout->addWidget(plotWidget, 3);
+    }
+
+    auto vertLayout = new QVBoxLayout();
     auto form = new QFormLayout();
 
     for (const auto &paramDef : definition->parameters) {
@@ -90,7 +100,7 @@ void PropertyEditorDialog::buildUI()
         form->addRow(name + " (" + unit + ")", editor);
     }
 
-    layout->addLayout(form);
+    vertLayout->addLayout(form);
 
     // кнопки
     auto btnLayout = new QHBoxLayout();
@@ -107,8 +117,10 @@ void PropertyEditorDialog::buildUI()
 
     btnLayout->addWidget(okBtn);
     btnLayout->addWidget(cancelBtn);
+    vertLayout->addLayout(btnLayout);
 
-    layout->addLayout(btnLayout);
+    // Добавляем вертикальный слой с формой и кнопками в правый бок (коэффициент 2, т.е. 40% ширины)
+    horizLayout->addLayout(vertLayout, 2);
 }
 
 void PropertyEditorDialog::applyChanges()
