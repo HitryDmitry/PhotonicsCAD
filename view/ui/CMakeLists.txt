@@ -17,6 +17,10 @@ add_library(
 target_include_directories(ui_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(
   ui_lib
-  PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Widgets
-          Qt${QT_VERSION_MAJOR}::OpenGLWidgets component_library domain_lib
-          viewmodel_lib)
+  PRIVATE Qt${QT_VERSION_MAJOR}::Core
+          Qt${QT_VERSION_MAJOR}::Widgets
+          Qt${QT_VERSION_MAJOR}::OpenGLWidgets
+          component_library
+          domain_lib
+          viewmodel_lib
+          implot)

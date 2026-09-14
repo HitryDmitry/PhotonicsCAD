@@ -1,8 +1,9 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.20)
 project(imgui CXX)
 
 # Gather core ImGui files
 set(IMGUI_SOURCES
+    imgui.h
     imgui.cpp
     imgui_draw.cpp
     imgui_tables.cpp

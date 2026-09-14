@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 project(implot CXX)
 
 # Define the source files
-set(IMPLOT_SOURCES implot.cpp implot_items.cpp)
+set(IMPLOT_SOURCES implot.h implot.cpp implot_items.cpp)
 
 # Create the static library target
 add_library(implot STATIC ${IMPLOT_SOURCES})
