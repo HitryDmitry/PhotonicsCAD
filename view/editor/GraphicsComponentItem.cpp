@@ -2,6 +2,7 @@
 #include "PinInstance.h"
 #include "PinItem.h"
 #include "WireItem.h"
+
 #include <QDebug>
 #include <QPixmap>
 #include <qpainter.h>
@@ -27,14 +28,6 @@ GraphicsComponentItem::GraphicsComponentItem(ComponentViewModel *compViewModel,
 GraphicsComponentItem::~GraphicsComponentItem() {}
 
 void GraphicsComponentItem::onPropertyModyfied() {}
-
-// Переопределяем хитбокс компонента (для коллизий)
-QRectF GraphicsComponentItem::boundingRect() const
-{
-    QRectF originalRect = QGraphicsPixmapItem::boundingRect();
-    double padding = 20.0; // Отступ, чтобы блоки не слипались вплотную
-    return originalRect.adjusted(-padding, -padding, padding, padding);
-}
 
 // =========================================================
 // Перехватываем перемещение (Сетка + Защита от наложений)
@@ -181,7 +174,8 @@ QPainterPath GraphicsComponentItem::framePath() const
 }
 
 // ============================================================
-// boundingRect: must include the frame area when visible
+// boundingRect: must include the frame area when visible; also
+// used for avoiding collisions
 // ============================================================
 
 QRectF GraphicsComponentItem::boundingRect() const
