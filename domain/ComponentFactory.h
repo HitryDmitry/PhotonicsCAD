@@ -14,7 +14,6 @@ public:
     {
         auto instance = std::make_unique<ComponentInstance>(def, id);
         instance->mPosition = Point2D{x, y};
-        instance->mType = def.type.toStdString();
         return instance;
     }
 };
