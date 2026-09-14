@@ -124,6 +124,9 @@ void MainWindow::onSimulationCompleted(const std::vector<PinRef> &observationPoi
 {
     progressBarLabel->setText(tr("Симуляция завершена."));
     progressBar->setValue(100);
+
+    actionCalculate->setEnabled(true);
+    actionCalculate->setText(tr("Calculate (Run)"));
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
