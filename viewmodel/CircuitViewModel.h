@@ -45,6 +45,10 @@ public:
     // Симуляция схемы
     void startSimulation();
 
+    // Результаты симуляции
+    const std::vector<double> &getSimFreqs();
+    const std::vector<double> &getSimVals(PinRef pin);
+
 private:
     void notifyComponentAdded(ComponentViewModel *cvm, const ComponentDefinition *def);
 

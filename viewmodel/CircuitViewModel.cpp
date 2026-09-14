@@ -159,3 +159,13 @@ void CircuitViewModel::startSimulation()
     buildGraph();
     solveTheCircuit();
 }
+
+const std::vector<double> &CircuitViewModel::getSimFreqs()
+{
+    return mSimResult.frequenciesHz;
+}
+
+const std::vector<double> &CircuitViewModel::getSimVals(PinRef pin)
+{
+    return mSimResult.frequencyResponses.at(pin);
+}

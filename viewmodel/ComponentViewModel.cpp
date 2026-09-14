@@ -1,9 +1,10 @@
 #include "ComponentViewModel.h"
 #include "CircuitViewModel.h"
 
-ComponentViewModel::ComponentViewModel(ComponentId id, CircuitViewModel *cvm)
+ComponentViewModel::ComponentViewModel(ComponentId id, CircuitViewModel *cvm, bool isInstrument)
     : mId(id)
     , mCircuitVM(cvm)
+    , mIsInstrument(isInstrument)
 {}
 
 void ComponentViewModel::addObserver(IComponentObserver *observer)
@@ -62,4 +63,17 @@ const std::vector<std::map<std::string, std::string> > &ComponentViewModel::getI
 const std::vector<std::unique_ptr<PinInstance> > &ComponentViewModel::getInstancePins()
 {
     return mCircuitVM->getComponent(mId)->mPins;
+}
+
+const std::vector<double> &ComponentViewModel::getSimFreqs()
+{
+    return mCircuitVM->getSimFreqs();
+}
+
+const std::vector<double> &ComponentViewModel::getSimVals()
+{
+    // В текущей реализации предполагаем, что будем получать
+    // отсчеты только от наблюдающих устройств (имеют только один пин)
+    PinRef pinOfIntrest{mId, PinIndex(0)};
+    return mCircuitVM->getSimVals(pinOfIntrest);
 }

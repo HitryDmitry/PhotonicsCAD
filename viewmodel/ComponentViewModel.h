@@ -31,10 +31,14 @@ public:
 
     const std::vector<std::map<std::string, std::string>> &getInstanceParamsVector();
     const std::vector<std::unique_ptr<PinInstance>> &getInstancePins();
+    const std::vector<double> &getSimFreqs();
+    const std::vector<double> &getSimVals();
 
 private:
     void notifyObservers();
     std::vector<IComponentObserver *> mObservers;
     ComponentId mId;
     CircuitViewModel *mCircuitVM;
+
+    bool mIsInstrument = false;
 };
