@@ -42,6 +42,10 @@ void PropertyEditorDialog::buildUI()
     if (mCompVM->isInstrument()) {
         ImPlotWidget *plotWidget = new ImPlotWidget(this);
         horizLayout->addWidget(plotWidget, 3);
+
+        auto &freqs = mCompVM->getSimFreqs();
+        auto &vals = mCompVM->getSimVals();
+        plotWidget->setPlotData(freqs, vals);
     }
 
     auto vertLayout = new QVBoxLayout();

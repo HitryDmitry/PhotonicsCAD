@@ -13,6 +13,8 @@ public:
     explicit ImPlotWidget(QWidget *parent = nullptr);
     ~ImPlotWidget();
 
+    void setPlotData(const std::vector<double> &xData, const std::vector<double> &yData);
+
 protected:
     void initializeGL() override;
     void paintGL() override;
@@ -27,4 +29,8 @@ protected:
 private:
     void updateImGuiInput();
     QElapsedTimer m_timer;
+
+    // Динамические массивы для хранения текущих данных графика
+    std::vector<double> m_xData;
+    std::vector<double> m_yData;
 };

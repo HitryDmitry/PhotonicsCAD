@@ -19,6 +19,14 @@ ImPlotWidget::ImPlotWidget(QWidget *parent)
     QTimer *timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, QOverload<>::of(&QWidget::update));
     timer->start(16); // ~60 кадров в секунду
+
+    // Инициализируем какими-нибудь дефолтными данными, чтобы график не был пустым при старте
+    m_xData.resize(101);
+    m_yData.resize(101);
+    for (int i = 0; i <= 100; ++i) {
+        m_xData[i] = 0.0f;
+        m_yData[i] = 0.0f;
+    }
 }
 
 ImPlotWidget::~ImPlotWidget()
@@ -43,6 +51,12 @@ ImPlotWidget::~ImPlotWidget()
 
         doneCurrent();
     }
+}
+
+void ImPlotWidget::setPlotData(const std::vector<double> &xData, const std::vector<double> &yData)
+{
+    m_xData = xData;
+    m_yData = yData;
 }
 
 void ImPlotWidget::initializeGL()
@@ -81,7 +95,7 @@ void ImPlotWidget::paintGL()
     ImGui_ImplOpenGL3_NewFrame();
     ImGui::NewFrame();
 
-    // 1. Убираем внутренние отступы (padding) окна ImGui,
+    // Убираем внутренние отступы (padding) окна ImGui,
     // чтобы график прижимался ровно к краям Qt-виджета
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 
@@ -97,23 +111,14 @@ void ImPlotWidget::paintGL()
                      | ImGuiWindowFlags_NoCollapse
                      | ImGuiWindowFlags_NoBackground); // Добавлен флаг NoBackground
 
-    // 2. Исправляем выделение памяти: объявляем полноценные массивы на 101 элемент
-    static float x_data[101];
-    static float y_data[101];
-    static bool data_initialized = false;
-
-    if (!data_initialized) {
-        for (int i = 0; i <= 100; ++i) {
-            x_data[i] = i * 0.1f;
-            y_data[i] = sinf(x_data[i]);
-        }
-        data_initialized = true;
-    }
-
-    // 3. Передаем ImVec2(-1, -1) — это заставит ImPlot автоматически
+    // Передаем ImVec2(-1, -1) — это заставит ImPlot автоматически
     // растянуться на 100% доступной ширины и высоты окна ImGui
     if (ImPlot::BeginPlot("My First ImPlot Widget", ImVec2(-1, -1))) {
-        ImPlot::PlotLine("Sin(x)", x_data, y_data, 101);
+        int pointsCount = static_cast<int>(std::min(m_xData.size(), m_yData.size()));
+
+        ImPlotSpec spec;
+        spec.LineColor = ImVec4(0.75f, 0.937f, 1.0f, 1.0f);
+        ImPlot::PlotLine("Data Curve", m_xData.data(), m_yData.data(), pointsCount, spec);
         ImPlot::EndPlot();
     }
 
