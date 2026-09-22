@@ -14,10 +14,9 @@ class QGraphicsItem;
 class QProgressBar;
 class QLabel;
 class QHBoxLayout;
-
-namespace Ui {
-class MainWindow;
-}
+class QVBoxLayout;
+class ComponentListWidget;
+class GraphicsView;
 QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow, public ICircuitObserver
@@ -51,8 +50,13 @@ public slots:
     void fitToScreen();
 
 private:
-    Ui::MainWindow *ui;
-    CircuitScene *m_scene;
+    void createCentralWidget();
+    void createComponentPanel(QHBoxLayout *contentLayout);
+    void createGraphicsView(QHBoxLayout *contentLayout);
+    void createMenuBar();
+    void createStatusBar();
+
+    CircuitScene *m_scene = nullptr;
     ComponentLibraryManager componentLibrary;
 
     std::unique_ptr<CircuitViewModel> viewModel;
@@ -61,23 +65,27 @@ private:
     void createActions();
     void createToolbars();
 
-    QAction *actionSave;
-    QAction *actionUndo;
-    QAction *actionRedo;
-    QAction *actionCalculate;
-    QAction *actionZoomIn;
-    QAction *actionZoomOut;
-    QAction *actionFit;
+    QAction *actionSave = nullptr;
+    QAction *actionUndo = nullptr;
+    QAction *actionRedo = nullptr;
+    QAction *actionCalculate = nullptr;
+    QAction *actionZoomIn = nullptr;
+    QAction *actionZoomOut = nullptr;
+    QAction *actionFit = nullptr;
 
-    QToolBar *standardToolBar;
-    QToolBar *simulationToolBar;
-    QToolBar *viewToolBar;
+    QToolBar *standardToolBar = nullptr;
+    QToolBar *simulationToolBar = nullptr;
+    QToolBar *viewToolBar = nullptr;
+
+    QVBoxLayout *mainLayout = nullptr;
+    ComponentListWidget *componentList = nullptr;
+    GraphicsView *graphicsView = nullptr;
 
     // --- ИНДИКАТОР ВЫПОЛНЕНИЯ ---
     void createProgressBar();
-    QWidget *progressContainer;
-    QHBoxLayout *progressLayout;
-    QProgressBar *progressBar;
-    QLabel *progressBarLabel;
+    QWidget *progressContainer = nullptr;
+    QHBoxLayout *progressLayout = nullptr;
+    QProgressBar *progressBar = nullptr;
+    QLabel *progressBarLabel = nullptr;
 };
 #endif

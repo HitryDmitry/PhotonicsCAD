@@ -1,7 +1,7 @@
 #include "mainwindow.h"
-#include "./ui_mainwindow.h"
 
 #include "CircuitScene.h"
+#include "ComponentListWidget.h"
 #include "ComponentDefinition.h"
 #include "ComponentInstance.h"
 #include "ComponentViewModel.h"
@@ -19,14 +19,25 @@
 #include <QHBoxLayout>
 #include <QKeyEvent>
 #include <QLabel>
+#include <QLineEdit>
+#include <QMenuBar>
 #include <QMetaMethod>
 #include <QProgressBar>
+#include <QScrollArea>
+#include <QStackedWidget>
+#include <QStatusBar>
+#include <QVBoxLayout>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
+    resize(888, 477);
+    setMouseTracking(true);
+    setWindowTitle(tr("MainWindow"));
+
+    createCentralWidget();
+    createMenuBar();
+    createStatusBar();
 
     // --- СОЗДАНИЕ ВЕРХНЕЙ ПАНЕЛИ ---
     createActions();
@@ -35,8 +46,8 @@ MainWindow::MainWindow(QWidget *parent)
     // --- СОЗДАНИЕ ИНДИКАТОРА ВЫПОЛНЕНИЯ ---
     createProgressBar();
 
-    ui->listWidget->setDragEnabled(true);
-    ui->listWidget->setDragDropMode(ComponentListWidget::DragOnly);
+    componentList->setDragEnabled(true);
+    componentList->setDragDropMode(ComponentListWidget::DragOnly);
 
     //Создание ViewModel, которая внутри себя создаст и будет владеть Circuit
     viewModel = std::make_unique<CircuitViewModel>();
@@ -59,8 +70,7 @@ MainWindow::MainWindow(QWidget *parent)
             m_scene,
             SLOT(onDeleteButton(QGraphicsItem *)));
 
-    // Устанавливаем сцену в GraphicsView из ui
-    ui->graphicsView->setScene(m_scene);
+    graphicsView->setScene(m_scene);
 
     // Загрузка стандартных компонентов
     if (componentLibrary.loadFromJson(":/data/components.json")) {
@@ -72,11 +82,11 @@ MainWindow::MainWindow(QWidget *parent)
     for (const auto &comp : componentLibrary.getComponents()) {
         QListWidgetItem *item = new QListWidgetItem(QIcon(comp.iconPath), comp.name);
         item->setData(Qt::UserRole, comp.type);
-        ui->listWidget->addItem(item);
+        componentList->addItem(item);
     }
 
     // Связь Drag & Drop
-    connect(ui->graphicsView,
+    connect(graphicsView,
             SIGNAL(componentDropped(QString, QPointF)),
             this,
             SLOT(onComponentDropped(QString, QPointF)));
@@ -179,7 +189,89 @@ MainWindow::~MainWindow()
     if (viewModel) {
         viewModel->removeObserver(this);
     }
-    delete ui;
+}
+
+void MainWindow::createCentralWidget()
+{
+    auto *centralWidget = new QWidget(this);
+    centralWidget->setObjectName("centralwidget");
+    setCentralWidget(centralWidget);
+
+    mainLayout = new QVBoxLayout(centralWidget);
+    mainLayout->setObjectName("verticalLayout");
+
+    auto *scrollArea = new QScrollArea(centralWidget);
+    scrollArea->setObjectName("scrollArea");
+    scrollArea->setWidgetResizable(true);
+
+    auto *scrollContents = new QWidget(scrollArea);
+    scrollContents->setObjectName("scrollAreaWidgetContents");
+    auto *contentLayout = new QHBoxLayout(scrollContents);
+    contentLayout->setObjectName("contentLayout");
+
+    createComponentPanel(contentLayout);
+    createGraphicsView(contentLayout);
+
+    scrollArea->setWidget(scrollContents);
+    mainLayout->addWidget(scrollArea);
+}
+
+void MainWindow::createComponentPanel(QHBoxLayout *contentLayout)
+{
+    auto *panelLayout = new QVBoxLayout;
+    panelLayout->setSizeConstraint(QLayout::SetMaximumSize);
+
+    auto *filterEdit = new QLineEdit(this);
+    filterEdit->setObjectName("lineEdit");
+    filterEdit->setMaximumWidth(250);
+    panelLayout->addWidget(filterEdit);
+
+    componentList = new ComponentListWidget(this);
+    componentList->setObjectName("listWidget");
+    componentList->setMaximumWidth(250);
+    componentList->setMouseTracking(true);
+    componentList->setDragEnabled(true);
+    componentList->setDragDropMode(QAbstractItemView::NoDragDrop);
+    componentList->setDefaultDropAction(Qt::MoveAction);
+    componentList->setIconSize(QSize(110, 80));
+    componentList->setMovement(QListView::Static);
+    componentList->setSpacing(10);
+    componentList->setGridSize(QSize(110, 90));
+    componentList->setViewMode(QListView::IconMode);
+    componentList->setItemAlignment(Qt::AlignLeading);
+    panelLayout->addWidget(componentList);
+
+    auto *stackedWidget = new QStackedWidget(this);
+    stackedWidget->setObjectName("stackedWidget");
+    stackedWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    stackedWidget->setMaximumSize(250, 300);
+    stackedWidget->addWidget(new QWidget(stackedWidget));
+    stackedWidget->addWidget(new QWidget(stackedWidget));
+    panelLayout->addWidget(stackedWidget);
+
+    contentLayout->addLayout(panelLayout);
+}
+
+void MainWindow::createGraphicsView(QHBoxLayout *contentLayout)
+{
+    graphicsView = new GraphicsView(this);
+    graphicsView->setObjectName("graphicsView");
+    graphicsView->setMouseTracking(true);
+    contentLayout->addWidget(graphicsView);
+}
+
+void MainWindow::createMenuBar()
+{
+    auto *menuBar = new QMenuBar(this);
+    menuBar->setObjectName("menubar");
+    setMenuBar(menuBar);
+}
+
+void MainWindow::createStatusBar()
+{
+    auto *mainStatusBar = new QStatusBar(this);
+    mainStatusBar->setObjectName("statusbar");
+    setStatusBar(mainStatusBar);
 }
 
 // СОЗДАНИЕ ИНТЕРФЕЙСА ПАНЕЛИ ИНСТРУМЕНТОВ
@@ -239,7 +331,7 @@ void MainWindow::createProgressBar()
     progressLayout->addWidget(progressBarLabel);
     progressLayout->addWidget(progressBar);
 
-    ui->verticalLayout->addWidget(progressContainer);
+    mainLayout->addWidget(progressContainer);
 }
 
 // ЛОГИКА РАБОТЫ КНОПОК ПАНЕЛИ
@@ -252,13 +344,13 @@ void MainWindow::runSimulation()
     viewModel->startSimulation();
 }
 
-void MainWindow::zoomIn() { ui->graphicsView->scale(1.25, 1.25); }
+void MainWindow::zoomIn() { graphicsView->scale(1.25, 1.25); }
 
-void MainWindow::zoomOut() { ui->graphicsView->scale(0.8, 0.8); }
+void MainWindow::zoomOut() { graphicsView->scale(0.8, 0.8); }
 
 void MainWindow::fitToScreen()
 {
     if(m_scene) {
-        ui->graphicsView->fitInView(m_scene->sceneRect(), Qt::KeepAspectRatio);
+        graphicsView->fitInView(m_scene->sceneRect(), Qt::KeepAspectRatio);
     }
 }
